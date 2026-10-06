@@ -10,7 +10,7 @@ export type HazardKind =
 
 export type AlertLevel = "red" | "orange" | "green" | "info";
 
-export type EventSource = "USGS" | "NASA EONET" | "GDACS" | "NWS" | "Smithsonian";
+export type EventSource = "USGS" | "NASA EONET" | "GDACS" | "NWS" | "Smithsonian" | "Earthquakes Canada" | "CWFIS" | "ECCC";
 
 export type DisasterEvent = {
   id: string;

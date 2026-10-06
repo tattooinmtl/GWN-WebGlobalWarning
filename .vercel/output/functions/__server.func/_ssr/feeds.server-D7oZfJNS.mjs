@@ -1,4 +1,4 @@
-//#region node_modules/.nitro/vite/services/ssr/assets/feeds.server-n3telpID.js
+//#region node_modules/.nitro/vite/services/ssr/assets/feeds.server-D7oZfJNS.js
 var SAMPLE_POINTS = [
 	{
 		id: "FJ",
@@ -23,6 +23,54 @@ var SAMPLE_POINTS = [
 		name: "Canada",
 		lon: -101.91,
 		lat: 60.32
+	},
+	{
+		id: "CA",
+		name: "Vancouver",
+		lon: -123.12,
+		lat: 49.28
+	},
+	{
+		id: "CA",
+		name: "Calgary",
+		lon: -114.07,
+		lat: 51.05
+	},
+	{
+		id: "CA",
+		name: "Winnipeg",
+		lon: -97.14,
+		lat: 49.9
+	},
+	{
+		id: "CA",
+		name: "Toronto",
+		lon: -79.38,
+		lat: 43.65
+	},
+	{
+		id: "CA",
+		name: "Ottawa",
+		lon: -75.7,
+		lat: 45.42
+	},
+	{
+		id: "CA",
+		name: "Montreal",
+		lon: -73.57,
+		lat: 45.5
+	},
+	{
+		id: "CA",
+		name: "Quebec City",
+		lon: -71.21,
+		lat: 46.81
+	},
+	{
+		id: "CA",
+		name: "Halifax",
+		lon: -63.57,
+		lat: 44.65
 	},
 	{
 		id: "US",
@@ -1063,7 +1111,7 @@ var SAMPLE_POINTS = [
 		lat: 7.23
 	}
 ];
-var UA = "GWNAtlas/0.0.2 (educational live hazard map)";
+var UA = "GWNAtlas/0.0.3 (educational live hazard map)";
 var atlasCache = null;
 var ATLAS_TTL = 9e4;
 var owmCache = null;
@@ -1470,9 +1518,15 @@ async function loadPrecip() {
 			});
 		});
 	}));
+	const max = /* @__PURE__ */ new Map();
+	for (const row of rows) max.set(row.id, Math.max(max.get(row.id) ?? 0, row.mm));
+	const value = [...max.entries()].map(([id, mm]) => ({
+		id,
+		mm
+	}));
 	return {
-		value: rows,
-		count: rows.filter((row) => row.mm > 0).length
+		value,
+		count: value.filter((row) => row.mm > 0).length
 	};
 }
 async function loadDonki(nasaKey) {
@@ -1503,10 +1557,139 @@ async function loadDonki(nasaKey) {
 		};
 	}
 }
+async function loadCanadaQuakes() {
+	const text = await getText(`https://www.earthquakescanada.nrcan.gc.ca/fdsnws/event/1/query?format=text&minmagnitude=1.5&orderby=time&limit=300&starttime=${(/* @__PURE__ */ new Date(Date.now() - 12096e5)).toISOString().slice(0, 10)}`, 14e3);
+	const value = [];
+	for (const line of text.split("\n")) {
+		if (!line || line.startsWith("#")) continue;
+		const [id, time, latRaw, lonRaw, depth, magType, magRaw, ...placeParts] = line.split("|");
+		const lat = num(latRaw);
+		const lon = num(lonRaw);
+		const mag = num(magRaw);
+		if (!id || lat == null || lon == null || mag == null) continue;
+		const place = (placeParts.join("|").split("/")[0] || "").trim();
+		value.push(eventBase({
+			id: `canquake:${id}`,
+			source: "Earthquakes Canada",
+			kind: "quake",
+			title: `M ${mag.toFixed(1)} - ${place || "Canada"}`,
+			mag: Math.round(mag * 10) / 10,
+			alert: asAlert(void 0, mag),
+			lat,
+			lon,
+			time: time || (/* @__PURE__ */ new Date()).toISOString(),
+			url: "https://www.earthquakescanada.nrcan.gc.ca/recent/index-en.php",
+			place,
+			isoHint: "CA",
+			detail: [
+				"Earthquakes Canada",
+				magType || "",
+				depth ? `Depth ${depth} km` : ""
+			].filter(Boolean).join(" · ")
+		}));
+	}
+	return {
+		value,
+		count: value.length
+	};
+}
+function canadaAlertKind(name) {
+	const n = name.toLowerCase();
+	if (/flood|rainfall|heavy rain|storm surge|high water|waterspout/.test(n)) return "flood";
+	if (/wildfire|forest fire|fire/.test(n)) return "fire";
+	if (/tornado|thunder|wind|hurricane|blizzard|winter|snow|freezing rain|squall|storm/.test(n)) return "storm";
+	return null;
+}
+async function loadCanadaAlerts() {
+	const text = await getText("https://api.weather.gc.ca/collections/weather-alerts/items?f=json&limit=250", 14e3);
+	const json = JSON.parse(text);
+	const value = [];
+	for (const feature of json.features ?? []) {
+		const props = feature.properties ?? {};
+		const name = props.alert_name_en || props.alert_short_name_en || "";
+		const kind = canadaAlertKind(name);
+		if (!kind) continue;
+		const point = ringCentroid(feature.geometry?.coordinates, feature.geometry?.type);
+		if (!point) continue;
+		const colour = (props.risk_colour_en || "").toLowerCase();
+		const type = (props.alert_type || "").toLowerCase();
+		let alert = "green";
+		if (colour === "red") alert = "red";
+		else if (colour === "orange" || type === "warning") alert = "orange";
+		value.push(eventBase({
+			id: `eccc:${feature.id || props.id || `${point.lon.toFixed(2)},${point.lat.toFixed(2)},${name}`}`,
+			source: "ECCC",
+			kind,
+			title: name || "Canada weather alert",
+			mag: null,
+			alert,
+			lat: point.lat,
+			lon: point.lon,
+			time: props.publication_datetime || (/* @__PURE__ */ new Date()).toISOString(),
+			url: "https://weather.gc.ca/warnings/index_e.html",
+			place: [props.feature_name_en, props.province].filter(Boolean).join(", "),
+			isoHint: "CA",
+			detail: `Environment Canada ${props.alert_type || "alert"}`
+		}));
+	}
+	return {
+		value,
+		count: value.length
+	};
+}
+function thinCells(events, cell, cap) {
+	const rank = (event) => event.alert === "red" ? 3 : event.alert === "orange" ? 2 : 1;
+	const best = /* @__PURE__ */ new Map();
+	for (const event of events) {
+		const key = `${Math.round(event.lat / cell)}:${Math.round(event.lon / cell)}`;
+		const prev = best.get(key);
+		if (!prev || rank(event) > rank(prev) || rank(event) === rank(prev) && event.time > prev.time) best.set(key, event);
+	}
+	return [...best.values()].sort((a, b) => rank(b) - rank(a) || b.time.localeCompare(a.time)).slice(0, cap);
+}
+async function loadCanadaFires() {
+	const json = JSON.parse(await getText("https://cwfis.cfs.nrcan.gc.ca/geoserver/public/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=public:hotspots_24h&outputFormat=application/json&maxFeatures=2500", 14e3));
+	const raw = [];
+	for (const feature of json.features ?? []) {
+		const props = feature.properties ?? {};
+		const lat = num(props.lat);
+		const lon = num(props.lon);
+		if (lat == null || lon == null || lat < 41 || lat > 84 || lon < -141 || lon > -52) continue;
+		const fwi = num(props.fwi) ?? 0;
+		const frp = num(props.frp) ?? 0;
+		const alert = fwi >= 20 || frp >= 40 ? "red" : fwi >= 10 || frp >= 12 ? "orange" : "green";
+		raw.push(eventBase({
+			id: `cwfis:${lat.toFixed(3)},${lon.toFixed(3)},${props.rep_date || ""}`,
+			source: "CWFIS",
+			kind: "fire",
+			title: `Wildfire hotspot${props.agency ? ` · ${props.agency}` : ""}`,
+			mag: null,
+			alert,
+			lat,
+			lon,
+			time: props.rep_date || (/* @__PURE__ */ new Date()).toISOString(),
+			url: "https://cwfis.cfs.nrcan.gc.ca/maps/fw",
+			place: props.agency || "Canada",
+			isoHint: "CA",
+			detail: [
+				"Canadian Wildland Fire Information System",
+				fwi ? `FWI ${fwi.toFixed(0)}` : "",
+				frp ? `FRP ${frp.toFixed(0)}` : "",
+				props.satellite || ""
+			].filter(Boolean).join(" · ")
+		}));
+	}
+	const value = thinCells(raw, .7, 380);
+	return {
+		value,
+		count: value.length
+	};
+}
 async function fetchAtlas() {
 	const sources = [];
-	const [usgs, eonet, gdacs, nws, radar, headlines, precip] = await Promise.all([
+	const [usgs, canadaQuakes, eonet, gdacs, nws, canadaAlerts, canadaFires, radar, headlines, precip] = await Promise.all([
 		timed(sources, "usgs", "USGS quakes", loadUsgs),
+		timed(sources, "canquake", "Earthquakes Canada", loadCanadaQuakes),
 		timed(sources, "eonet", "NASA EONET", async () => {
 			const value = parseEonet(await getText("https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=250", 14e3));
 			return {
@@ -1516,18 +1699,24 @@ async function fetchAtlas() {
 		}),
 		timed(sources, "gdacs", "GDACS", loadGdacs),
 		timed(sources, "nws", "NWS floods", loadNws),
+		timed(sources, "eccc", "Canada alerts", loadCanadaAlerts),
+		timed(sources, "cwfis", "Canada wildfires", loadCanadaFires),
 		timed(sources, "radar", "RainViewer", loadRadar),
 		timed(sources, "wires", "Headlines", loadHeadlines),
 		timed(sources, "meteo", "Open-Meteo rain", loadPrecip)
 	]);
 	const quakes = usgs ?? [];
+	const localQuakes = (canadaQuakes ?? []).filter((event) => !nearQuake(event.lat, event.lon, quakes));
 	const eonetEvents = capFires((eonet ?? []).filter((event) => event.kind !== "quake" || !nearQuake(event.lat, event.lon, quakes)), 70);
 	const events = [
 		...quakes,
+		...localQuakes,
 		...eonetEvents,
 		...gdacs ?? [],
-		...nws ?? []
-	].slice(0, 900);
+		...nws ?? [],
+		...canadaAlerts ?? [],
+		...canadaFires ?? []
+	].slice(0, 1600);
 	events.sort((a, b) => b.time.localeCompare(a.time));
 	return {
 		fetchedAt: (/* @__PURE__ */ new Date()).toISOString(),

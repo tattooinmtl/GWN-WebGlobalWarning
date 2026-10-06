@@ -2,10 +2,10 @@ import { i as __toESM } from "../_runtime.mjs";
 import { a as require_react, i as require_jsx_runtime, n as QueryClientProvider, r as useQueryClient, t as useQuery } from "../_libs/react+tanstack__react-query.mjs";
 import { n as TSS_SERVER_FUNCTION, r as getServerFnById, t as createServerFn } from "./ssr.mjs";
 import { a as Plus, c as LocateFixed, d as ArrowLeft, i as RefreshCw, l as Layers, o as Minus, r as Settings, s as MessageSquare, t as X, u as Crosshair } from "../_libs/lucide-react.mjs";
-import { n as APP_TITLE } from "./router-BPRf1qEX.mjs";
+import { n as APP_TITLE } from "./router-BJYY78dI.mjs";
 import { t as QueryClient } from "../_libs/tanstack__query-core.mjs";
 import { n as create, t as persist } from "../_libs/zustand.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/routes-BxYW8MHr.js
+//#region node_modules/.nitro/vite/services/ssr/assets/routes-CxuWRfRy.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var createSsrRpc = (functionId) => {
