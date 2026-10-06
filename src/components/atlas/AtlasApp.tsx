@@ -20,6 +20,7 @@ import type { CountryCollection, CountryStat, HazardKind, Metric, VolcanoCollect
 import { KIND_LABEL, METRICS } from "@/lib/disasters/types";
 import type { LayerPrefs } from "@/lib/atlas/store";
 import { mergeLayers, useAtlas } from "@/lib/atlas/store";
+import { APP_TITLE } from "@/lib/brand";
 import { CopilotDock } from "./CopilotDock";
 import { HazardMap } from "./HazardMap";
 import { PlacesDock } from "./PlacesDock";
@@ -308,9 +309,9 @@ function AtlasInner() {
       <header className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between gap-2 p-3">
         <div className="pointer-events-auto flex items-center gap-2">
           <div className="rounded-full border border-line bg-panel/90 px-3 py-2 backdrop-blur-md">
-            <p className="flex items-center gap-2 font-display text-xl leading-none tracking-widest">
-              <span className="live-dot inline-block size-2 rounded-full bg-crimson" aria-hidden />
-              MERIDIAN
+            <p className="flex items-center gap-2 font-display text-sm leading-tight tracking-wide sm:text-base">
+              <span className="live-dot inline-block size-2 shrink-0 rounded-full bg-crimson" aria-hidden />
+              {APP_TITLE}
             </p>
             <p className="text-xs text-muted">{updated ? `Live · ${updated}` : "Connecting feeds"}</p>
           </div>

@@ -1,4 +1,4 @@
-//#region node_modules/.nitro/vite/services/ssr/assets/ai.server-Bnm0MxL9.js
+//#region node_modules/.nitro/vite/services/ssr/assets/ai.server-CBEQulbl.js
 var grokBudget = {
 	n: 0,
 	reset: 0
@@ -53,7 +53,7 @@ async function minimax(key, model, messages) {
 	}
 }
 function systemPrompt(mode) {
-	const shared = "You are Meridian, the analyst for a live natural-hazard map. Use ONLY the context JSON-like notes. If a fact is not in the context, say the live feeds do not show it. Never invent magnitudes, coordinates, death tolls, or records. Name the source (USGS, NASA EONET, GDACS, NWS, Open-Meteo, OpenWeather, ReliefWeb, Google News) when you cite a fact.";
+	const shared = "You are GWN, the analyst for a live natural-hazard map. Use ONLY the context JSON-like notes. If a fact is not in the context, say the live feeds do not show it. Never invent magnitudes, coordinates, death tolls, or records. Name the source (USGS, NASA EONET, GDACS, NWS, Open-Meteo, OpenWeather, ReliefWeb, Google News) when you cite a fact.";
 	if (mode === "refine") return `${shared} Reweight the ACTIVE metric only. Return JSON and nothing else: {"note":"one sentence","scores":{"COUNTRY_ID":0}}. Scores are integers 0-100. Include only country ids from the context. 0 means quiet, 100 means the strongest pressure supported by the supplied rain millimeters, OpenWeather samples, magnitudes, and alert counts.`;
 	if (mode === "scan") return `${shared} Scan the headlines against the structured events. Write a briefing under 180 words: the most serious hazards, floods worth watching, and anything inside the user radius if a location is present. Attribute headlines. Do not add map pins.`;
 	return `${shared} Answer the user's question in under 160 words. Be specific and calm. If they ask about their radius and no location is present, say so.`;

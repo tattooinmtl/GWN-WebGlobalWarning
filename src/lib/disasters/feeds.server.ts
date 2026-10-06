@@ -11,7 +11,7 @@ import type {
   SourceStatus,
 } from "./types";
 
-const UA = "MeridianAtlas/1.0 (educational live hazard map)";
+const UA = "GWNAtlas/0.0.2 (educational live hazard map)";
 
 let atlasCache: { at: number; payload: AtlasPayload } | null = null;
 const ATLAS_TTL = 90_000;

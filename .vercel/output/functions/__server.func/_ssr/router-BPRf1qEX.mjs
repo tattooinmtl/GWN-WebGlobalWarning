@@ -1,12 +1,21 @@
-import { i as __toESM, n as __exportAll } from "../_runtime.mjs";
+import { i as __toESM } from "../_runtime.mjs";
 import { a as require_react, i as require_jsx_runtime } from "../_libs/react+tanstack__react-query.mjs";
 import { _ as createFileRoute, d as Scripts, f as HeadContent, g as lazyRouteComponent, h as Outlet, m as createRouter, v as createRootRoute, y as useRouter } from "../_libs/@tanstack/react-router+[...].mjs";
 import { n as TriangleAlert } from "../_libs/lucide-react.mjs";
 import { a as union, i as string, n as number, r as object, t as literal } from "../_libs/zod.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-C1abJkkc.js
-var router_C1abJkkc_exports = /* @__PURE__ */ __exportAll({ getRouter: () => getRouter });
+//#region node_modules/.nitro/vite/services/ssr/assets/router-BPRf1qEX.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
+var __defProp = Object.defineProperty;
+var __exportAll = (all, no_symbols) => {
+	let target = {};
+	for (var name in all) __defProp(target, name, {
+		get: all[name],
+		enumerable: true
+	});
+	if (!no_symbols) __defProp(target, Symbol.toStringTag, { value: "Module" });
+	return target;
+};
 var FALLBACK_MESSAGE = "An unexpected error occurred. Try reloading the page.";
 function errorMessage(error) {
 	if (error instanceof Error && error.message) return error.message;
@@ -298,8 +307,8 @@ function PreviewHostBridge() {
 	}, [router]);
 	return null;
 }
-var styles_default = "/assets/styles-Chsog-RD.css";
-var APP_NAME = "Meridian";
+var APP_TITLE = `GWN - WebGlobalWarning V.0.0.2`;
+var styles_default = "/assets/styles-DUAIaYWW.css";
 var Route$1 = createRootRoute({
 	head: () => ({
 		meta: [
@@ -308,7 +317,7 @@ var Route$1 = createRootRoute({
 				name: "viewport",
 				content: "width=device-width, initial-scale=1, viewport-fit=cover"
 			},
-			{ title: APP_NAME },
+			{ title: APP_TITLE },
 			{
 				name: "description",
 				content: "Live world atlas of floods, earthquakes, storms, and fires from USGS, NASA EONET, GDACS, NWS, and weather feeds."
@@ -352,13 +361,14 @@ var Route$1 = createRootRoute({
 		] })]
 	})
 });
-var $$splitComponentImporter = () => import("./routes-iQxSag1d.mjs");
+var $$splitComponentImporter = () => import("./routes-BxYW8MHr.mjs");
 var rootRouteChildren = { IndexRoute: createFileRoute("/")({ component: lazyRouteComponent($$splitComponentImporter, "component") }).update({
 	id: "/",
 	path: "/",
 	getParentRoute: () => Route$1
 }) };
 var routeTree = Route$1._addFileChildren(rootRouteChildren)._addFileTypes();
+var router_exports = /* @__PURE__ */ __exportAll({ getRouter: () => getRouter });
 function getRouter() {
 	return createRouter({
 		routeTree,
@@ -366,4 +376,4 @@ function getRouter() {
 	});
 }
 //#endregion
-export { getRouter, router_C1abJkkc_exports as t };
+export { APP_TITLE as n, router_exports as t };

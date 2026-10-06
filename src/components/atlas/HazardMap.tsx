@@ -119,7 +119,7 @@ export function HazardMap(props: Props) {
 
     void (async () => {
       const maplibregl = await import("maplibre-gl");
-      const workerMod = await import("maplibre-gl/dist/maplibre-gl-worker.mjs?url");
+      const workerMod = await import("maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url");
       if (dead || !wrapRef.current) return;
       maplibregl.setWorkerUrl(workerMod.default);
       const narrow = wrapRef.current.clientWidth < 800;

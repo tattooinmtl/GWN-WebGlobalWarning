@@ -2,9 +2,10 @@ import { i as __toESM } from "../_runtime.mjs";
 import { a as require_react, i as require_jsx_runtime, n as QueryClientProvider, r as useQueryClient, t as useQuery } from "../_libs/react+tanstack__react-query.mjs";
 import { n as TSS_SERVER_FUNCTION, r as getServerFnById, t as createServerFn } from "./ssr.mjs";
 import { a as Plus, c as LocateFixed, d as ArrowLeft, i as RefreshCw, l as Layers, o as Minus, r as Settings, s as MessageSquare, t as X, u as Crosshair } from "../_libs/lucide-react.mjs";
+import { n as APP_TITLE } from "./router-BPRf1qEX.mjs";
 import { t as QueryClient } from "../_libs/tanstack__query-core.mjs";
 import { n as create, t as persist } from "../_libs/zustand.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/routes-iQxSag1d.js
+//#region node_modules/.nitro/vite/services/ssr/assets/routes-BxYW8MHr.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var createSsrRpc = (functionId) => {
@@ -604,7 +605,7 @@ function CopilotDock({ context, headlines, spaceWeather, countries, metric }) {
 	}
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
 		className: "dock h-full",
-		"aria-label": "Meridian agent",
+		"aria-label": "GWN agent",
 		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("header", {
 			className: "flex items-center justify-between gap-2 border-b border-line px-3 py-3",
 			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
@@ -828,7 +829,7 @@ function HazardMap(props) {
 		let watch = null;
 		(async () => {
 			const maplibregl = await import("../_libs/maplibre-gl.mjs").then((n) => n.t);
-			const workerMod = await import("./maplibre-gl-worker-tENyTTqY.mjs");
+			const workerMod = await import("./maplibre-gl-worker-CQWuOQzD.mjs");
 			if (dead || !wrapRef.current) return;
 			maplibregl.setWorkerUrl(workerMod.default);
 			const narrow = wrapRef.current.clientWidth < 800;
@@ -2002,7 +2003,7 @@ function SettingsForm({ onClose }) {
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(KeyField, {
 					label: "MiniMax key",
-					hint: "Headline scan and the copilot use MiniMax-M3.1-Flash-Preview, then MiniMax-M3. Without a key, Meridian uses the built-in analyst.",
+					hint: "Headline scan and the copilot use MiniMax-M3.1-Flash-Preview, then MiniMax-M3. Without a key, GWN uses the built-in analyst.",
 					value: keys.minimaxKey,
 					onChange: (minimaxKey) => setKeys((current) => ({
 						...current,
@@ -2331,11 +2332,11 @@ function AtlasInner() {
 					children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 						className: "rounded-full border border-line bg-panel/90 px-3 py-2 backdrop-blur-md",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
-							className: "flex items-center gap-2 font-display text-xl leading-none tracking-widest",
+							className: "flex items-center gap-2 font-display text-sm leading-tight tracking-wide sm:text-base",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-								className: "live-dot inline-block size-2 rounded-full bg-crimson",
+								className: "live-dot inline-block size-2 shrink-0 rounded-full bg-crimson",
 								"aria-hidden": true
-							}), "MERIDIAN"]
+							}), APP_TITLE]
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 							className: "text-xs text-muted",
 							children: updated ? `Live · ${updated}` : "Connecting feeds"

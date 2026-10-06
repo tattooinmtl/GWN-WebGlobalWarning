@@ -97,7 +97,7 @@ export function CopilotDock({ context, headlines, spaceWeather, countries, metri
   }
 
   return (
-    <section className="dock h-full" aria-label="Meridian agent">
+    <section className="dock h-full" aria-label="GWN agent">
       <header className="flex items-center justify-between gap-2 border-b border-line px-3 py-3">
         <div>
           <p className="font-display text-2xl leading-none tracking-wide">Agent</p>

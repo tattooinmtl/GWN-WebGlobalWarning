@@ -104,7 +104,7 @@ var HEADERS = { TSS_SHELL: "X-TSS_SHELL" };
 * the dev styles URL for route-scoped CSS collection.
 */
 async function getStartManifest(matchedRoutes) {
-	const { tsrStartManifest } = await import("../_tanstack-start-manifest_v-D2EUkdcc.mjs");
+	const { tsrStartManifest } = await import("../_tanstack-start-manifest_v-DhVGPOd6.mjs");
 	const startManifest = tsrStartManifest();
 	let routes = startManifest.routes;
 	routes[rootRouteId];
@@ -126,19 +126,19 @@ async function getStartManifest(matchedRoutes) {
 var manifest = {
 	"0ddf41afaeebcd1a69115050ea2b887d0809cf7d9496e7ff77da4de726156030": {
 		functionName: "pointForecast_createServerFn_handler",
-		importer: () => import("./api-xl6TXaT_.mjs")
+		importer: () => import("./api-DpKfEFyc.mjs")
 	},
 	"454cccdcfeb040d1f3a9242fce4e5725a0a6ca28328133503d6799ed2bec4920": {
 		functionName: "blendOpenWeather_createServerFn_handler",
-		importer: () => import("./api-xl6TXaT_.mjs")
+		importer: () => import("./api-DpKfEFyc.mjs")
 	},
 	"c38c8e9e18bd233369150c48d6ed2e252e6e7c9f08b0419c964ca455e68461f8": {
 		functionName: "askAnalyst_createServerFn_handler",
-		importer: () => import("./api-xl6TXaT_.mjs")
+		importer: () => import("./api-DpKfEFyc.mjs")
 	},
 	"ec41fa023681aa3f1c4ba78e7a8c9992c151a8c92049f40b3dcf9cd5c82d6be8": {
 		functionName: "loadAtlas_createServerFn_handler",
-		importer: () => import("./api-xl6TXaT_.mjs")
+		importer: () => import("./api-DpKfEFyc.mjs")
 	}
 };
 async function getServerFnById(id, access) {
@@ -1543,7 +1543,7 @@ var getBaseManifest = getProdBaseManifest;
 var createEarlyHintsForRequest = createEarlyHintsCollector;
 async function loadEntries() {
 	const [routerEntry, startEntry, pluginAdapters] = await Promise.all([
-		import("./router-C1abJkkc.mjs").then((n) => n.t),
+		import("./router-BPRf1qEX.mjs").then((n) => n.t),
 		import("./start-5Z2QO8AU.mjs"),
 		import("./empty-plugin-adapters-D9UWiqvJ.mjs")
 	]);

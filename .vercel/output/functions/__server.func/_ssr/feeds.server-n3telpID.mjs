@@ -1,4 +1,4 @@
-//#region node_modules/.nitro/vite/services/ssr/assets/feeds.server-un4WerZ7.js
+//#region node_modules/.nitro/vite/services/ssr/assets/feeds.server-n3telpID.js
 var SAMPLE_POINTS = [
 	{
 		id: "FJ",
@@ -1063,7 +1063,7 @@ var SAMPLE_POINTS = [
 		lat: 7.23
 	}
 ];
-var UA = "MeridianAtlas/1.0 (educational live hazard map)";
+var UA = "GWNAtlas/0.0.2 (educational live hazard map)";
 var atlasCache = null;
 var ATLAS_TTL = 9e4;
 var owmCache = null;

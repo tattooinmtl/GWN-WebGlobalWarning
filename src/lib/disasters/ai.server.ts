@@ -75,7 +75,7 @@ async function minimax(key: string, model: string, messages: Msg[]): Promise<str
 
 function systemPrompt(mode: "chat" | "scan" | "refine"): string {
   const shared =
-    "You are Meridian, the analyst for a live natural-hazard map. Use ONLY the context JSON-like notes. If a fact is not in the context, say the live feeds do not show it. Never invent magnitudes, coordinates, death tolls, or records. Name the source (USGS, NASA EONET, GDACS, NWS, Open-Meteo, OpenWeather, ReliefWeb, Google News) when you cite a fact.";
+    "You are GWN, the analyst for a live natural-hazard map. Use ONLY the context JSON-like notes. If a fact is not in the context, say the live feeds do not show it. Never invent magnitudes, coordinates, death tolls, or records. Name the source (USGS, NASA EONET, GDACS, NWS, Open-Meteo, OpenWeather, ReliefWeb, Google News) when you cite a fact.";
   if (mode === "refine") {
     return `${shared} Reweight the ACTIVE metric only. Return JSON and nothing else: {"note":"one sentence","scores":{"COUNTRY_ID":0}}. Scores are integers 0-100. Include only country ids from the context. 0 means quiet, 100 means the strongest pressure supported by the supplied rain millimeters, OpenWeather samples, magnitudes, and alert counts.`;
   }

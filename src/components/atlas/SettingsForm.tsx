@@ -84,7 +84,7 @@ export function SettingsForm({ onClose }: { onClose: () => void }) {
         />
         <KeyField
           label="MiniMax key"
-          hint="Headline scan and the copilot use MiniMax-M3.1-Flash-Preview, then MiniMax-M3. Without a key, Meridian uses the built-in analyst."
+          hint="Headline scan and the copilot use MiniMax-M3.1-Flash-Preview, then MiniMax-M3. Without a key, GWN uses the built-in analyst."
           value={keys.minimaxKey}
           onChange={(minimaxKey) => setKeys((current) => ({ ...current, minimaxKey }))}
           onSave={() => save({ minimaxKey: keys.minimaxKey.trim() })}
