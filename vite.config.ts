@@ -1,4 +1,4 @@
-import { readdirSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import type { Plugin } from "vite";
 import { defineConfig } from "vite";
@@ -47,6 +47,29 @@ function pgliteBootstrapPlugin(): Plugin {
         console.error("[app-builder] DB bootstrap failed:", err);
         throw err;
       }
+    },
+  };
+}
+
+/**
+ * MapLibre's production worker (`?url`) still imports `./maplibre-gl-shared.mjs`.
+ * Vite copies the worker into `/assets` but not that sibling, so the worker
+ * 404s on Vercel and every GeoJSON layer (quakes, volcanoes, faults) stays blank.
+ */
+function maplibreWorkerSharedPlugin(): Plugin {
+  return {
+    name: "maplibre-worker-shared",
+    apply: "build",
+    generateBundle() {
+      if (this.environment?.name && this.environment.name !== "client") return;
+      const source = readFileSync(
+        join(process.cwd(), "node_modules/maplibre-gl/dist/maplibre-gl-shared.mjs"),
+      );
+      this.emitFile({
+        type: "asset",
+        fileName: "assets/maplibre-gl-shared.mjs",
+        source,
+      });
     },
   };
 }
@@ -165,6 +188,7 @@ export default defineConfig(({ command, isPreview }) => ({
     appEnvPlugin(),
     // PWA head + ?install=1 tutorial page; runs before Start/Nitro.
     grokPwaPlugin(),
+    maplibreWorkerSharedPlugin(),
     tailwindcss(),
     tanstackStart(),
     ...(command === "build" || isPreview
