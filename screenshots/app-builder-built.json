@@ -1,0 +1,43 @@
+{
+  "url": "http://127.0.0.1:8081/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "Meridian",
+      "hasCanvas": false,
+      "bodyTextLen": 651,
+      "bodyTextHash": "3c04eab6628fc19da99304a345a2c49c3e5a0156df4eed49731ef8eb0fe1618a",
+      "bodyTextPrefix": "MERIDIAN Connecting feeds WORLDWIDE FLOOD PRESSURE Hotspots Pull",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-built.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "Meridian",
+      "hasCanvas": false,
+      "bodyTextLen": 343,
+      "bodyTextHash": "c9d7293c7e5789ff7565d7a5172c9900891122e3e0b5c869b4fa5c9b0fb42477",
+      "bodyTextPrefix": "MERIDIAN Connecting feeds Floods Quakes Fires Storms All Quiet E",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-built-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-built.json",
+  "divergesFromBaseline": true,
+  "baselineReasons": [
+    "desktop: canvas disappeared",
+    "desktop: body text changed (743 -> 651 chars, hash mismatch)",
+    "mobile: canvas disappeared",
+    "mobile: body text changed (497 -> 343 chars, hash mismatch)"
+  ]
+}
