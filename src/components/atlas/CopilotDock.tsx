@@ -1,10 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import { askAnalyst } from "@/lib/disasters/api";
+import { askAnalyst, openDeskView } from "@/lib/disasters/api";
 import { parseLayerScores } from "@/lib/disasters/context";
 import type { CountryStat, Headline, Metric } from "@/lib/disasters/types";
 import { useAtlas } from "@/lib/atlas/store";
+import { readIntent } from "@/lib/desk/intent";
+import { openSourcesPage } from "@/lib/desk/sources";
+import { useDesk } from "@/lib/desk/store";
+import type { SourceLink } from "@/lib/desk/types";
 
-type Turn = { role: "user" | "assistant"; content: string; model?: string };
+type Turn = { role: "user" | "assistant"; content: string; model?: string; sources?: SourceLink[] };
 
 type Props = {
   context: string;
@@ -51,16 +55,52 @@ export function CopilotDock({ context, headlines, spaceWeather, countries, metri
     if (mode === "chat") setTurns(history);
     setDraft("");
     try {
-      const result = await askAnalyst({
-        data: {
-          minimaxKey,
-          context: contextRef.current,
-          mode,
-          messages: history.map((turn) => ({ role: turn.role, content: turn.content })),
-        },
-      });
+      const intent = mode === "chat" ? readIntent(content) : null;
+      const here = useAtlas.getState().location;
+      const deskJob =
+        intent?.visual
+          ? openDeskView({
+              data: {
+                question: content,
+                place: intent.place,
+                wantRadar: intent.radar,
+                wantClouds: intent.clouds,
+                wantRain: intent.rain,
+                wantChart: intent.chart,
+                wantWeb: intent.web,
+                unit: metric,
+                centerLat: here?.lat ?? null,
+                centerLon: here?.lon ?? null,
+                bars: intent.chart
+                  ? [...countries]
+                      .sort((a, b) => b.score - a.score)
+                      .slice(0, 8)
+                      .map((country) => ({ label: country.name, value: country.score }))
+                  : [],
+              },
+            }).catch(() => null)
+          : Promise.resolve(null);
+      const [result, desk] = await Promise.all([
+        askAnalyst({
+          data: {
+            minimaxKey,
+            context: contextRef.current,
+            mode,
+            messages: history.map((turn) => ({ role: turn.role, content: turn.content })),
+          },
+        }),
+        deskJob,
+      ]);
+      const sources = desk?.windows[0]?.sources;
+      if (desk) {
+        for (const view of desk.windows) useDesk.getState().open(view);
+      }
+      const opened = desk?.note ? `\n\n${desk.note}` : "";
       if (!result.ok) {
         setError(result.error);
+        if (opened) {
+          setTurns((current) => [...current, { role: "assistant", content: desk?.note || "", sources }]);
+        }
         return;
       }
       if (mode === "refine") {
@@ -87,7 +127,7 @@ export function CopilotDock({ context, headlines, spaceWeather, countries, metri
       const lead = mode === "scan" ? "Wire scan" : content;
       setTurns((current) => {
         const base = mode === "chat" ? current : [...current, { role: "user" as const, content: lead }];
-        return [...base, { role: "assistant", content: result.text, model: result.model }];
+        return [...base, { role: "assistant", content: `${result.text}${opened}`, model: result.model, sources }];
       });
     } catch (err) {
       setError(err instanceof Error ? err.message : "The analyst could not answer.");
@@ -139,12 +179,12 @@ export function CopilotDock({ context, headlines, spaceWeather, countries, metri
           <div ref={scroller} className="dock-scroll flex flex-col gap-2 px-3 py-3">
             {turns.length === 0 ? (
               <div className="text-sm text-muted">
-                <p>Ask about the map. Answers stay inside the feeds that just loaded.</p>
+                <p>Ask for a place, a chart, or a page. The result opens on the map, not in this panel.</p>
                 <div className="mt-3 flex flex-col gap-2">
                   {[
-                    "Which countries have the heaviest rain right now?",
-                    "What is the strongest earthquake on the map?",
-                    "Anything inside my alert radius?",
+                    "Show me a map of Montreal, QC with live radar",
+                    "Show a radar view of the clouds",
+                    "Chart the live country scores",
                   ].map((prompt) => (
                     <button key={prompt} type="button" className="chip h-auto justify-start px-3 py-2 text-left" onClick={() => void send(prompt, "chat")}>
                       {prompt}
@@ -164,6 +204,11 @@ export function CopilotDock({ context, headlines, spaceWeather, countries, metri
               >
                 {turn.model ? <p className="mb-1 text-xs text-muted">{turn.model}</p> : null}
                 <p className="whitespace-pre-wrap">{turn.content}</p>
+                {turn.sources && turn.sources.length > 0 ? (
+                  <button type="button" className="chip mt-2" onClick={() => openSourcesPage("Sources", turn.sources || [])}>
+                    Web sources
+                  </button>
+                ) : null}
               </article>
             ))}
             {busy ? <p className="text-sm text-muted">Reading the feeds…</p> : null}

@@ -1,11 +1,11 @@
 import { i as __toESM } from "../_runtime.mjs";
 import { a as require_react, i as require_jsx_runtime, n as QueryClientProvider, r as useQueryClient, t as useQuery } from "../_libs/react+tanstack__react-query.mjs";
 import { n as TSS_SERVER_FUNCTION, r as getServerFnById, t as createServerFn } from "./ssr.mjs";
-import { a as Plus, c as LocateFixed, d as ArrowLeft, i as RefreshCw, l as Layers, o as Minus, r as Settings, s as MessageSquare, t as X, u as Crosshair } from "../_libs/lucide-react.mjs";
-import { n as APP_TITLE } from "./router-BJYY78dI.mjs";
+import { a as Plus, c as MessageSquare, d as Layers, f as Globe, g as ArrowLeft, h as ChartColumn, i as RefreshCw, l as Map$1, m as CloudRain, o as Pin, p as Crosshair, r as Settings, s as Minus, t as X, u as LocateFixed } from "../_libs/lucide-react.mjs";
+import { n as APP_TITLE } from "./router-CnW5XrN-.mjs";
 import { t as QueryClient } from "../_libs/tanstack__query-core.mjs";
 import { n as create, t as persist } from "../_libs/zustand.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/routes-CxuWRfRy.js
+//#region node_modules/.nitro/vite/services/ssr/assets/routes-CmNxztEY.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var createSsrRpc = (functionId) => {
@@ -60,6 +60,27 @@ var askAnalyst = createServerFn({ method: "POST" }).validator((input) => {
 		})).filter((message) => message.content)
 	};
 }).handler(createSsrRpc("c38c8e9e18bd233369150c48d6ed2e252e6e7c9f08b0419c964ca455e68461f8"));
+var openDeskView = createServerFn({ method: "POST" }).validator((input) => {
+	const bars = (Array.isArray(input?.bars) ? input.bars : []).slice(0, 8).map((bar) => ({
+		label: cleanKey(bar?.label, 40),
+		value: Number(bar?.value)
+	})).filter((bar) => bar.label && Number.isFinite(bar.value));
+	const lat = Number(input?.centerLat);
+	const lon = Number(input?.centerLon);
+	return {
+		question: cleanKey(input?.question, 400),
+		place: cleanKey(input?.place, 120) || null,
+		wantRadar: input?.wantRadar === true,
+		wantClouds: input?.wantClouds === true,
+		wantRain: input?.wantRain === true,
+		wantChart: input?.wantChart === true,
+		wantWeb: input?.wantWeb === true,
+		bars,
+		unit: cleanKey(input?.unit, 40),
+		centerLat: Number.isFinite(lat) && Math.abs(lat) <= 90 ? lat : null,
+		centerLon: Number.isFinite(lon) && Math.abs(lon) <= 180 ? lon : null
+	};
+}).handler(createSsrRpc("b981a0b191d0a2ad9b5ebc9fd77a261776544e08991b69d93b27d77c12c495b7"));
 function ago(iso) {
 	const t = Date.parse(iso);
 	if (!Number.isFinite(t)) return "";
@@ -514,6 +535,150 @@ var useAtlas = create()(persist((set) => ({
 		};
 	}
 }));
+function cleanPlace(raw) {
+	const cleaned = raw.split(/\b(?:of the|using|with live|showing)\b/i)[0].replace(/[?.!]+$/g, "").trim();
+	if (!cleaned || /^(the\s+)?(clouds?|rain|rains|radar|doppler|weather|sky)$/i.test(cleaned)) return null;
+	return cleaned.slice(0, 120);
+}
+function readIntent(text) {
+	const q = text.replace(/\s+/g, " ").trim();
+	const clouds = /\b(clouds?|satellite)\b/i.test(q);
+	const rainWord = /\b(doppler|radar|rain)\b/i.test(q);
+	const chart = /\b(chart|charts|graph|stats|statistics|plot)\b/i.test(q);
+	const web = /\b(web ?search|search the web|look up|webpage|web page|article|wikipedia)\b/i.test(q);
+	const mapOf = q.match(/\bmap of\s+(.+)/i);
+	const weatherIn = q.match(/\bweather\s+(?:in|for|at|around|over|near)\s+(.+)/i);
+	const radarOf = q.match(/\bradar\s+(?:of|over|for|in|around|near)\s+(.+)/i);
+	const place = cleanPlace(mapOf?.[1] || weatherIn?.[1] || radarOf?.[1] || "");
+	const rain = rainWord || !!place && !clouds;
+	const radar = rain || clouds || !!place;
+	return {
+		visual: radar || chart || web || !!place,
+		radar,
+		clouds,
+		rain,
+		place,
+		chart,
+		web
+	};
+}
+function escapeHtml(value) {
+	const amp = "&amp;";
+	const lt = "&lt;";
+	const gt = "&gt;";
+	const quot = "&quot;";
+	return value.replace(/[&<>"]/g, (ch) => ch === "&" ? amp : ch === "<" ? lt : ch === ">" ? gt : quot);
+}
+function openSourcesPage(title, links) {
+	const page = window.open("", "_blank", "noopener,noreferrer");
+	if (!page) return;
+	const rows = links.map((link) => `<li><a href="${escapeHtml(link.url)}" target="_blank" rel="noreferrer">${escapeHtml(link.label)}</a><div>${escapeHtml(link.url)}</div></li>`).join("");
+	page.document.write(`<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>${escapeHtml(title)} sources</title>
+  <style>
+    body { margin: 2rem; font: 16px/1.45 "IBM Plex Sans", sans-serif; background: #101820; color: #e8eef6; }
+    a { color: #3ec6ff; }
+    li { margin: 0.8rem 0; }
+    div { color: #8ea0b3; font-size: 13px; word-break: break-all; }
+  </style>
+</head>
+<body>
+  <h1>${escapeHtml(title)}</h1>
+  <p>Sources for this GWN window. The map stays open in the other tab.</p>
+  <ul>${rows || "<li>No links were attached.</li>"}</ul>
+</body>
+</html>`);
+	page.document.close();
+}
+function spot(index) {
+	const width = typeof window === "undefined" ? 1280 : window.innerWidth;
+	return {
+		x: Math.max(12, width - 860 - index * 18),
+		y: 88 + index % 5 * 22
+	};
+}
+var useDesk = create()(persist((set, get) => ({
+	windows: [],
+	widget: {
+		x: 280,
+		y: 150
+	},
+	z: 1,
+	open: (draft) => {
+		const existing = get().windows.find((item) => item.kind === draft.kind && item.title === draft.title);
+		if (existing) {
+			set((state) => ({
+				z: state.z + 1,
+				windows: state.windows.map((item) => item.id === existing.id ? {
+					...item,
+					...draft,
+					id: item.id,
+					minimized: false,
+					z: state.z + 1
+				} : item)
+			}));
+			return;
+		}
+		const at = spot(get().windows.length);
+		const z = get().z + 1;
+		const next = {
+			...draft,
+			id: crypto.randomUUID(),
+			x: at.x,
+			y: at.y,
+			z,
+			minimized: false,
+			pinned: false
+		};
+		set((state) => ({
+			z,
+			windows: [...state.windows, next]
+		}));
+	},
+	close: (id) => set((state) => ({ windows: state.windows.filter((item) => item.id !== id) })),
+	minimize: (id) => set((state) => ({ windows: state.windows.map((item) => item.id === id ? {
+		...item,
+		minimized: true
+	} : item) })),
+	restore: (id) => set((state) => ({
+		z: state.z + 1,
+		windows: state.windows.map((item) => item.id === id ? {
+			...item,
+			minimized: false,
+			z: state.z + 1
+		} : item)
+	})),
+	togglePin: (id) => set((state) => ({ windows: state.windows.map((item) => item.id === id ? {
+		...item,
+		pinned: !item.pinned
+	} : item) })),
+	focus: (id) => set((state) => ({
+		z: state.z + 1,
+		windows: state.windows.map((item) => item.id === id ? {
+			...item,
+			z: state.z + 1
+		} : item)
+	})),
+	move: (id, x, y) => set((state) => ({ windows: state.windows.map((item) => item.id === id ? {
+		...item,
+		x,
+		y
+	} : item) })),
+	moveWidget: (x, y) => set({ widget: {
+		x,
+		y
+	} })
+}), {
+	name: "gwn-desk",
+	skipHydration: true,
+	partialize: (state) => ({
+		widget: state.widget,
+		windows: state.windows.filter((item) => item.pinned)
+	})
+}));
 function CopilotDock({ context, headlines, spaceWeather, countries, metric }) {
 	const minimaxKey = useAtlas((s) => s.prefs.minimaxKey);
 	const pending = useAtlas((s) => s.pendingPrompt);
@@ -550,7 +715,25 @@ function CopilotDock({ context, headlines, spaceWeather, countries, metric }) {
 		if (mode === "chat") setTurns(history);
 		setDraft("");
 		try {
-			const result = await askAnalyst({ data: {
+			const intent = mode === "chat" ? readIntent(content) : null;
+			const here = useAtlas.getState().location;
+			const deskJob = intent?.visual ? openDeskView({ data: {
+				question: content,
+				place: intent.place,
+				wantRadar: intent.radar,
+				wantClouds: intent.clouds,
+				wantRain: intent.rain,
+				wantChart: intent.chart,
+				wantWeb: intent.web,
+				unit: metric,
+				centerLat: here?.lat ?? null,
+				centerLon: here?.lon ?? null,
+				bars: intent.chart ? [...countries].sort((a, b) => b.score - a.score).slice(0, 8).map((country) => ({
+					label: country.name,
+					value: country.score
+				})) : []
+			} }).catch(() => null) : Promise.resolve(null);
+			const [result, desk] = await Promise.all([askAnalyst({ data: {
 				minimaxKey,
 				context: contextRef.current,
 				mode,
@@ -558,9 +741,17 @@ function CopilotDock({ context, headlines, spaceWeather, countries, metric }) {
 					role: turn.role,
 					content: turn.content
 				}))
-			} });
+			} }), deskJob]);
+			const sources = desk?.windows[0]?.sources;
+			if (desk) for (const view of desk.windows) useDesk.getState().open(view);
+			const opened = desk?.note ? `\n\n${desk.note}` : "";
 			if (!result.ok) {
 				setError(result.error);
+				if (opened) setTurns((current) => [...current, {
+					role: "assistant",
+					content: desk?.note || "",
+					sources
+				}]);
 				return;
 			}
 			if (mode === "refine") {
@@ -593,8 +784,9 @@ function CopilotDock({ context, headlines, spaceWeather, countries, metric }) {
 					content: lead
 				}], {
 					role: "assistant",
-					content: result.text,
-					model: result.model
+					content: `${result.text}${opened}`,
+					model: result.model,
+					sources
 				}];
 			});
 		} catch (err) {
@@ -667,12 +859,12 @@ function CopilotDock({ context, headlines, spaceWeather, countries, metric }) {
 			children: [
 				turns.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 					className: "text-sm text-muted",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: "Ask about the map. Answers stay inside the feeds that just loaded." }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: "Ask for a place, a chart, or a page. The result opens on the map, not in this panel." }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 						className: "mt-3 flex flex-col gap-2",
 						children: [
-							"Which countries have the heaviest rain right now?",
-							"What is the strongest earthquake on the map?",
-							"Anything inside my alert radius?"
+							"Show me a map of Montreal, QC with live radar",
+							"Show a radar view of the clouds",
+							"Chart the live country scores"
 						].map((prompt) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 							type: "button",
 							className: "chip h-auto justify-start px-3 py-2 text-left",
@@ -683,13 +875,22 @@ function CopilotDock({ context, headlines, spaceWeather, countries, metric }) {
 				}) : null,
 				turns.map((turn, index) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", {
 					className: turn.role === "user" ? "self-end max-w-[90%] rounded-2xl bg-amber px-3 py-2 text-sm text-bg" : "max-w-[95%] rounded-2xl border border-line bg-panel-2 px-3 py-2 text-sm",
-					children: [turn.model ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-						className: "mb-1 text-xs text-muted",
-						children: turn.model
-					}) : null, /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-						className: "whitespace-pre-wrap",
-						children: turn.content
-					})]
+					children: [
+						turn.model ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "mb-1 text-xs text-muted",
+							children: turn.model
+						}) : null,
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "whitespace-pre-wrap",
+							children: turn.content
+						}),
+						turn.sources && turn.sources.length > 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+							type: "button",
+							className: "chip mt-2",
+							onClick: () => openSourcesPage("Sources", turn.sources || []),
+							children: "Web sources"
+						}) : null
+					]
 				}, `${turn.role}-${index}`)),
 				busy ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 					className: "text-sm text-muted",
@@ -744,6 +945,404 @@ function CopilotDock({ context, headlines, spaceWeather, countries, metric }) {
 				})]
 			})]
 		})] })]
+	});
+}
+function rainTiles(radar, frame) {
+	if (!radar?.frames.length) return null;
+	const path = radar.frames[frame % radar.frames.length]?.path;
+	if (!path) return null;
+	return `${radar.host}${path}/256/{z}/{x}/{y}/2/1_1.png`;
+}
+function cloudTiles(lon) {
+	const day = (/* @__PURE__ */ new Date(Date.now() - 108e5)).toISOString().slice(0, 10);
+	return `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/${lon != null && lon < -100 ? "GOES-West_ABI_GeoColor" : "GOES-East_ABI_GeoColor"}/default/${day}/GoogleMapsCompatible_Level7/{z}/{y}/{x}.jpg`;
+}
+function circle(lon, lat, km) {
+	const ring = [];
+	for (let i = 0; i <= 64; i++) {
+		const bearing = i / 64 * Math.PI * 2;
+		const lat2 = lat + km / 110.574 * Math.cos(bearing);
+		const lon2 = lon + km / (111.32 * Math.cos(lat * Math.PI / 180)) * Math.sin(bearing);
+		ring.push([lon2, lat2]);
+	}
+	return ring;
+}
+function drag(start, onMove) {
+	return (event) => {
+		if (event.target.closest("button")) return;
+		event.preventDefault();
+		const ox = event.clientX;
+		const oy = event.clientY;
+		const move = (ev) => {
+			const width = window.innerWidth;
+			const height = window.innerHeight;
+			onMove(Math.min(width - 48, Math.max(8, start.x + ev.clientX - ox)), Math.min(height - 48, Math.max(64, start.y + ev.clientY - oy)));
+		};
+		const up = () => {
+			window.removeEventListener("pointermove", move);
+			window.removeEventListener("pointerup", up);
+		};
+		window.addEventListener("pointermove", move);
+		window.addEventListener("pointerup", up);
+	};
+}
+function MapPane({ item, radarUrl }) {
+	const node = (0, import_react.useRef)(null);
+	const mapRef = (0, import_react.useRef)(null);
+	const rainRef = (0, import_react.useRef)(radarUrl);
+	const rainOn = (0, import_react.useRef)(item.showRain);
+	const cloudOn = (0, import_react.useRef)(item.showClouds);
+	rainRef.current = radarUrl;
+	rainOn.current = item.showRain;
+	cloudOn.current = item.showClouds;
+	(0, import_react.useEffect)(() => {
+		if (!node.current) return;
+		let dead = false;
+		let map = null;
+		(async () => {
+			const maplibregl = await import("../_libs/maplibre-gl.mjs").then((n) => n.t);
+			const workerMod = await import("./maplibre-gl-worker-CQWuOQzD.mjs");
+			if (dead || !node.current) return;
+			maplibregl.setWorkerUrl(workerMod.default);
+			const lat = item.lat ?? 20;
+			const lon = item.lon ?? 0;
+			map = new maplibregl.Map({
+				container: node.current,
+				center: [lon, lat],
+				zoom: item.radiusKm ? 7 : 1.7,
+				attributionControl: false,
+				style: {
+					version: 8,
+					sources: { osm: {
+						type: "raster",
+						tiles: ["https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png"],
+						tileSize: 256,
+						attribution: "© OpenStreetMap © CARTO"
+					} },
+					layers: [{
+						id: "osm",
+						type: "raster",
+						source: "osm"
+					}]
+				}
+			});
+			map.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-left");
+			map.on("load", () => {
+				if (!map) return;
+				if (item.lat != null && item.lon != null && item.radiusKm) {
+					const ring = circle(item.lon, item.lat, item.radiusKm);
+					map.addSource("ring", {
+						type: "geojson",
+						data: {
+							type: "Feature",
+							properties: {},
+							geometry: {
+								type: "Polygon",
+								coordinates: [ring]
+							}
+						}
+					});
+					map.addLayer({
+						id: "ring-fill",
+						type: "fill",
+						source: "ring",
+						paint: {
+							"fill-color": "#3ec6ff",
+							"fill-opacity": .08
+						}
+					});
+					map.addLayer({
+						id: "ring-line",
+						type: "line",
+						source: "ring",
+						paint: {
+							"line-color": "#3ec6ff",
+							"line-width": 1.5
+						}
+					});
+					const lons = ring.map((point) => point[0]);
+					const lats = ring.map((point) => point[1]);
+					map.fitBounds([[Math.min(...lons), Math.min(...lats)], [Math.max(...lons), Math.max(...lats)]], {
+						padding: 18,
+						animate: false
+					});
+				}
+				map.resize();
+				syncRaster$1(map, "rain", rainRef.current, rainOn.current);
+				syncRaster$1(map, "clouds", cloudOn.current ? cloudTiles(item.lon) : null, cloudOn.current);
+			});
+			mapRef.current = map;
+		})();
+		return () => {
+			dead = true;
+			map?.remove();
+			mapRef.current = null;
+		};
+	}, [
+		item.id,
+		item.lat,
+		item.lon,
+		item.radiusKm
+	]);
+	(0, import_react.useEffect)(() => {
+		const map = mapRef.current;
+		if (!map?.isStyleLoaded()) return;
+		syncRaster$1(map, "rain", radarUrl, item.showRain);
+		syncRaster$1(map, "clouds", item.showClouds ? cloudTiles(item.lon) : null, item.showClouds);
+	});
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+		ref: node,
+		className: "absolute inset-0"
+	});
+}
+function syncRaster$1(map, id, tiles, visible) {
+	if (!map.getSource(id) && tiles) {
+		map.addSource(id, {
+			type: "raster",
+			tiles: [tiles],
+			tileSize: 256
+		});
+		map.addLayer({
+			id,
+			type: "raster",
+			source: id,
+			paint: { "raster-opacity": id === "clouds" ? .72 : .62 }
+		});
+	}
+	const source = map.getSource(id);
+	if (source?.setTiles && tiles) source.setTiles([tiles]);
+	if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", visible && tiles ? "visible" : "none");
+}
+function ChartPane({ item }) {
+	const max = Math.max(...item.bars.map((bar) => bar.value), 1);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		className: "flex h-full flex-col gap-2 overflow-auto p-3",
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+			className: "text-xs text-muted",
+			children: item.summary
+		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("svg", {
+			viewBox: `0 0 320 ${item.bars.length * 28 + 8}`,
+			className: "w-full",
+			role: "img",
+			"aria-label": item.title,
+			children: item.bars.map((bar, index) => {
+				const width = Math.max(2, bar.value / max * 210);
+				const y = 8 + index * 28;
+				return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("g", { children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("text", {
+						x: "0",
+						y: y + 12,
+						fill: "#e8eef6",
+						fontSize: "11",
+						children: bar.label.slice(0, 16)
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
+						x: "104",
+						y,
+						width,
+						height: "16",
+						rx: "4",
+						fill: "#f5c518"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("text", {
+						x: 110 + width,
+						y: y + 12,
+						fill: "#8ea0b3",
+						fontSize: "11",
+						children: Math.round(bar.value)
+					})
+				] }, bar.label);
+			})
+		})]
+	});
+}
+function WebPane({ item }) {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", {
+		className: "h-full overflow-auto bg-panel-2 px-4 py-3 text-sm",
+		children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+				className: "text-xs tracking-wide text-amber",
+				children: "Page"
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+				className: "mt-1 font-display text-2xl leading-none",
+				children: item.title
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+				className: "mt-3 whitespace-pre-wrap",
+				children: item.summary
+			}),
+			item.pageUrl ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("a", {
+				href: item.pageUrl,
+				target: "_blank",
+				rel: "noreferrer",
+				className: "mt-3 inline-block text-cyan hover:underline",
+				children: "Open the full page"
+			}) : null
+		]
+	});
+}
+function WindowCard({ item, radarUrl }) {
+	const focus = useDesk((s) => s.focus);
+	const close = useDesk((s) => s.close);
+	const minimize = useDesk((s) => s.minimize);
+	const togglePin = useDesk((s) => s.togglePin);
+	const move = useDesk((s) => s.move);
+	const weather = item.weather ? `${weatherText(item.weather.code)}${item.weather.tempC != null ? ` · ${Math.round(item.weather.tempC)}°C` : ""}${item.weather.rain != null ? ` · rain ${item.weather.rain} mm` : ""}` : null;
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+		className: "pointer-events-auto absolute flex w-[min(440px,calc(100vw-1rem))] flex-col overflow-hidden rounded-2xl border border-line bg-panel/95 shadow-2xl backdrop-blur-md",
+		style: {
+			left: item.x,
+			top: item.y,
+			zIndex: 10 + item.z,
+			height: 360
+		},
+		onPointerDown: () => focus(item.id),
+		children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("header", {
+				className: "flex cursor-grab items-center gap-2 border-b border-line px-2 py-2 active:cursor-grabbing",
+				onPointerDown: drag({
+					x: item.x,
+					y: item.y
+				}, (x, y) => move(item.id, x, y)),
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "min-w-0 flex-1 truncate font-display text-lg leading-none tracking-wide",
+						children: item.title
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+						type: "button",
+						className: "icon-btn",
+						"aria-label": item.pinned ? "Unpin window" : "Pin window",
+						onClick: () => togglePin(item.id),
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pin, { className: item.pinned ? "size-4 text-amber" : "size-4" })
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+						type: "button",
+						className: "icon-btn",
+						"aria-label": "Minimize window",
+						onClick: () => minimize(item.id),
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Minus, { className: "size-4" })
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+						type: "button",
+						className: "icon-btn",
+						"aria-label": "Close window",
+						onClick: () => close(item.id),
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X, { className: "size-4" })
+					})
+				]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "relative min-h-0 flex-1 bg-bg",
+				children: [
+					item.kind === "chart" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChartPane, { item }) : null,
+					item.kind === "web" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(WebPane, { item }) : null,
+					item.kind === "radar" || item.kind === "place" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(MapPane, {
+						item,
+						radarUrl
+					}) : null
+				]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("footer", {
+				className: "flex items-center justify-between gap-2 border-t border-line px-2 py-1.5",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+					className: "truncate text-xs text-muted",
+					children: [item.radiusKm ? `${item.radiusKm} km · ` : "", weather || item.summary]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+					type: "button",
+					className: "chip shrink-0",
+					onClick: () => openSourcesPage(item.title, item.sources),
+					children: "Web sources"
+				})]
+			})
+		]
+	});
+}
+var KIND_ICON = {
+	radar: CloudRain,
+	place: Map$1,
+	chart: ChartColumn,
+	web: Globe
+};
+function Desk({ radar, frame }) {
+	const windows = useDesk((s) => s.windows);
+	const widget = useDesk((s) => s.widget);
+	const moveWidget = useDesk((s) => s.moveWidget);
+	const restore = useDesk((s) => s.restore);
+	const focus = useDesk((s) => s.focus);
+	const close = useDesk((s) => s.close);
+	const radarUrl = rainTiles(radar, frame);
+	(0, import_react.useEffect)(() => {
+		Promise.resolve(useDesk.persist.rehydrate());
+	}, []);
+	if (windows.length === 0) return null;
+	const open = windows.filter((item) => !item.minimized);
+	const minimized = windows.filter((item) => item.minimized);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		className: "pointer-events-none absolute inset-0",
+		children: [
+			open.map((item) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(WindowCard, {
+				item,
+				radarUrl
+			}, item.id)),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "pointer-events-auto absolute flex items-center gap-1 rounded-full border border-line bg-panel/95 p-1 shadow-lg",
+				style: {
+					left: widget.x,
+					top: widget.y,
+					zIndex: 80
+				},
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+					type: "button",
+					className: "relative grid size-9 cursor-grab place-items-center rounded-full bg-panel-2 active:cursor-grabbing",
+					"aria-label": "Move window tray",
+					onPointerDown: drag(widget, moveWidget),
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+						className: "font-display text-sm",
+						children: "G"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+						className: "absolute -right-1 -top-1 grid size-4 place-items-center rounded-full bg-amber text-[10px] font-semibold text-bg",
+						children: windows.length
+					})]
+				}), windows.map((item, index) => {
+					const Icon = KIND_ICON[item.kind];
+					return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+						type: "button",
+						className: "relative grid size-9 place-items-center rounded-full border border-line",
+						title: item.title,
+						"aria-label": item.title,
+						onClick: () => item.minimized ? restore(item.id) : focus(item.id),
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Icon, { className: "size-4" }),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+								className: "absolute -right-1 -top-1 grid size-4 place-items-center rounded-full bg-panel-2 text-[10px] text-cream",
+								children: index + 1
+							}),
+							item.pinned ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "absolute bottom-0.5 size-1.5 rounded-full bg-amber" }) : null
+						]
+					}, item.id);
+				})]
+			}),
+			minimized.length > 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				className: "pointer-events-auto absolute bottom-3 right-3 z-[70] flex max-w-[calc(100vw-1.5rem)] gap-2 overflow-x-auto lg:right-[22rem]",
+				children: minimized.map((item) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex shrink-0 items-center gap-1 rounded-full border border-line bg-panel/95 py-1 pl-3 pr-1",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+						type: "button",
+						className: "max-w-40 truncate text-sm",
+						onClick: () => restore(item.id),
+						children: item.title
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+						type: "button",
+						className: "icon-btn",
+						"aria-label": `Close ${item.title}`,
+						onClick: () => close(item.id),
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X, { className: "size-3.5" })
+					})]
+				}, item.id))
+			}) : null
+		]
 	});
 }
 var EMPTY = {
@@ -2324,6 +2923,10 @@ function AtlasInner() {
 				owmKey: prefs.owmKey,
 				radiusKm: prefs.radiusKm,
 				location
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Desk, {
+				radar: atlasQuery.data?.radar ?? null,
+				frame
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("header", {
 				className: "pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between gap-2 p-3",

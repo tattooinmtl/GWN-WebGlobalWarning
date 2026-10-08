@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import type { AnalystResult, AtlasPayload, OwmSample, PointForecast } from "./types";
+import type { DeskBar, DeskDraft } from "@/lib/desk/types";
 
 function cleanKey(value: unknown, max: number): string {
   if (typeof value !== "string") return "";
@@ -79,4 +80,46 @@ export const askAnalyst = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<AnalystResult> => {
     const { runAnalyst } = await import("./ai.server");
     return runAnalyst(data);
+  });
+
+export const openDeskView = createServerFn({ method: "POST" })
+  .validator((input: {
+    question?: string;
+    place?: string | null;
+    wantRadar?: boolean;
+    wantClouds?: boolean;
+    wantRain?: boolean;
+    wantChart?: boolean;
+    wantWeb?: boolean;
+    bars?: { label?: string; value?: number }[];
+    unit?: string;
+    centerLat?: number | null;
+    centerLon?: number | null;
+  }) => {
+    const bars: DeskBar[] = (Array.isArray(input?.bars) ? input.bars : [])
+      .slice(0, 8)
+      .map((bar) => ({
+        label: cleanKey(bar?.label, 40),
+        value: Number(bar?.value),
+      }))
+      .filter((bar) => bar.label && Number.isFinite(bar.value));
+    const lat = Number(input?.centerLat);
+    const lon = Number(input?.centerLon);
+    return {
+      question: cleanKey(input?.question, 400),
+      place: cleanKey(input?.place, 120) || null,
+      wantRadar: input?.wantRadar === true,
+      wantClouds: input?.wantClouds === true,
+      wantRain: input?.wantRain === true,
+      wantChart: input?.wantChart === true,
+      wantWeb: input?.wantWeb === true,
+      bars,
+      unit: cleanKey(input?.unit, 40),
+      centerLat: Number.isFinite(lat) && Math.abs(lat) <= 90 ? lat : null,
+      centerLon: Number.isFinite(lon) && Math.abs(lon) <= 180 ? lon : null,
+    };
+  })
+  .handler(async ({ data }): Promise<{ note: string; windows: DeskDraft[] }> => {
+    const { buildDesk } = await import("../desk/plan.server");
+    return buildDesk(data);
   });

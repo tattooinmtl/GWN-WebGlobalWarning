@@ -1,5 +1,5 @@
 import { n as TSS_SERVER_FUNCTION, t as createServerFn } from "./ssr.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/api-q-C4AyCw.js
+//#region node_modules/.nitro/vite/services/ssr/assets/api-Ct58xKM9.js
 var createServerRpc = (serverFnMeta, splitImportFn) => {
 	const url = "/_serverFn/" + serverFnMeta.id;
 	return Object.assign(splitImportFn, {
@@ -80,5 +80,34 @@ var askAnalyst = createServerFn({ method: "POST" }).validator((input) => {
 	const { runAnalyst } = await import("./ai.server-CBEQulbl.mjs");
 	return runAnalyst(data);
 });
+var openDeskView_createServerFn_handler = createServerRpc({
+	id: "b981a0b191d0a2ad9b5ebc9fd77a261776544e08991b69d93b27d77c12c495b7",
+	name: "openDeskView",
+	filename: "src/lib/disasters/api.ts"
+}, (opts) => openDeskView.__executeServer(opts));
+var openDeskView = createServerFn({ method: "POST" }).validator((input) => {
+	const bars = (Array.isArray(input?.bars) ? input.bars : []).slice(0, 8).map((bar) => ({
+		label: cleanKey(bar?.label, 40),
+		value: Number(bar?.value)
+	})).filter((bar) => bar.label && Number.isFinite(bar.value));
+	const lat = Number(input?.centerLat);
+	const lon = Number(input?.centerLon);
+	return {
+		question: cleanKey(input?.question, 400),
+		place: cleanKey(input?.place, 120) || null,
+		wantRadar: input?.wantRadar === true,
+		wantClouds: input?.wantClouds === true,
+		wantRain: input?.wantRain === true,
+		wantChart: input?.wantChart === true,
+		wantWeb: input?.wantWeb === true,
+		bars,
+		unit: cleanKey(input?.unit, 40),
+		centerLat: Number.isFinite(lat) && Math.abs(lat) <= 90 ? lat : null,
+		centerLon: Number.isFinite(lon) && Math.abs(lon) <= 180 ? lon : null
+	};
+}).handler(openDeskView_createServerFn_handler, async ({ data }) => {
+	const { buildDesk } = await import("./plan.server-BMlPKVK0.mjs");
+	return buildDesk(data);
+});
 //#endregion
-export { askAnalyst_createServerFn_handler, blendOpenWeather_createServerFn_handler, loadAtlas_createServerFn_handler, pointForecast_createServerFn_handler };
+export { askAnalyst_createServerFn_handler, blendOpenWeather_createServerFn_handler, loadAtlas_createServerFn_handler, openDeskView_createServerFn_handler, pointForecast_createServerFn_handler };

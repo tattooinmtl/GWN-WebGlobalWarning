@@ -22,6 +22,7 @@ import type { LayerPrefs } from "@/lib/atlas/store";
 import { mergeLayers, useAtlas } from "@/lib/atlas/store";
 import { APP_TITLE } from "@/lib/brand";
 import { CopilotDock } from "./CopilotDock";
+import { Desk } from "./Desk";
 import { HazardMap } from "./HazardMap";
 import { PlacesDock } from "./PlacesDock";
 import { SettingsForm } from "./SettingsForm";
@@ -305,6 +306,7 @@ function AtlasInner() {
         radiusKm={prefs.radiusKm}
         location={location}
       />
+      <Desk radar={atlasQuery.data?.radar ?? null} frame={frame} />
 
       <header className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between gap-2 p-3">
         <div className="pointer-events-auto flex items-center gap-2">
