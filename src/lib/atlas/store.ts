@@ -5,6 +5,7 @@ import type { Metric } from "@/lib/disasters/types";
 export type LayerPrefs = {
   choropleth: boolean;
   radar: boolean;
+  clouds: boolean;
   owmTiles: boolean;
   quakes: boolean;
   floods: boolean;
@@ -73,6 +74,7 @@ type AtlasState = {
 const defaultLayers: LayerPrefs = {
   choropleth: true,
   radar: true,
+  clouds: true,
   owmTiles: false,
   quakes: true,
   floods: true,

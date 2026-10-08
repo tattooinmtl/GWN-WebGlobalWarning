@@ -36,6 +36,7 @@ type Props = {
   events: AssignedEvent[];
   volcanoes: VolcanoCollection | null;
   radar: { host: string; frames: { time: number; path: string }[] } | null;
+  clouds: { time: string } | null;
   frame: number;
   layers: LayerPrefs;
   owmKey: string;
@@ -327,8 +328,31 @@ export function HazardMap(props: Props) {
   useEffect(() => {
     const map = mapRef.current;
     if (!ready || !map?.getLayer("countries-fill")) return;
+    syncRaster(
+      map,
+      "clouds-west",
+      "Clouds © NOAA/NASA GOES",
+      cloudsOn,
+      cloudTime ? goesTiles("GOES-West_ABI_GeoColor", cloudTime) : null,
+      0.92,
+      7,
+    );
+    syncRaster(
+      map,
+      "clouds-east",
+      "",
+      cloudsOn,
+      cloudTime ? goesTiles("GOES-East_ABI_GeoColor", cloudTime) : null,
+      0.92,
+      7,
+    );
     syncRaster(map, "radar", "Radar © RainViewer", props.layers.radar, radarUrl(props.radar, props.frame), 0.55);
-  }, [ready, props.radar, props.frame, props.layers.radar]);
+    if (map.getLayer("radar") && map.getLayer("clouds-east")) map.moveLayer("clouds-east", "radar");
+    if (map.getLayer("clouds-east") && map.getLayer("clouds-west")) map.moveLayer("clouds-west", "clouds-east");
+    if (map.getLayer("countries-fill") && props.layers.choropleth) {
+      map.setPaintProperty("countries-fill", "fill-opacity", cloudsOn ? 0.22 : countryFillOpacity);
+    }
+  }, [ready, props.radar, props.frame, props.layers.radar, props.layers.clouds, props.layers.choropleth, props.clouds]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -776,6 +800,26 @@ function addBase(map: MlMap) {
   });
 }
 
+function goesTiles(layer: string, time: string): string[] {
+  return [
+    `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/${layer}/default/${time}/GoogleMapsCompatible_Level7/{z}/{y}/{x}.jpg`,
+  ];
+}
+
+const countryFillOpacity = [
+  "interpolate",
+  ["linear"],
+  ["coalesce", ["get", "score"], 0],
+  0,
+  0.18,
+  0.18,
+  0.45,
+  0.5,
+  0.62,
+  1,
+  0.82,
+] as const;
+
 function radarUrl(radar: { host: string; frames: { path: string }[] } | null, frame: number): string[] | null {
   if (!radar?.frames.length) return null;
   const path = radar.frames[frame % radar.frames.length]?.path;
@@ -783,13 +827,22 @@ function radarUrl(radar: { host: string; frames: { path: string }[] } | null, fr
   return [`${radar.host}${path}/256/{z}/{x}/{y}/2/1_1.png`];
 }
 
-function syncRaster(map: MlMap, id: string, attribution: string, show: boolean, tiles: string[] | null, opacity: number) {
+function syncRaster(
+  map: MlMap,
+  id: string,
+  attribution: string,
+  show: boolean,
+  tiles: string[] | null,
+  opacity: number,
+  maxzoom?: number,
+) {
   if (show && tiles) {
     if (!map.getSource(id)) {
-      map.addSource(id, { type: "raster", tiles, tileSize: 256, attribution });
+      map.addSource(id, { type: "raster", tiles, tileSize: 256, attribution, ...(maxzoom ? { maxzoom } : {}) });
       map.addLayer({ id, type: "raster", source: id, paint: { "raster-opacity": opacity } }, "countries-fill");
     } else {
       (map.getSource(id) as RasterTileSource).setTiles(tiles);
+      map.setPaintProperty(id, "raster-opacity", opacity);
       map.setLayoutProperty(id, "visibility", "visible");
     }
   } else if (map.getLayer(id)) {

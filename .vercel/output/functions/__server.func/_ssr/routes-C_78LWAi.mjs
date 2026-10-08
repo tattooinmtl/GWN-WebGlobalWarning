@@ -2,10 +2,10 @@ import { i as __toESM } from "../_runtime.mjs";
 import { a as require_react, i as require_jsx_runtime, n as QueryClientProvider, r as useQueryClient, t as useQuery } from "../_libs/react+tanstack__react-query.mjs";
 import { n as TSS_SERVER_FUNCTION, r as getServerFnById, t as createServerFn } from "./ssr.mjs";
 import { a as Plus, c as MessageSquare, d as Layers, f as Globe, g as ArrowLeft, h as ChartColumn, i as RefreshCw, l as Map$1, m as CloudRain, o as Pin, p as Crosshair, r as Settings, s as Minus, t as X, u as LocateFixed } from "../_libs/lucide-react.mjs";
-import { n as APP_TITLE } from "./router-BG7y88WT.mjs";
+import { n as APP_TITLE } from "./router-C8br2z56.mjs";
 import { t as QueryClient } from "../_libs/tanstack__query-core.mjs";
 import { n as create, t as persist } from "../_libs/zustand.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/routes-CL7mdL5T.js
+//#region node_modules/.nitro/vite/services/ssr/assets/routes-C_78LWAi.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var createSsrRpc = (functionId) => {
@@ -439,6 +439,7 @@ function parseLayerScores(text, countries) {
 var defaultLayers = {
 	choropleth: true,
 	radar: true,
+	clouds: true,
 	owmTiles: false,
 	quakes: true,
 	floods: true,
@@ -1646,12 +1647,20 @@ function HazardMap(props) {
 	(0, import_react.useEffect)(() => {
 		const map = mapRef.current;
 		if (!ready || !map?.getLayer("countries-fill")) return;
+		syncRaster(map, "clouds-west", "Clouds © NOAA/NASA GOES", cloudsOn, cloudTime ? goesTiles("GOES-West_ABI_GeoColor", cloudTime) : null, .92, 7);
+		syncRaster(map, "clouds-east", "", cloudsOn, cloudTime ? goesTiles("GOES-East_ABI_GeoColor", cloudTime) : null, .92, 7);
 		syncRaster(map, "radar", "Radar © RainViewer", props.layers.radar, radarUrl(props.radar, props.frame), .55);
+		if (map.getLayer("radar") && map.getLayer("clouds-east")) map.moveLayer("clouds-east", "radar");
+		if (map.getLayer("clouds-east") && map.getLayer("clouds-west")) map.moveLayer("clouds-west", "clouds-east");
+		if (map.getLayer("countries-fill") && props.layers.choropleth) map.setPaintProperty("countries-fill", "fill-opacity", cloudsOn ? .22 : countryFillOpacity);
 	}, [
 		ready,
 		props.radar,
 		props.frame,
-		props.layers.radar
+		props.layers.radar,
+		props.layers.clouds,
+		props.layers.choropleth,
+		props.clouds
 	]);
 	(0, import_react.useEffect)(() => {
 		const map = mapRef.current;
@@ -2275,20 +2284,41 @@ function addBase(map) {
 		}
 	});
 }
+function goesTiles(layer, time) {
+	return [`https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/${layer}/default/${time}/GoogleMapsCompatible_Level7/{z}/{y}/{x}.jpg`];
+}
+var countryFillOpacity = [
+	"interpolate",
+	["linear"],
+	[
+		"coalesce",
+		["get", "score"],
+		0
+	],
+	0,
+	.18,
+	.18,
+	.45,
+	.5,
+	.62,
+	1,
+	.82
+];
 function radarUrl(radar, frame) {
 	if (!radar?.frames.length) return null;
 	const path = radar.frames[frame % radar.frames.length]?.path;
 	if (!path) return null;
 	return [`${radar.host}${path}/256/{z}/{x}/{y}/2/1_1.png`];
 }
-function syncRaster(map, id, attribution, show, tiles, opacity) {
+function syncRaster(map, id, attribution, show, tiles, opacity, maxzoom) {
 	if (show && tiles) {
 		if (!map.getSource(id)) {
 			map.addSource(id, {
 				type: "raster",
 				tiles,
 				tileSize: 256,
-				attribution
+				attribution,
+				...maxzoom ? { maxzoom } : {}
 			});
 			map.addLayer({
 				id,
@@ -2298,6 +2328,7 @@ function syncRaster(map, id, attribution, show, tiles, opacity) {
 			}, "countries-fill");
 		} else {
 			map.getSource(id).setTiles(tiles);
+			map.setPaintProperty(id, "raster-opacity", opacity);
 			map.setLayoutProperty(id, "visibility", "visible");
 		}
 	} else if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", "none");
@@ -3022,6 +3053,7 @@ function AtlasInner() {
 				events: model?.events ?? [],
 				volcanoes: volcanoQuery.data ?? null,
 				radar: atlasQuery.data?.radar ?? null,
+				clouds: atlasQuery.data?.clouds ?? null,
 				frame,
 				layers,
 				owmKey: prefs.owmKey,
@@ -3253,21 +3285,29 @@ function AtlasInner() {
 						}) : null,
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 							className: "mt-2 flex items-center justify-between text-xs text-muted",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-								className: "flex gap-2",
-								children: [
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Key, { kind: "flood" }),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Key, { kind: "quake" }),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Key, { kind: "fire" }),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Key, { kind: "storm" })
-								]
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-								type: "button",
-								className: "chip h-8 px-2",
-								"data-on": radarPlay ? "true" : "false",
-								onClick: () => setRadarPlay((play) => !play),
-								children: ["Radar ", radarPlay ? "playing" : "paused"]
-							})]
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+									className: "flex gap-2",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Key, { kind: "flood" }),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Key, { kind: "quake" }),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Key, { kind: "fire" }),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Key, { kind: "storm" })
+									]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									className: "chip h-8 px-2",
+									"data-on": radarPlay ? "true" : "false",
+									onClick: () => setRadarPlay((play) => !play),
+									children: ["Radar ", radarPlay ? "playing" : "paused"]
+								}),
+								prefs.layers.clouds && atlasQuery.data?.clouds?.time ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
+									"Clouds ",
+									atlasQuery.data.clouds.time.slice(11, 16),
+									" UTC"
+								] }) : null
+							]
 						})
 					]
 				})
@@ -3295,6 +3335,11 @@ function AtlasInner() {
 								label: "Country color",
 								on: prefs.layers.choropleth,
 								onClick: () => toggleLayer("choropleth")
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(LayerRow, {
+								label: "Clouds",
+								on: prefs.layers.clouds,
+								onClick: () => toggleLayer("clouds")
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(LayerRow, {
 								label: "Rain radar",
@@ -3359,7 +3404,7 @@ function AtlasInner() {
 					}),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 						className: "mt-2 text-xs text-muted",
-						children: "Tiles use more of an OpenWeather quota than the 24-point blend."
+						children: "Clouds are NOAA/NASA GOES GeoColor, about 20–40 minutes behind the satellite. East covers Canada and the Atlantic. West covers the Pacific. Rain radar stays on top."
 					})
 				]
 			}) : null,

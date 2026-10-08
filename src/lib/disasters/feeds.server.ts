@@ -496,6 +496,41 @@ async function loadHeadlines(): Promise<{ value: Headline[]; count: number }> {
   return { value: unique.slice(0, 36), count: unique.length };
 }
 
+function goesStamp(ms: number): string {
+  const t = new Date(ms);
+  t.setUTCSeconds(0, 0);
+  t.setUTCMinutes(t.getUTCMinutes() - (t.getUTCMinutes() % 10));
+  return t.toISOString().slice(0, 19) + "Z";
+}
+
+async function goesFrame(time: string): Promise<boolean> {
+  const url = `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/GOES-East_ABI_GeoColor/default/${time}/GoogleMapsCompatible_Level7/2/1/1.jpg`;
+  try {
+    const res = await fetch(url, {
+      method: "HEAD",
+      signal: AbortSignal.timeout(8000),
+      headers: { "User-Agent": UA },
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+async function loadClouds(): Promise<{ value: { time: string }; count: number }> {
+  const lags = [30, 40, 50, 60, 80, 100, 140, 180];
+  const now = Date.now();
+  const hits = await Promise.all(
+    lags.map(async (lag) => {
+      const time = goesStamp(now - lag * 60_000);
+      return { lag, time, ok: await goesFrame(time) };
+    }),
+  );
+  const found = hits.filter((hit) => hit.ok).sort((a, b) => a.lag - b.lag)[0];
+  if (!found) throw new Error("no GOES frame");
+  return { value: { time: found.time }, count: 1 };
+}
+
 async function loadRadar(): Promise<{ value: AtlasPayload["radar"]; count: number }> {
   const json = JSON.parse(await getText("https://api.rainviewer.com/public/weather-maps.json", 10000)) as {
     host?: string;
@@ -714,7 +749,7 @@ async function loadCanadaFires(): Promise<{ value: DisasterEvent[]; count: numbe
 
 async function fetchAtlas(): Promise<AtlasPayload> {
   const sources: SourceStatus[] = [];
-  const [usgs, canadaQuakes, eonet, gdacs, nws, canadaAlerts, canadaFires, radar, headlines, precip] = await Promise.all([
+  const [usgs, canadaQuakes, eonet, gdacs, nws, canadaAlerts, canadaFires, radar, clouds, headlines, precip] = await Promise.all([
     timed(sources, "usgs", "USGS quakes", loadUsgs),
     timed(sources, "canquake", "Earthquakes Canada", loadCanadaQuakes),
     timed(sources, "eonet", "NASA EONET", async () => {
@@ -726,6 +761,7 @@ async function fetchAtlas(): Promise<AtlasPayload> {
     timed(sources, "eccc", "Canada alerts", loadCanadaAlerts),
     timed(sources, "cwfis", "Canada wildfires", loadCanadaFires),
     timed(sources, "radar", "RainViewer", loadRadar),
+    timed(sources, "goes", "GOES clouds", loadClouds),
     timed(sources, "wires", "Headlines", loadHeadlines),
     timed(sources, "meteo", "Open-Meteo rain", loadPrecip),
   ]);
@@ -752,6 +788,7 @@ async function fetchAtlas(): Promise<AtlasPayload> {
     events,
     precip: precip ?? [],
     radar: radar ?? null,
+    clouds: clouds ?? null,
     headlines: headlines ?? [],
     sources,
     spaceWeather: [],

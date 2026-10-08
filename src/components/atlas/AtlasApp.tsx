@@ -300,6 +300,7 @@ function AtlasInner() {
         events={model?.events ?? []}
         volcanoes={volcanoQuery.data ?? null}
         radar={atlasQuery.data?.radar ?? null}
+        clouds={atlasQuery.data?.clouds ?? null}
         frame={frame}
         layers={layers}
         owmKey={prefs.owmKey}
@@ -464,6 +465,9 @@ function AtlasInner() {
             <button type="button" className="chip h-8 px-2" data-on={radarPlay ? "true" : "false"} onClick={() => setRadarPlay((play) => !play)}>
               Radar {radarPlay ? "playing" : "paused"}
             </button>
+            {prefs.layers.clouds && atlasQuery.data?.clouds?.time ? (
+              <span>Clouds {atlasQuery.data.clouds.time.slice(11, 16)} UTC</span>
+            ) : null}
           </div>
         </div>
       </div>
@@ -478,6 +482,7 @@ function AtlasInner() {
           </div>
           <div className="flex flex-col gap-1">
             <LayerRow label="Country color" on={prefs.layers.choropleth} onClick={() => toggleLayer("choropleth")} />
+            <LayerRow label="Clouds" on={prefs.layers.clouds} onClick={() => toggleLayer("clouds")} />
             <LayerRow label="Rain radar" on={prefs.layers.radar} onClick={() => toggleLayer("radar")} />
             <LayerRow label="OpenWeather tiles" on={prefs.layers.owmTiles} onClick={() => toggleLayer("owmTiles")} />
             <LayerRow label="Quakes" on={prefs.layers.quakes} onClick={() => toggleLayer("quakes")} />
@@ -494,7 +499,9 @@ function AtlasInner() {
             Volcanoes are the Smithsonian Holocene catalog. Gold is erupting, orange erupted in the last 50 years, gray is dormant.
             Amber faults are active. Gray dashed faults last moved before the Holocene. GEM Global Active Faults.
           </p>
-          <p className="mt-2 text-xs text-muted">Tiles use more of an OpenWeather quota than the 24-point blend.</p>
+          <p className="mt-2 text-xs text-muted">
+            Clouds are NOAA/NASA GOES GeoColor, about 20–40 minutes behind the satellite. East covers Canada and the Atlantic. West covers the Pacific. Rain radar stays on top.
+          </p>
         </div>
       ) : null}
 

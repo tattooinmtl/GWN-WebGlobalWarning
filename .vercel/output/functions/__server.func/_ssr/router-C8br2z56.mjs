@@ -3,7 +3,7 @@ import { a as require_react, i as require_jsx_runtime } from "../_libs/react+tan
 import { _ as createFileRoute, d as Scripts, f as HeadContent, g as lazyRouteComponent, h as Outlet, m as createRouter, v as createRootRoute, y as useRouter } from "../_libs/@tanstack/react-router+[...].mjs";
 import { n as TriangleAlert } from "../_libs/lucide-react.mjs";
 import { a as union, i as string, n as number, r as object, t as literal } from "../_libs/zod.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-BG7y88WT.js
+//#region node_modules/.nitro/vite/services/ssr/assets/router-C8br2z56.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var __defProp = Object.defineProperty;
@@ -307,7 +307,7 @@ function PreviewHostBridge() {
 	}, [router]);
 	return null;
 }
-var APP_TITLE = `GWN - WebGlobalWarning V.0.0.5`;
+var APP_TITLE = `GWN - WebGlobalWarning V.0.0.6`;
 var styles_default = "/assets/styles-Ccg0Y1ul.css";
 var Route$1 = createRootRoute({
 	head: () => ({
@@ -361,7 +361,7 @@ var Route$1 = createRootRoute({
 		] })]
 	})
 });
-var $$splitComponentImporter = () => import("./routes-CL7mdL5T.mjs");
+var $$splitComponentImporter = () => import("./routes-C_78LWAi.mjs");
 var rootRouteChildren = { IndexRoute: createFileRoute("/")({ component: lazyRouteComponent($$splitComponentImporter, "component") }).update({
 	id: "/",
 	path: "/",

@@ -1,4 +1,4 @@
-//#region node_modules/.nitro/vite/services/ssr/assets/feeds.server-D7oZfJNS.js
+//#region node_modules/.nitro/vite/services/ssr/assets/feeds.server-DRJSydD4.js
 var SAMPLE_POINTS = [
 	{
 		id: "FJ",
@@ -1489,6 +1489,50 @@ async function loadHeadlines() {
 		count: unique.length
 	};
 }
+function goesStamp(ms) {
+	const t = new Date(ms);
+	t.setUTCSeconds(0, 0);
+	t.setUTCMinutes(t.getUTCMinutes() - t.getUTCMinutes() % 10);
+	return t.toISOString().slice(0, 19) + "Z";
+}
+async function goesFrame(time) {
+	const url = `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/GOES-East_ABI_GeoColor/default/${time}/GoogleMapsCompatible_Level7/2/1/1.jpg`;
+	try {
+		return (await fetch(url, {
+			method: "HEAD",
+			signal: AbortSignal.timeout(8e3),
+			headers: { "User-Agent": UA }
+		})).ok;
+	} catch {
+		return false;
+	}
+}
+async function loadClouds() {
+	const lags = [
+		30,
+		40,
+		50,
+		60,
+		80,
+		100,
+		140,
+		180
+	];
+	const now = Date.now();
+	const found = (await Promise.all(lags.map(async (lag) => {
+		const time = goesStamp(now - lag * 6e4);
+		return {
+			lag,
+			time,
+			ok: await goesFrame(time)
+		};
+	}))).filter((hit) => hit.ok).sort((a, b) => a.lag - b.lag)[0];
+	if (!found) throw new Error("no GOES frame");
+	return {
+		value: { time: found.time },
+		count: 1
+	};
+}
 async function loadRadar() {
 	const json = JSON.parse(await getText("https://api.rainviewer.com/public/weather-maps.json", 1e4));
 	if (!json.host || !json.radar?.past?.length) throw new Error("no radar frames");
@@ -1687,7 +1731,7 @@ async function loadCanadaFires() {
 }
 async function fetchAtlas() {
 	const sources = [];
-	const [usgs, canadaQuakes, eonet, gdacs, nws, canadaAlerts, canadaFires, radar, headlines, precip] = await Promise.all([
+	const [usgs, canadaQuakes, eonet, gdacs, nws, canadaAlerts, canadaFires, radar, clouds, headlines, precip] = await Promise.all([
 		timed(sources, "usgs", "USGS quakes", loadUsgs),
 		timed(sources, "canquake", "Earthquakes Canada", loadCanadaQuakes),
 		timed(sources, "eonet", "NASA EONET", async () => {
@@ -1702,6 +1746,7 @@ async function fetchAtlas() {
 		timed(sources, "eccc", "Canada alerts", loadCanadaAlerts),
 		timed(sources, "cwfis", "Canada wildfires", loadCanadaFires),
 		timed(sources, "radar", "RainViewer", loadRadar),
+		timed(sources, "goes", "GOES clouds", loadClouds),
 		timed(sources, "wires", "Headlines", loadHeadlines),
 		timed(sources, "meteo", "Open-Meteo rain", loadPrecip)
 	]);
@@ -1723,6 +1768,7 @@ async function fetchAtlas() {
 		events,
 		precip: precip ?? [],
 		radar: radar ?? null,
+		clouds: clouds ?? null,
 		headlines: headlines ?? [],
 		sources,
 		spaceWeather: [],

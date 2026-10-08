@@ -51,6 +51,7 @@ export type AtlasPayload = {
   events: DisasterEvent[];
   precip: { id: string; mm: number }[];
   radar: { host: string; frames: RadarFrame[] } | null;
+  clouds: { time: string } | null;
   headlines: Headline[];
   sources: SourceStatus[];
   spaceWeather: { title: string; time: string }[];
