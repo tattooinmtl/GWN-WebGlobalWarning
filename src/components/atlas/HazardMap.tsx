@@ -328,6 +328,8 @@ export function HazardMap(props: Props) {
   useEffect(() => {
     const map = mapRef.current;
     if (!ready || !map?.getLayer("countries-fill")) return;
+    const cloudTime = props.clouds?.time ?? "";
+    const cloudsOn = Boolean(props.layers.clouds && cloudTime);
     syncRaster(
       map,
       "clouds-west",

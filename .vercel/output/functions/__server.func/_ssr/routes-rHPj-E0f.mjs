@@ -2,10 +2,10 @@ import { i as __toESM } from "../_runtime.mjs";
 import { a as require_react, i as require_jsx_runtime, n as QueryClientProvider, r as useQueryClient, t as useQuery } from "../_libs/react+tanstack__react-query.mjs";
 import { n as TSS_SERVER_FUNCTION, r as getServerFnById, t as createServerFn } from "./ssr.mjs";
 import { a as Plus, c as MessageSquare, d as Layers, f as Globe, g as ArrowLeft, h as ChartColumn, i as RefreshCw, l as Map$1, m as CloudRain, o as Pin, p as Crosshair, r as Settings, s as Minus, t as X, u as LocateFixed } from "../_libs/lucide-react.mjs";
-import { n as APP_TITLE } from "./router-C8br2z56.mjs";
+import { n as APP_TITLE } from "./router-C8Ho8qwp.mjs";
 import { t as QueryClient } from "../_libs/tanstack__query-core.mjs";
 import { n as create, t as persist } from "../_libs/zustand.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/routes-C_78LWAi.js
+//#region node_modules/.nitro/vite/services/ssr/assets/routes-rHPj-E0f.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var createSsrRpc = (functionId) => {
@@ -1647,6 +1647,8 @@ function HazardMap(props) {
 	(0, import_react.useEffect)(() => {
 		const map = mapRef.current;
 		if (!ready || !map?.getLayer("countries-fill")) return;
+		const cloudTime = props.clouds?.time ?? "";
+		const cloudsOn = Boolean(props.layers.clouds && cloudTime);
 		syncRaster(map, "clouds-west", "Clouds © NOAA/NASA GOES", cloudsOn, cloudTime ? goesTiles("GOES-West_ABI_GeoColor", cloudTime) : null, .92, 7);
 		syncRaster(map, "clouds-east", "", cloudsOn, cloudTime ? goesTiles("GOES-East_ABI_GeoColor", cloudTime) : null, .92, 7);
 		syncRaster(map, "radar", "Radar © RainViewer", props.layers.radar, radarUrl(props.radar, props.frame), .55);
@@ -3302,7 +3304,7 @@ function AtlasInner() {
 									onClick: () => setRadarPlay((play) => !play),
 									children: ["Radar ", radarPlay ? "playing" : "paused"]
 								}),
-								prefs.layers.clouds && atlasQuery.data?.clouds?.time ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
+								layers.clouds && atlasQuery.data?.clouds?.time ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
 									"Clouds ",
 									atlasQuery.data.clouds.time.slice(11, 16),
 									" UTC"
@@ -3338,7 +3340,7 @@ function AtlasInner() {
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(LayerRow, {
 								label: "Clouds",
-								on: prefs.layers.clouds,
+								on: layers.clouds,
 								onClick: () => toggleLayer("clouds")
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(LayerRow, {

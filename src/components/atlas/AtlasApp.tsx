@@ -465,7 +465,7 @@ function AtlasInner() {
             <button type="button" className="chip h-8 px-2" data-on={radarPlay ? "true" : "false"} onClick={() => setRadarPlay((play) => !play)}>
               Radar {radarPlay ? "playing" : "paused"}
             </button>
-            {prefs.layers.clouds && atlasQuery.data?.clouds?.time ? (
+            {layers.clouds && atlasQuery.data?.clouds?.time ? (
               <span>Clouds {atlasQuery.data.clouds.time.slice(11, 16)} UTC</span>
             ) : null}
           </div>
@@ -482,7 +482,7 @@ function AtlasInner() {
           </div>
           <div className="flex flex-col gap-1">
             <LayerRow label="Country color" on={prefs.layers.choropleth} onClick={() => toggleLayer("choropleth")} />
-            <LayerRow label="Clouds" on={prefs.layers.clouds} onClick={() => toggleLayer("clouds")} />
+            <LayerRow label="Clouds" on={layers.clouds} onClick={() => toggleLayer("clouds")} />
             <LayerRow label="Rain radar" on={prefs.layers.radar} onClick={() => toggleLayer("radar")} />
             <LayerRow label="OpenWeather tiles" on={prefs.layers.owmTiles} onClick={() => toggleLayer("owmTiles")} />
             <LayerRow label="Quakes" on={prefs.layers.quakes} onClick={() => toggleLayer("quakes")} />
