@@ -2,10 +2,10 @@ import { i as __toESM } from "../_runtime.mjs";
 import { a as require_react, i as require_jsx_runtime, n as QueryClientProvider, r as useQueryClient, t as useQuery } from "../_libs/react+tanstack__react-query.mjs";
 import { n as TSS_SERVER_FUNCTION, r as getServerFnById, t as createServerFn } from "./ssr.mjs";
 import { a as Plus, c as MessageSquare, d as Layers, f as Globe, g as ArrowLeft, h as ChartColumn, i as RefreshCw, l as Map$1, m as CloudRain, o as Pin, p as Crosshair, r as Settings, s as Minus, t as X, u as LocateFixed } from "../_libs/lucide-react.mjs";
-import { n as APP_TITLE } from "./router-CnW5XrN-.mjs";
+import { n as APP_TITLE } from "./router-BG7y88WT.mjs";
 import { t as QueryClient } from "../_libs/tanstack__query-core.mjs";
 import { n as create, t as persist } from "../_libs/zustand.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/routes-CmNxztEY.js
+//#region node_modules/.nitro/vite/services/ssr/assets/routes-CL7mdL5T.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var createSsrRpc = (functionId) => {
@@ -569,28 +569,15 @@ function escapeHtml(value) {
 	const quot = "&quot;";
 	return value.replace(/[&<>"]/g, (ch) => ch === "&" ? amp : ch === "<" ? lt : ch === ">" ? gt : quot);
 }
+var NONE = "Sorry no info could be retrieved from web search.";
 function openSourcesPage(title, links) {
-	const page = window.open("", "_blank", "noopener,noreferrer");
+	const usable = links.filter((link) => link.label && link.url);
+	const body = usable.length ? `<ul>${usable.map((link) => `<li><a href="${escapeHtml(link.url)}">${escapeHtml(link.label)}</a><div>${escapeHtml(link.url)}</div></li>`).join("")}</ul>` : `<p>${NONE}</p>`;
+	const html = `<!doctype html><html><head><meta charset="utf-8"><title>${escapeHtml(title || "Sources")}</title><style>html,body{margin:0;background:#101820;color:#e8eef6}body{padding:2rem;font:16px/1.45 sans-serif}a{color:#3ec6ff}li{margin:.8rem 0}div{color:#8ea0b3;font-size:13px;word-break:break-all}</style></head><body><h1>${escapeHtml(title || "Sources")}</h1>${body}</body></html>`;
+	const page = window.open("", "_blank");
 	if (!page) return;
-	const rows = links.map((link) => `<li><a href="${escapeHtml(link.url)}" target="_blank" rel="noreferrer">${escapeHtml(link.label)}</a><div>${escapeHtml(link.url)}</div></li>`).join("");
-	page.document.write(`<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8" />
-  <title>${escapeHtml(title)} sources</title>
-  <style>
-    body { margin: 2rem; font: 16px/1.45 "IBM Plex Sans", sans-serif; background: #101820; color: #e8eef6; }
-    a { color: #3ec6ff; }
-    li { margin: 0.8rem 0; }
-    div { color: #8ea0b3; font-size: 13px; word-break: break-all; }
-  </style>
-</head>
-<body>
-  <h1>${escapeHtml(title)}</h1>
-  <p>Sources for this GWN window. The map stays open in the other tab.</p>
-  <ul>${rows || "<li>No links were attached.</li>"}</ul>
-</body>
-</html>`);
+	page.document.open();
+	page.document.write(html);
 	page.document.close();
 }
 function spot(index) {
@@ -1170,7 +1157,7 @@ function WebPane({ item }) {
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 				className: "mt-3 whitespace-pre-wrap",
-				children: item.summary
+				children: item.summary || "Sorry no info could be retrieved from web search."
 			}),
 			item.pageUrl ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("a", {
 				href: item.pageUrl,
@@ -1371,6 +1358,7 @@ function HazardMap(props) {
 	const wrapRef = (0, import_react.useRef)(null);
 	const mapRef = (0, import_react.useRef)(null);
 	const tipRef = (0, import_react.useRef)(null);
+	const cardRef = (0, import_react.useRef)(null);
 	const tagsRef = (0, import_react.useRef)(null);
 	const propsRef = (0, import_react.useRef)(props);
 	const hoverRef = (0, import_react.useRef)("");
@@ -1729,6 +1717,45 @@ function HazardMap(props) {
 		}, { hover: false });
 		hoverRef.current = "";
 	}
+	function hideCard() {
+		if (cardRef.current) cardRef.current.hidden = true;
+	}
+	function showCard(x, y, heading, lines) {
+		const card = cardRef.current;
+		const wrap = wrapRef.current;
+		if (!card || !wrap) return;
+		card.replaceChildren();
+		const head = document.createElement("div");
+		head.className = "flex items-start justify-between gap-2";
+		const title = document.createElement("p");
+		title.className = "font-medium leading-snug";
+		title.textContent = heading;
+		const close = document.createElement("button");
+		close.type = "button";
+		close.className = "shrink-0 text-muted";
+		close.textContent = "×";
+		close.setAttribute("aria-label", "Close info");
+		close.addEventListener("click", (event) => {
+			event.stopPropagation();
+			hideCard();
+		});
+		head.append(title, close);
+		card.append(head);
+		for (const line of lines) {
+			if (!line.value) continue;
+			const row = document.createElement("p");
+			row.className = "mt-1 text-xs leading-snug";
+			const name = document.createElement("span");
+			name.className = "text-muted";
+			name.textContent = line.label;
+			row.append(name, document.createTextNode(` ${line.value}`));
+			card.append(row);
+		}
+		const left = Math.max(8, Math.min(x + 14, wrap.clientWidth - 236));
+		const top = Math.max(8, Math.min(y + 14, wrap.clientHeight - 196));
+		card.style.transform = `translate(${left}px, ${top}px)`;
+		card.hidden = false;
+	}
 	function onClick(map, x, y) {
 		if (!map.getLayer("events-circle")) return;
 		const hitEvent = map.queryRenderedFeatures([x, y], { layers: ["events-circle"] })[0];
@@ -1736,17 +1763,86 @@ function HazardMap(props) {
 		const hitCountry = map.queryRenderedFeatures([x, y], { layers: ["countries-fill"] })[0];
 		const state = useAtlas.getState();
 		const narrow = window.matchMedia("(max-width: 767px)").matches;
-		if (hitVolcano && !hitEvent && hitVolcano.geometry.type === "Point") {
-			const [lon, lat] = hitVolcano.geometry.coordinates;
-			state.requestFly(lon, lat, 5.2);
-		}
 		if (hitEvent) {
+			const event = propsRef.current.events.find((item) => item.id === String(hitEvent.properties?.id ?? ""));
 			state.setSelectedEventId(String(hitEvent.properties?.id ?? ""));
 			const iso = String(hitEvent.properties?.countryId ?? "");
 			if (iso) state.setSelectedIso(iso);
+			if (event) showCard(x, y, event.place || event.title, [
+				{
+					label: "Type",
+					value: KIND_LABEL[event.kind]
+				},
+				{
+					label: "Magnitude",
+					value: event.mag != null ? String(event.mag) : ""
+				},
+				{
+					label: "Alert",
+					value: event.alert
+				},
+				{
+					label: "Source",
+					value: event.source
+				},
+				{
+					label: "When",
+					value: ago(event.time)
+				},
+				{
+					label: "Where",
+					value: event.countryName || ""
+				}
+			]);
 			if (narrow) state.setSheet("places");
 			return;
 		}
+		if (hitVolcano) {
+			const volcano = hitVolcano.properties ?? {};
+			const year = volcano.year == null || volcano.year === "" ? null : Number(volcano.year);
+			const when = year == null || Number.isNaN(year) ? "undated" : year < 0 ? `${Math.abs(year)} BCE` : String(year);
+			showCard(x, y, String(volcano.name || "Volcano"), [
+				{
+					label: "Type",
+					value: String(volcano.kind || volcano.status || "Volcano")
+				},
+				{
+					label: "Status",
+					value: String(volcano.status || "")
+				},
+				{
+					label: "Location",
+					value: String(volcano.country || "")
+				},
+				{
+					label: "Last eruption",
+					value: when
+				},
+				{
+					label: "Elevation",
+					value: volcano.elev ? `${volcano.elev} m` : ""
+				}
+			]);
+			if (hitVolcano.geometry.type === "Point") {
+				const [lon, lat] = hitVolcano.geometry.coordinates;
+				state.requestFly(lon, lat, 5.2);
+			}
+			return;
+		}
+		const hitFault = map.getLayer("faults-active") && map.getLayer("faults-dormant") ? map.queryRenderedFeatures([[x - 6, y - 6], [x + 6, y + 6]], { layers: ["faults-active", "faults-dormant"] })[0] : void 0;
+		if (hitFault) {
+			const fault = hitFault.properties ?? {};
+			const active = fault.c === "a";
+			showCard(x, y, String(fault.n || "Unnamed fault"), [{
+				label: "Type",
+				value: active ? "Active fault" : "Dormant fault"
+			}, {
+				label: "Style",
+				value: String(fault.s || "")
+			}]);
+			return;
+		}
+		hideCard();
 		if (hitCountry) {
 			state.setSelectedIso(String(hitCountry.id ?? hitCountry.properties?.id ?? ""));
 			state.setSelectedEventId(null);
@@ -1800,14 +1896,22 @@ function HazardMap(props) {
 		},
 		role: "application",
 		"aria-label": "World hazard map",
-		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-			ref: tagsRef,
-			className: "pointer-events-none absolute inset-0 z-10 [&>button]:pointer-events-auto"
-		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-			ref: tipRef,
-			hidden: true,
-			className: "pointer-events-none absolute left-0 top-0 z-20 max-w-64 rounded-lg border border-line bg-panel px-3 py-2 text-sm text-cream shadow-lg"
-		})]
+		children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				ref: tagsRef,
+				className: "pointer-events-none absolute inset-0 z-10 [&>button]:pointer-events-auto"
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				ref: cardRef,
+				hidden: true,
+				className: "absolute left-0 top-0 z-30 w-56 rounded-lg border border-line bg-panel px-3 py-2 text-sm text-cream shadow-lg"
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				ref: tipRef,
+				hidden: true,
+				className: "pointer-events-none absolute left-0 top-0 z-20 max-w-64 rounded-lg border border-line bg-panel px-3 py-2 text-sm text-cream shadow-lg"
+			})
+		]
 	});
 }
 function addBase(map) {

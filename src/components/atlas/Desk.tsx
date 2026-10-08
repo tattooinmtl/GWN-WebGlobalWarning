@@ -200,7 +200,7 @@ function WebPane({ item }: { item: DeskWindow }) {
     <article className="h-full overflow-auto bg-panel-2 px-4 py-3 text-sm">
       <p className="text-xs tracking-wide text-amber">Page</p>
       <h3 className="mt-1 font-display text-2xl leading-none">{item.title}</h3>
-      <p className="mt-3 whitespace-pre-wrap">{item.summary}</p>
+      <p className="mt-3 whitespace-pre-wrap">{item.summary || "Sorry no info could be retrieved from web search."}</p>
       {item.pageUrl ? (
         <a href={item.pageUrl} target="_blank" rel="noreferrer" className="mt-3 inline-block text-cyan hover:underline">
           Open the full page

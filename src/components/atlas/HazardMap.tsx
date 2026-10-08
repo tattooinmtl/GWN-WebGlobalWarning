@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import type { FilterSpecification, GeoJSONSource, Map as MlMap, RasterTileSource } from "maplibre-gl";
 import { kindWeight } from "@/lib/disasters/aggregate";
+import { ago } from "@/lib/disasters/format";
 import { circleRing } from "@/lib/disasters/geo";
 import type { AssignedEvent, CountryCollection, CountryStat, HazardKind, VolcanoCollection } from "@/lib/disasters/types";
 import { KIND_LABEL } from "@/lib/disasters/types";
@@ -55,6 +56,7 @@ export function HazardMap(props: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MlMap | null>(null);
   const tipRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
   const tagsRef = useRef<HTMLDivElement>(null);
   const propsRef = useRef(props);
   const hoverRef = useRef("");
@@ -398,6 +400,47 @@ export function HazardMap(props: Props) {
     hoverRef.current = "";
   }
 
+  function hideCard() {
+    if (cardRef.current) cardRef.current.hidden = true;
+  }
+
+  function showCard(x: number, y: number, heading: string, lines: { label: string; value: string }[]) {
+    const card = cardRef.current;
+    const wrap = wrapRef.current;
+    if (!card || !wrap) return;
+    card.replaceChildren();
+    const head = document.createElement("div");
+    head.className = "flex items-start justify-between gap-2";
+    const title = document.createElement("p");
+    title.className = "font-medium leading-snug";
+    title.textContent = heading;
+    const close = document.createElement("button");
+    close.type = "button";
+    close.className = "shrink-0 text-muted";
+    close.textContent = "×";
+    close.setAttribute("aria-label", "Close info");
+    close.addEventListener("click", (event) => {
+      event.stopPropagation();
+      hideCard();
+    });
+    head.append(title, close);
+    card.append(head);
+    for (const line of lines) {
+      if (!line.value) continue;
+      const row = document.createElement("p");
+      row.className = "mt-1 text-xs leading-snug";
+      const name = document.createElement("span");
+      name.className = "text-muted";
+      name.textContent = line.label;
+      row.append(name, document.createTextNode(` ${line.value}`));
+      card.append(row);
+    }
+    const left = Math.max(8, Math.min(x + 14, wrap.clientWidth - 236));
+    const top = Math.max(8, Math.min(y + 14, wrap.clientHeight - 196));
+    card.style.transform = `translate(${left}px, ${top}px)`;
+    card.hidden = false;
+  }
+
   function onClick(map: MlMap, x: number, y: number) {
     if (!map.getLayer("events-circle")) return;
     const hitEvent = map.queryRenderedFeatures([x, y], { layers: ["events-circle"] })[0];
@@ -407,17 +450,61 @@ export function HazardMap(props: Props) {
     const hitCountry = map.queryRenderedFeatures([x, y], { layers: ["countries-fill"] })[0];
     const state = useAtlas.getState();
     const narrow = window.matchMedia("(max-width: 767px)").matches;
-    if (hitVolcano && !hitEvent && hitVolcano.geometry.type === "Point") {
-      const [lon, lat] = hitVolcano.geometry.coordinates as [number, number];
-      state.requestFly(lon, lat, 5.2);
-    }
     if (hitEvent) {
+      const event = propsRef.current.events.find((item) => item.id === String(hitEvent.properties?.id ?? ""));
       state.setSelectedEventId(String(hitEvent.properties?.id ?? ""));
       const iso = String(hitEvent.properties?.countryId ?? "");
       if (iso) state.setSelectedIso(iso);
+      if (event) {
+        showCard(x, y, event.place || event.title, [
+          { label: "Type", value: KIND_LABEL[event.kind] },
+          { label: "Magnitude", value: event.mag != null ? String(event.mag) : "" },
+          { label: "Alert", value: event.alert },
+          { label: "Source", value: event.source },
+          { label: "When", value: ago(event.time) },
+          { label: "Where", value: event.countryName || "" },
+        ]);
+      }
       if (narrow) state.setSheet("places");
       return;
     }
+    if (hitVolcano) {
+      const volcano = hitVolcano.properties ?? {};
+      const year = volcano.year == null || volcano.year === "" ? null : Number(volcano.year);
+      const when = year == null || Number.isNaN(year) ? "undated" : year < 0 ? `${Math.abs(year)} BCE` : String(year);
+      showCard(x, y, String(volcano.name || "Volcano"), [
+        { label: "Type", value: String(volcano.kind || volcano.status || "Volcano") },
+        { label: "Status", value: String(volcano.status || "") },
+        { label: "Location", value: String(volcano.country || "") },
+        { label: "Last eruption", value: when },
+        { label: "Elevation", value: volcano.elev ? `${volcano.elev} m` : "" },
+      ]);
+      if (hitVolcano.geometry.type === "Point") {
+        const [lon, lat] = hitVolcano.geometry.coordinates as [number, number];
+        state.requestFly(lon, lat, 5.2);
+      }
+      return;
+    }
+    const hitFault =
+      map.getLayer("faults-active") && map.getLayer("faults-dormant")
+        ? map.queryRenderedFeatures(
+            [
+              [x - 6, y - 6],
+              [x + 6, y + 6],
+            ],
+            { layers: ["faults-active", "faults-dormant"] },
+          )[0]
+        : undefined;
+    if (hitFault) {
+      const fault = hitFault.properties ?? {};
+      const active = fault.c === "a";
+      showCard(x, y, String(fault.n || "Unnamed fault"), [
+        { label: "Type", value: active ? "Active fault" : "Dormant fault" },
+        { label: "Style", value: String(fault.s || "") },
+      ]);
+      return;
+    }
+    hideCard();
     if (hitCountry) {
       state.setSelectedIso(String(hitCountry.id ?? hitCountry.properties?.id ?? ""));
       state.setSelectedEventId(null);
@@ -478,6 +565,11 @@ export function HazardMap(props: Props) {
       aria-label="World hazard map"
     >
       <div ref={tagsRef} className="pointer-events-none absolute inset-0 z-10 [&>button]:pointer-events-auto" />
+      <div
+        ref={cardRef}
+        hidden
+        className="absolute left-0 top-0 z-30 w-56 rounded-lg border border-line bg-panel px-3 py-2 text-sm text-cream shadow-lg"
+      />
       <div
         ref={tipRef}
         hidden
