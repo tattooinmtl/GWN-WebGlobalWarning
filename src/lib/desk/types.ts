@@ -1,4 +1,9 @@
-export type SourceLink = { label: string; url: string };
+export type SourceLink = {
+  label: string;
+  url: string;
+  status: "found" | "empty";
+  detail: string;
+};
 
 export type DeskWeather = {
   tempC: number | null;

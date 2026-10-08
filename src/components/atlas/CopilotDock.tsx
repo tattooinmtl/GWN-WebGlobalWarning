@@ -16,9 +16,11 @@ type Props = {
   spaceWeather: { title: string; time: string }[];
   countries: CountryStat[];
   metric: Metric;
+  radarFrames: number;
+  cloudTime: string | null;
 };
 
-export function CopilotDock({ context, headlines, spaceWeather, countries, metric }: Props) {
+export function CopilotDock({ context, headlines, spaceWeather, countries, metric, radarFrames, cloudTime }: Props) {
   const minimaxKey = useAtlas((s) => s.prefs.minimaxKey);
   const pending = useAtlas((s) => s.pendingPrompt);
   const clearPrompt = useAtlas((s) => s.clearPrompt);
@@ -71,6 +73,8 @@ export function CopilotDock({ context, headlines, spaceWeather, countries, metri
                 unit: metric,
                 centerLat: here?.lat ?? null,
                 centerLon: here?.lon ?? null,
+                radarFrames,
+                cloudTime,
                 bars: intent.chart
                   ? [...countries]
                       .sort((a, b) => b.score - a.score)

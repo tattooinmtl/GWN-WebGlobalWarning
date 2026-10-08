@@ -307,7 +307,7 @@ function AtlasInner() {
         radiusKm={prefs.radiusKm}
         location={location}
       />
-      <Desk radar={atlasQuery.data?.radar ?? null} frame={frame} />
+      <Desk radar={atlasQuery.data?.radar ?? null} frame={frame} cloudTime={atlasQuery.data?.clouds?.time ?? null} />
 
       <header className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between gap-2 p-3">
         <div className="pointer-events-auto flex items-center gap-2">
@@ -378,6 +378,8 @@ function AtlasInner() {
           spaceWeather={atlasQuery.data?.spaceWeather ?? []}
           countries={model?.countries ?? []}
           metric={metric}
+          radarFrames={atlasQuery.data?.radar?.frames.length ?? 0}
+          cloudTime={atlasQuery.data?.clouds?.time ?? null}
         />
       </div>
 
@@ -545,6 +547,8 @@ function AtlasInner() {
                   spaceWeather={atlasQuery.data?.spaceWeather ?? []}
                   countries={model?.countries ?? []}
                   metric={metric}
+                  radarFrames={atlasQuery.data?.radar?.frames.length ?? 0}
+                  cloudTime={atlasQuery.data?.clouds?.time ?? null}
                 />
               ) : null}
             </div>

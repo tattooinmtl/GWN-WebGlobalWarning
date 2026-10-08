@@ -1,11 +1,12 @@
 import { i as __toESM } from "../_runtime.mjs";
 import { a as require_react, i as require_jsx_runtime, n as QueryClientProvider, r as useQueryClient, t as useQuery } from "../_libs/react+tanstack__react-query.mjs";
 import { n as TSS_SERVER_FUNCTION, r as getServerFnById, t as createServerFn } from "./ssr.mjs";
+import { a as weatherText, i as stampKey, n as clamp, r as compactPop, t as ago } from "./format-CIOAsVLu.mjs";
 import { a as Plus, c as MessageSquare, d as Layers, f as Globe, g as ArrowLeft, h as ChartColumn, i as RefreshCw, l as Map$1, m as CloudRain, o as Pin, p as Crosshair, r as Settings, s as Minus, t as X, u as LocateFixed } from "../_libs/lucide-react.mjs";
-import { n as APP_TITLE } from "./router-C8Ho8qwp.mjs";
+import { n as APP_TITLE } from "./router-DMMEGl4u.mjs";
 import { t as QueryClient } from "../_libs/tanstack__query-core.mjs";
 import { n as create, t as persist } from "../_libs/zustand.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/routes-rHPj-E0f.js
+//#region node_modules/.nitro/vite/services/ssr/assets/routes-C9L-_qnn.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var createSsrRpc = (functionId) => {
@@ -78,46 +79,11 @@ var openDeskView = createServerFn({ method: "POST" }).validator((input) => {
 		bars,
 		unit: cleanKey(input?.unit, 40),
 		centerLat: Number.isFinite(lat) && Math.abs(lat) <= 90 ? lat : null,
-		centerLon: Number.isFinite(lon) && Math.abs(lon) <= 180 ? lon : null
+		centerLon: Number.isFinite(lon) && Math.abs(lon) <= 180 ? lon : null,
+		radarFrames: Number.isFinite(Number(input?.radarFrames)) ? Math.max(0, Math.round(Number(input?.radarFrames))) : 0,
+		cloudTime: typeof input?.cloudTime === "string" && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(input.cloudTime) ? input.cloudTime : null
 	};
 }).handler(createSsrRpc("b981a0b191d0a2ad9b5ebc9fd77a261776544e08991b69d93b27d77c12c495b7"));
-function ago(iso) {
-	const t = Date.parse(iso);
-	if (!Number.isFinite(t)) return "";
-	const s = Math.max(0, Date.now() - t) / 1e3;
-	if (s < 90) return "just now";
-	if (s < 3600) return `${Math.round(s / 60)}m ago`;
-	if (s < 86400) return `${Math.round(s / 3600)}h ago`;
-	return `${Math.round(s / 86400)}d ago`;
-}
-function compactPop(n) {
-	if (!Number.isFinite(n) || n <= 0) return "—";
-	if (n >= 1e9) return `${(n / 1e9).toFixed(1)}B`;
-	if (n >= 1e6) return `${(n / 1e6).toFixed(1)}M`;
-	if (n >= 1e3) return `${Math.round(n / 1e3)}k`;
-	return String(Math.round(n));
-}
-function weatherText(code) {
-	if (code == null) return "Weather unavailable";
-	if (code === 0) return "Clear";
-	if (code <= 3) return "Cloudy";
-	if (code <= 48) return "Fog";
-	if (code <= 57) return "Drizzle";
-	if (code <= 67) return "Rain";
-	if (code <= 77) return "Snow";
-	if (code <= 82) return "Showers";
-	if (code <= 86) return "Snow showers";
-	if (code <= 99) return "Thunderstorm";
-	return "Weather";
-}
-function clamp(n, min, max) {
-	return Math.min(max, Math.max(min, n));
-}
-function stampKey(key) {
-	let h = 0;
-	for (let i = 0; i < key.length; i++) h = h * 33 + key.charCodeAt(i) >>> 0;
-	return key ? `${key.length}:${h.toString(16)}` : "";
-}
 var EMPTY_COUNTS = () => ({
 	quake: 0,
 	flood: 0,
@@ -572,9 +538,37 @@ function escapeHtml(value) {
 }
 var NONE = "Sorry no info could be retrieved from web search.";
 function openSourcesPage(title, links) {
-	const usable = links.filter((link) => link.label && link.url);
-	const body = usable.length ? `<ul>${usable.map((link) => `<li><a href="${escapeHtml(link.url)}">${escapeHtml(link.label)}</a><div>${escapeHtml(link.url)}</div></li>`).join("")}</ul>` : `<p>${NONE}</p>`;
-	const html = `<!doctype html><html><head><meta charset="utf-8"><title>${escapeHtml(title || "Sources")}</title><style>html,body{margin:0;background:#101820;color:#e8eef6}body{padding:2rem;font:16px/1.45 sans-serif}a{color:#3ec6ff}li{margin:.8rem 0}div{color:#8ea0b3;font-size:13px;word-break:break-all}</style></head><body><h1>${escapeHtml(title || "Sources")}</h1>${body}</body></html>`;
+	const rows = links.map((link) => {
+		const status = link.status === "empty" ? "empty" : "found";
+		const detail = link.detail?.trim() || (status === "empty" ? NONE : "");
+		const open = status === "found" && link.url ? `<a class="btn" href="${escapeHtml(link.url)}">Open</a>` : "";
+		return `<article class="card">
+      <div class="top"><span class="pill ${status}">${status === "found" ? "Found" : "No info"}</span><h2>${escapeHtml(link.label || "Check")}</h2></div>
+      <p>${escapeHtml(detail || NONE)}</p>
+      ${open}
+    </article>`;
+	});
+	const banner = links.length === 0 || links.every((link) => link.status === "empty") ? `<p class="banner">${NONE}</p>` : `<p class="lead">These are the checks that ran for this window, and what each one returned.</p>`;
+	const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(title || "Sources")}</title>
+<style>
+html,body{margin:0;background:#101820;color:#e8eef6}
+body{max-width:720px;margin:0 auto;padding:1.5rem;font:16px/1.45 sans-serif}
+h1{font-size:1.6rem;margin:0 0 .4rem}
+.lead,.banner{color:#c5d4e0}
+.banner{border:1px solid #e23b4a;border-radius:12px;padding:.8rem 1rem}
+.card{margin:.8rem 0;padding:1rem;border:1px solid #2a3644;border-radius:14px;background:#18222c}
+.top{display:flex;align-items:center;gap:.6rem}
+h2{font-size:1rem;margin:0}
+.pill{font-size:11px;letter-spacing:.04em;text-transform:uppercase;border-radius:999px;padding:.15rem .5rem}
+.found{background:#143226;color:#8ee0b0}
+.empty{background:#3a1d22;color:#f0a0a8}
+p{margin:.6rem 0}
+.btn{display:inline-block;text-decoration:none;color:#101820;background:#3ec6ff;border-radius:999px;padding:.35rem .8rem;font-size:14px}
+</style></head><body>
+<h1>${escapeHtml(title || "Sources")}</h1>
+${banner}
+${rows.join("") || `<p class="banner">${NONE}</p>`}
+</body></html>`;
 	const page = window.open("", "_blank");
 	if (!page) return;
 	page.document.open();
@@ -667,7 +661,7 @@ var useDesk = create()(persist((set, get) => ({
 		windows: state.windows.filter((item) => item.pinned)
 	})
 }));
-function CopilotDock({ context, headlines, spaceWeather, countries, metric }) {
+function CopilotDock({ context, headlines, spaceWeather, countries, metric, radarFrames, cloudTime }) {
 	const minimaxKey = useAtlas((s) => s.prefs.minimaxKey);
 	const pending = useAtlas((s) => s.pendingPrompt);
 	const clearPrompt = useAtlas((s) => s.clearPrompt);
@@ -716,6 +710,8 @@ function CopilotDock({ context, headlines, spaceWeather, countries, metric }) {
 				unit: metric,
 				centerLat: here?.lat ?? null,
 				centerLon: here?.lon ?? null,
+				radarFrames,
+				cloudTime,
 				bars: intent.chart ? [...countries].sort((a, b) => b.score - a.score).slice(0, 8).map((country) => ({
 					label: country.name,
 					value: country.score
@@ -941,9 +937,9 @@ function rainTiles(radar, frame) {
 	if (!path) return null;
 	return `${radar.host}${path}/256/{z}/{x}/{y}/2/1_1.png`;
 }
-function cloudTiles(lon) {
-	const day = (/* @__PURE__ */ new Date(Date.now() - 108e5)).toISOString().slice(0, 10);
-	return `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/${lon != null && lon < -100 ? "GOES-West_ABI_GeoColor" : "GOES-East_ABI_GeoColor"}/default/${day}/GoogleMapsCompatible_Level7/{z}/{y}/{x}.jpg`;
+function cloudTiles(lon, time) {
+	if (!time) return null;
+	return `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/${lon != null && lon < -100 ? "GOES-West_ABI_GeoColor" : "GOES-East_ABI_GeoColor"}/default/${time}/GoogleMapsCompatible_Level7/{z}/{y}/{x}.jpg`;
 }
 function circle(lon, lat, km) {
 	const ring = [];
@@ -974,95 +970,110 @@ function drag(start, onMove) {
 		window.addEventListener("pointerup", up);
 	};
 }
-function MapPane({ item, radarUrl }) {
+function MapPane({ item, radarUrl, cloudTime }) {
 	const node = (0, import_react.useRef)(null);
 	const mapRef = (0, import_react.useRef)(null);
 	const rainRef = (0, import_react.useRef)(radarUrl);
 	const rainOn = (0, import_react.useRef)(item.showRain);
 	const cloudOn = (0, import_react.useRef)(item.showClouds);
+	const cloudRef = (0, import_react.useRef)(cloudTiles(item.lon, cloudTime));
+	const [broken, setBroken] = (0, import_react.useState)("");
 	rainRef.current = radarUrl;
 	rainOn.current = item.showRain;
 	cloudOn.current = item.showClouds;
+	cloudRef.current = cloudTiles(item.lon, cloudTime);
 	(0, import_react.useEffect)(() => {
 		if (!node.current) return;
 		let dead = false;
 		let map = null;
+		let watch = null;
 		(async () => {
-			const maplibregl = await import("../_libs/maplibre-gl.mjs").then((n) => n.t);
-			const workerMod = await import("./maplibre-gl-worker-CQWuOQzD.mjs");
-			if (dead || !node.current) return;
-			maplibregl.setWorkerUrl(workerMod.default);
-			const lat = item.lat ?? 20;
-			const lon = item.lon ?? 0;
-			map = new maplibregl.Map({
-				container: node.current,
-				center: [lon, lat],
-				zoom: item.radiusKm ? 7 : 1.7,
-				attributionControl: false,
-				style: {
-					version: 8,
-					sources: { osm: {
-						type: "raster",
-						tiles: ["https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png"],
-						tileSize: 256,
-						attribution: "© OpenStreetMap © CARTO"
-					} },
-					layers: [{
-						id: "osm",
-						type: "raster",
-						source: "osm"
-					}]
-				}
-			});
-			map.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-left");
-			map.on("load", () => {
-				if (!map) return;
-				if (item.lat != null && item.lon != null && item.radiusKm) {
-					const ring = circle(item.lon, item.lat, item.radiusKm);
-					map.addSource("ring", {
-						type: "geojson",
-						data: {
-							type: "Feature",
-							properties: {},
-							geometry: {
-								type: "Polygon",
-								coordinates: [ring]
+			try {
+				const maplibregl = await import("../_libs/maplibre-gl.mjs").then((n) => n.t);
+				const workerMod = await import("./maplibre-gl-worker-CQWuOQzD.mjs");
+				if (dead || !node.current) return;
+				maplibregl.setWorkerUrl(workerMod.default);
+				const lat = item.lat ?? 20;
+				const lon = item.lon ?? 0;
+				map = new maplibregl.Map({
+					container: node.current,
+					center: [lon, lat],
+					zoom: 8,
+					attributionControl: false,
+					style: {
+						version: 8,
+						sources: { osm: {
+							type: "raster",
+							tiles: ["https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png"],
+							tileSize: 256,
+							attribution: "© OpenStreetMap © CARTO"
+						} },
+						layers: [{
+							id: "bg",
+							type: "background",
+							paint: { "background-color": "#101820" }
+						}, {
+							id: "osm",
+							type: "raster",
+							source: "osm"
+						}]
+					}
+				});
+				map.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-left");
+				watch = new ResizeObserver(() => map?.resize());
+				watch.observe(node.current);
+				map.on("load", () => {
+					if (!map) return;
+					if (item.lat != null && item.lon != null && item.radiusKm) {
+						const ring = circle(item.lon, item.lat, item.radiusKm);
+						map.addSource("ring", {
+							type: "geojson",
+							data: {
+								type: "Feature",
+								properties: {},
+								geometry: {
+									type: "Polygon",
+									coordinates: [ring]
+								}
 							}
-						}
-					});
-					map.addLayer({
-						id: "ring-fill",
-						type: "fill",
-						source: "ring",
-						paint: {
-							"fill-color": "#3ec6ff",
-							"fill-opacity": .08
-						}
-					});
-					map.addLayer({
-						id: "ring-line",
-						type: "line",
-						source: "ring",
-						paint: {
-							"line-color": "#3ec6ff",
-							"line-width": 1.5
-						}
-					});
-					const lons = ring.map((point) => point[0]);
-					const lats = ring.map((point) => point[1]);
-					map.fitBounds([[Math.min(...lons), Math.min(...lats)], [Math.max(...lons), Math.max(...lats)]], {
-						padding: 18,
-						animate: false
-					});
-				}
-				map.resize();
-				syncRaster$1(map, "rain", rainRef.current, rainOn.current);
-				syncRaster$1(map, "clouds", cloudOn.current ? cloudTiles(item.lon) : null, cloudOn.current);
-			});
-			mapRef.current = map;
+						});
+						map.addLayer({
+							id: "ring-fill",
+							type: "fill",
+							source: "ring",
+							paint: {
+								"fill-color": "#3ec6ff",
+								"fill-opacity": .08
+							}
+						});
+						map.addLayer({
+							id: "ring-line",
+							type: "line",
+							source: "ring",
+							paint: {
+								"line-color": "#3ec6ff",
+								"line-width": 1.5
+							}
+						});
+						const lons = ring.map((point) => point[0]);
+						const lats = ring.map((point) => point[1]);
+						map.fitBounds([[Math.min(...lons), Math.min(...lats)], [Math.max(...lons), Math.max(...lats)]], {
+							padding: 24,
+							animate: false
+						});
+					}
+					map.resize();
+					syncRaster$1(map, "rain", rainRef.current, rainOn.current, 7);
+					syncRaster$1(map, "clouds", cloudOn.current ? cloudRef.current : null, cloudOn.current, 7);
+				});
+				mapRef.current = map;
+			} catch (err) {
+				if (!dead) setBroken(err instanceof Error ? err.message : "Map failed to start");
+			}
 		})();
 		return () => {
 			dead = true;
+			watch?.disconnect();
 			map?.remove();
 			mapRef.current = null;
 		};
@@ -1075,26 +1086,42 @@ function MapPane({ item, radarUrl }) {
 	(0, import_react.useEffect)(() => {
 		const map = mapRef.current;
 		if (!map?.isStyleLoaded()) return;
-		syncRaster$1(map, "rain", radarUrl, item.showRain);
-		syncRaster$1(map, "clouds", item.showClouds ? cloudTiles(item.lon) : null, item.showClouds);
+		syncRaster$1(map, "rain", radarUrl, item.showRain, 7);
+		syncRaster$1(map, "clouds", item.showClouds ? cloudTiles(item.lon, cloudTime) : null, item.showClouds, 7);
 	});
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-		ref: node,
-		className: "absolute inset-0"
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		className: "relative h-full w-full",
+		style: {
+			height: "100%",
+			width: "100%",
+			minHeight: 220
+		},
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+			ref: node,
+			className: "h-full w-full",
+			style: {
+				height: "100%",
+				width: "100%"
+			}
+		}), broken ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+			className: "absolute inset-x-3 top-3 text-sm text-cream",
+			children: broken
+		}) : null]
 	});
 }
-function syncRaster$1(map, id, tiles, visible) {
+function syncRaster$1(map, id, tiles, visible, maxzoom = 12) {
 	if (!map.getSource(id) && tiles) {
 		map.addSource(id, {
 			type: "raster",
 			tiles: [tiles],
-			tileSize: 256
+			tileSize: 256,
+			maxzoom
 		});
 		map.addLayer({
 			id,
 			type: "raster",
 			source: id,
-			paint: { "raster-opacity": id === "clouds" ? .72 : .62 }
+			paint: { "raster-opacity": id === "clouds" ? .72 : .7 }
 		});
 	}
 	const source = map.getSource(id);
@@ -1170,7 +1197,7 @@ function WebPane({ item }) {
 		]
 	});
 }
-function WindowCard({ item, radarUrl }) {
+function WindowCard({ item, radarUrl, cloudTime }) {
 	const focus = useDesk((s) => s.focus);
 	const close = useDesk((s) => s.close);
 	const minimize = useDesk((s) => s.minimize);
@@ -1183,7 +1210,7 @@ function WindowCard({ item, radarUrl }) {
 			left: item.x,
 			top: item.y,
 			zIndex: 10 + item.z,
-			height: 360
+			height: 420
 		},
 		onPointerDown: () => focus(item.id),
 		children: [
@@ -1222,13 +1249,52 @@ function WindowCard({ item, radarUrl }) {
 				]
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "relative min-h-0 flex-1 bg-bg",
+				className: "relative min-h-0 flex-1 bg-[#101820]",
+				style: { height: 260 },
 				children: [
 					item.kind === "chart" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChartPane, { item }) : null,
 					item.kind === "web" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(WebPane, { item }) : null,
 					item.kind === "radar" || item.kind === "place" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(MapPane, {
 						item,
-						radarUrl
+						radarUrl,
+						cloudTime
+					}) : null,
+					item.kind === "radar" || item.kind === "place" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "pointer-events-none absolute left-2 top-2 z-10 flex max-w-[calc(100%-1rem)] flex-wrap gap-1",
+						children: [
+							item.weather?.tempC != null ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+								className: "rounded-full bg-panel/90 px-2 py-0.5 text-xs",
+								children: [Math.round(item.weather.tempC), "°C"]
+							}) : null,
+							item.weather ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+								className: "rounded-full bg-panel/90 px-2 py-0.5 text-xs",
+								children: weatherText(item.weather.code)
+							}) : null,
+							item.weather?.rain != null ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+								className: "rounded-full bg-panel/90 px-2 py-0.5 text-xs",
+								children: [
+									"Rain ",
+									item.weather.rain,
+									" mm"
+								]
+							}) : null,
+							item.weather?.wind != null ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+								className: "rounded-full bg-panel/90 px-2 py-0.5 text-xs",
+								children: [
+									"Wind ",
+									Math.round(item.weather.wind),
+									" km/h"
+								]
+							}) : null,
+							item.lat != null && item.lon != null ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+								className: "rounded-full bg-panel/90 px-2 py-0.5 text-xs",
+								children: [
+									item.lat.toFixed(2),
+									", ",
+									item.lon.toFixed(2)
+								]
+							}) : null
+						]
 					}) : null
 				]
 			}),
@@ -1253,7 +1319,7 @@ var KIND_ICON = {
 	chart: ChartColumn,
 	web: Globe
 };
-function Desk({ radar, frame }) {
+function Desk({ radar, frame, cloudTime }) {
 	const windows = useDesk((s) => s.windows);
 	const widget = useDesk((s) => s.widget);
 	const moveWidget = useDesk((s) => s.moveWidget);
@@ -1272,7 +1338,8 @@ function Desk({ radar, frame }) {
 		children: [
 			open.map((item) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(WindowCard, {
 				item,
-				radarUrl
+				radarUrl,
+				cloudTime
 			}, item.id)),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 				className: "pointer-events-auto absolute flex items-center gap-1 rounded-full border border-line bg-panel/95 p-1 shadow-lg",
@@ -3064,7 +3131,8 @@ function AtlasInner() {
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Desk, {
 				radar: atlasQuery.data?.radar ?? null,
-				frame
+				frame,
+				cloudTime: atlasQuery.data?.clouds?.time ?? null
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("header", {
 				className: "pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between gap-2 p-3",
@@ -3172,7 +3240,9 @@ function AtlasInner() {
 					headlines: atlasQuery.data?.headlines ?? [],
 					spaceWeather: atlasQuery.data?.spaceWeather ?? [],
 					countries: model?.countries ?? [],
-					metric
+					metric,
+					radarFrames: atlasQuery.data?.radar?.frames.length ?? 0,
+					cloudTime: atlasQuery.data?.clouds?.time ?? null
 				})
 			}),
 			showAlert ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
@@ -3454,7 +3524,9 @@ function AtlasInner() {
 							headlines: atlasQuery.data?.headlines ?? [],
 							spaceWeather: atlasQuery.data?.spaceWeather ?? [],
 							countries: model?.countries ?? [],
-							metric
+							metric,
+							radarFrames: atlasQuery.data?.radar?.frames.length ?? 0,
+							cloudTime: atlasQuery.data?.clouds?.time ?? null
 						}) : null]
 					})]
 				})

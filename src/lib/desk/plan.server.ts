@@ -1,6 +1,7 @@
+import { weatherText } from "@/lib/disasters/format";
 import type { DeskBar, DeskDraft, DeskWeather, SourceLink } from "./types";
 
-const UA = "GWNAtlas/0.0.4 (educational live hazard map)";
+const UA = "GWNAtlas/0.0.8 (educational live hazard map)";
 
 export type DeskRequest = {
   question: string;
@@ -14,6 +15,8 @@ export type DeskRequest = {
   unit: string;
   centerLat: number | null;
   centerLon: number | null;
+  radarFrames: number;
+  cloudTime: string | null;
 };
 
 type Geo = { name: string; lat: number; lon: number };
@@ -66,49 +69,95 @@ async function wiki(title: string): Promise<{ extract: string; url: string } | n
   return { extract: body.extract.slice(0, 520), url: page || "" };
 }
 
-function pushLink(links: SourceLink[], label: string, url: string) {
-  if (!url || links.some((link) => link.url === url)) return;
-  links.push({ label, url });
+function note(links: SourceLink[], label: string, status: SourceLink["status"], detail: string, url = "") {
+  links.push({ label, url, status, detail });
 }
 
 export async function buildDesk(input: DeskRequest): Promise<{ note: string; windows: DeskDraft[] }> {
   const links: SourceLink[] = [];
-  pushLink(links, "OpenStreetMap", "https://www.openstreetmap.org/copyright");
-
   const geo = input.place ? await geocode(input.place) : null;
-  const lat = geo?.lat ?? input.centerLat;
-  const lon = geo?.lon ?? input.centerLon;
-  const hasPoint = lat != null && lon != null;
-
-  if (geo) {
-    pushLink(
+  if (input.place) {
+    note(
       links,
-      geo.name,
-      `https://www.openstreetmap.org/?mlat=${geo.lat}&mlon=${geo.lon}#map=10/${geo.lat}/${geo.lon}`,
+      "Place search",
+      geo ? "found" : "empty",
+      geo
+        ? `Nominatim matched “${input.place}” to ${geo.name}. Point ${geo.lat.toFixed(3)}, ${geo.lon.toFixed(3)}.`
+        : `Nominatim returned nothing for “${input.place}”.`,
+      geo ? `https://www.openstreetmap.org/?mlat=${geo.lat}&mlon=${geo.lon}#map=11/${geo.lat}/${geo.lon}` : "",
     );
   }
 
+  const lat = geo?.lat ?? input.centerLat;
+  const lon = geo?.lon ?? input.centerLon;
+  const hasPoint = lat != null && lon != null;
   let meteo: DeskWeather | null = null;
-  if (hasPoint && (input.wantRadar || geo)) {
+  if (hasPoint && (input.wantRadar || input.wantRain || geo)) {
     meteo = await weatherAt(lat, lon);
-    pushLink(links, "Open-Meteo forecast", "https://open-meteo.com/");
+    note(
+      links,
+      "Open-Meteo",
+      meteo ? "found" : "empty",
+      meteo
+        ? `${weatherText(meteo.code)}. Temperature ${meteo.tempC == null ? "n/a" : `${Math.round(meteo.tempC)}°C`}. Rain ${meteo.rain == null ? "n/a" : `${meteo.rain} mm`}. Wind ${meteo.wind == null ? "n/a" : `${Math.round(meteo.wind)} km/h`}.`
+        : "Open-Meteo returned no current reading for this point.",
+      "https://open-meteo.com/",
+    );
   }
-
-  const topic = geo?.name.split(",")[0]?.trim() || (input.wantWeb ? input.question.replace(/^(please\s+)?(show|open|find|search|look up)(\s+me)?(\s+a)?(\s+the)?(\s+web page|\s+page|\s+article|\s+wikipedia)?(\s+about|\s+of|\s+for|\s+on)?\s+/i, "").trim() : "");
-  const page = topic ? await wiki(topic.slice(0, 80)) : null;
-  if (page?.url) pushLink(links, "Wikipedia", page.url);
 
   const showClouds = input.wantClouds;
   const showRain = input.wantRain || (input.wantRadar && !showClouds) || !!geo;
-  if (showRain) pushLink(links, "RainViewer radar", "https://www.rainviewer.com/api.html");
-  if (showClouds) {
-    pushLink(links, "NASA GIBS GOES GeoColor", "https://www.earthdata.nasa.gov/eosdis/science-system-description/eosdis-components/gibs");
+  if (showRain) {
+    const frames = input.radarFrames;
+    note(
+      links,
+      "RainViewer radar",
+      frames > 0 ? "found" : "empty",
+      frames > 0
+        ? `${frames} recent radar frames are already loaded. The window paints the newest one over about 100 km.`
+        : "RainViewer had no radar frames loaded, so the window has no rain picture.",
+      frames > 0 ? "https://www.rainviewer.com/map.html" : "",
+    );
   }
+  if (showClouds) {
+    note(
+      links,
+      "GOES clouds",
+      input.cloudTime ? "found" : "empty",
+      input.cloudTime
+        ? `NASA GIBS has a GOES GeoColor frame at ${input.cloudTime}. That picture is drawn under the radar.`
+        : "No GOES cloud frame was available, so no satellite picture was attached.",
+      input.cloudTime ? "https://www.earthdata.nasa.gov/eosdis/science-system-description/eosdis-components/gibs" : "",
+    );
+  }
+
+  let page: { extract: string; url: string } | null = null;
+  if (input.wantWeb) {
+    const topic =
+      geo?.name.split(",")[0]?.trim() ||
+      input.question
+        .replace(/^(please\s+)?(show|open|find|search|look up)(\s+me)?(\s+a)?(\s+the)?(\s+web page|\s+page|\s+article|\s+wikipedia)?(\s+about|\s+of|\s+for|\s+on)?\s+/i, "")
+        .trim();
+    page = topic ? await wiki(topic.slice(0, 80)) : null;
+    note(
+      links,
+      "Wikipedia",
+      page ? "found" : "empty",
+      page ? page.extract : `Wikipedia had no summary for “${topic || input.question}”.`,
+      page?.url || "",
+    );
+  }
+
   if (input.wantChart) {
-    pushLink(links, "USGS earthquakes", "https://earthquake.usgs.gov/earthquakes/feed/");
-    pushLink(links, "Earthquakes Canada", "https://www.earthquakescanada.nrcan.gc.ca/recent/index-en.php");
-    pushLink(links, "CWFIS wildfires", "https://cwfis.cfs.nrcan.gc.ca/");
-    pushLink(links, "Environment Canada alerts", "https://weather.gc.ca/warnings/index_e.html");
+    const top = input.bars.slice(0, 8);
+    note(
+      links,
+      "Live map scores",
+      top.length ? "found" : "empty",
+      top.length
+        ? `Chart uses the ${input.unit || "live"} scores already on the map: ${top.map((bar) => `${bar.label} ${Math.round(bar.value)}`).join(", ")}.`
+        : "No country scores were on the map, so there is nothing to chart.",
+    );
   }
 
   const windows: DeskDraft[] = [];
@@ -123,11 +172,11 @@ export async function buildDesk(input: DeskRequest): Promise<{ note: string; win
       showRain,
       showClouds,
       summary: geo
-        ? `About 100 km around ${geo.name}. Base map is OpenStreetMap. Rain is RainViewer.${showClouds ? " Clouds are NASA GOES." : ""}`
+        ? `About 100 km around ${geo.name.split(",").slice(0, 2).join(",")}.`
         : showClouds
-          ? "NASA GOES GeoColor clouds, with RainViewer radar when rain is on."
-          : "RainViewer radar on an OpenStreetMap base.",
-      pageUrl: geo ? `https://www.openstreetmap.org/?mlat=${geo.lat}&mlon=${geo.lon}#map=10/${geo.lat}/${geo.lon}` : "https://www.rainviewer.com/map.html",
+          ? "Cloud picture with radar when rain is on."
+          : "Live radar.",
+      pageUrl: geo ? `https://www.openstreetmap.org/?mlat=${geo.lat}&mlon=${geo.lon}#map=11/${geo.lat}/${geo.lon}` : null,
       weather: meteo,
       bars: [],
       unit: "",
@@ -144,7 +193,7 @@ export async function buildDesk(input: DeskRequest): Promise<{ note: string; win
       radiusKm: null,
       showRain: false,
       showClouds: false,
-      summary: "Bars are the live country scores already on the map. They are not a forecast.",
+      summary: "Bars are the live country scores already on the map.",
       pageUrl: null,
       weather: null,
       bars: input.bars.slice(0, 8),
@@ -154,21 +203,16 @@ export async function buildDesk(input: DeskRequest): Promise<{ note: string; win
   }
 
   if (input.wantWeb) {
-    const summary =
-      page?.extract ||
-      (geo
-        ? `No encyclopedia extract for ${geo.name}. The map window uses OpenStreetMap, RainViewer, and Open-Meteo.`
-        : "Links are the feeds used for this answer. Open any of them in this new page.");
     windows.push({
       kind: "web",
-      title: page?.url ? topic.slice(0, 80) : "Web result",
+      title: page?.url ? (geo?.name.split(",")[0] || "Web result") : "Web result",
       lat: null,
       lon: null,
       radiusKm: null,
       showRain: false,
       showClouds: false,
-      summary,
-      pageUrl: page?.url || links[1]?.url || links[0]?.url || null,
+      summary: page?.extract || "Sorry no info could be retrieved from web search.",
+      pageUrl: page?.url || null,
       weather: null,
       bars: [],
       unit: "",
@@ -177,13 +221,13 @@ export async function buildDesk(input: DeskRequest): Promise<{ note: string; win
   }
 
   const where = geo ? geo.name.split(",").slice(0, 2).join(",") : input.place;
-  const note = geo
+  const opened = geo
     ? `Opened a 100 km live view of ${where}.`
     : input.place
-      ? `OpenStreetMap did not find “${input.place}”. I opened what the other feeds can show.`
+      ? `OpenStreetMap did not find “${input.place}”.`
       : windows.length
         ? "Opened a live window from the current feeds."
         : "";
 
-  return { note, windows };
+  return { note: opened, windows };
 }

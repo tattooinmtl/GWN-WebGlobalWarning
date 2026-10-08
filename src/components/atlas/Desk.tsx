@@ -1,5 +1,6 @@
-import { useEffect, useRef, type PointerEvent as ReactPointerEvent } from "react";
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { BarChart3, CloudRain, Globe, Map as MapIcon, Minus, Pin, X } from "lucide-react";
+import "maplibre-gl/dist/maplibre-gl.css";
 import { weatherText } from "@/lib/disasters/format";
 import { openSourcesPage } from "@/lib/desk/sources";
 import { useDesk } from "@/lib/desk/store";
@@ -10,6 +11,7 @@ type Radar = { host: string; frames: { path: string }[] } | null;
 type Props = {
   radar: Radar;
   frame: number;
+  cloudTime: string | null;
 };
 
 function rainTiles(radar: Radar, frame: number): string | null {
@@ -19,10 +21,10 @@ function rainTiles(radar: Radar, frame: number): string | null {
   return `${radar.host}${path}/256/{z}/{x}/{y}/2/1_1.png`;
 }
 
-function cloudTiles(lon: number | null): string {
-  const day = new Date(Date.now() - 3 * 3600 * 1000).toISOString().slice(0, 10);
+function cloudTiles(lon: number | null, time: string | null): string | null {
+  if (!time) return null;
   const layer = lon != null && lon < -100 ? "GOES-West_ABI_GeoColor" : "GOES-East_ABI_GeoColor";
-  return `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/${layer}/default/${day}/GoogleMapsCompatible_Level7/{z}/{y}/{x}.jpg`;
+  return `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/${layer}/default/${time}/GoogleMapsCompatible_Level7/{z}/{y}/{x}.jpg`;
 }
 
 function circle(lon: number, lat: number, km: number): number[][] {
@@ -62,88 +64,104 @@ function drag(start: { x: number; y: number }, onMove: (x: number, y: number) =>
 function MapPane({
   item,
   radarUrl,
+  cloudTime,
 }: {
   item: DeskWindow;
   radarUrl: string | null;
+  cloudTime: string | null;
 }) {
   const node = useRef<HTMLDivElement>(null);
   const mapRef = useRef<import("maplibre-gl").Map | null>(null);
   const rainRef = useRef(radarUrl);
   const rainOn = useRef(item.showRain);
   const cloudOn = useRef(item.showClouds);
+  const cloudRef = useRef(cloudTiles(item.lon, cloudTime));
+  const [broken, setBroken] = useState("");
   rainRef.current = radarUrl;
   rainOn.current = item.showRain;
   cloudOn.current = item.showClouds;
+  cloudRef.current = cloudTiles(item.lon, cloudTime);
 
   useEffect(() => {
     const host = node.current;
     if (!host) return;
     let dead = false;
     let map: import("maplibre-gl").Map | null = null;
+    let watch: ResizeObserver | null = null;
     void (async () => {
-      const maplibregl = await import("maplibre-gl");
-      const workerMod = await import("maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url");
-      if (dead || !node.current) return;
-      maplibregl.setWorkerUrl(workerMod.default);
-      const lat = item.lat ?? 20;
-      const lon = item.lon ?? 0;
-      map = new maplibregl.Map({
-        container: node.current,
-        center: [lon, lat],
-        zoom: item.radiusKm ? 7 : 1.7,
-        attributionControl: false,
-        style: {
-          version: 8,
-          sources: {
-            osm: {
-              type: "raster",
-              tiles: ["https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png"],
-              tileSize: 256,
-              attribution: "© OpenStreetMap © CARTO",
+      try {
+        const maplibregl = await import("maplibre-gl");
+        const workerMod = await import("maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url");
+        if (dead || !node.current) return;
+        maplibregl.setWorkerUrl(workerMod.default);
+        const lat = item.lat ?? 20;
+        const lon = item.lon ?? 0;
+        map = new maplibregl.Map({
+          container: node.current,
+          center: [lon, lat],
+          zoom: 8,
+          attributionControl: false,
+          style: {
+            version: 8,
+            sources: {
+              osm: {
+                type: "raster",
+                tiles: ["https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png"],
+                tileSize: 256,
+                attribution: "© OpenStreetMap © CARTO",
+              },
             },
-          },
-          layers: [{ id: "osm", type: "raster", source: "osm" }],
-        },
-      });
-      map.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-left");
-      map.on("load", () => {
-        if (!map) return;
-        if (item.lat != null && item.lon != null && item.radiusKm) {
-          const ring = circle(item.lon, item.lat, item.radiusKm);
-          map.addSource("ring", {
-            type: "geojson",
-            data: { type: "Feature", properties: {}, geometry: { type: "Polygon", coordinates: [ring] } },
-          });
-          map.addLayer({
-            id: "ring-fill",
-            type: "fill",
-            source: "ring",
-            paint: { "fill-color": "#3ec6ff", "fill-opacity": 0.08 },
-          });
-          map.addLayer({
-            id: "ring-line",
-            type: "line",
-            source: "ring",
-            paint: { "line-color": "#3ec6ff", "line-width": 1.5 },
-          });
-          const lons = ring.map((point) => point[0]);
-          const lats = ring.map((point) => point[1]);
-          map.fitBounds(
-            [
-              [Math.min(...lons), Math.min(...lats)],
-              [Math.max(...lons), Math.max(...lats)],
+            layers: [
+              { id: "bg", type: "background", paint: { "background-color": "#101820" } },
+              { id: "osm", type: "raster", source: "osm" },
             ],
-            { padding: 18, animate: false },
-          );
-        }
-        map.resize();
-        syncRaster(map, "rain", rainRef.current, rainOn.current);
-        syncRaster(map, "clouds", cloudOn.current ? cloudTiles(item.lon) : null, cloudOn.current);
-      });
-      mapRef.current = map;
+          },
+        });
+        map.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-left");
+        watch = new ResizeObserver(() => map?.resize());
+        watch.observe(node.current);
+        map.on("load", () => {
+          if (!map) return;
+          if (item.lat != null && item.lon != null && item.radiusKm) {
+            const ring = circle(item.lon, item.lat, item.radiusKm);
+            map.addSource("ring", {
+              type: "geojson",
+              data: { type: "Feature", properties: {}, geometry: { type: "Polygon", coordinates: [ring] } },
+            });
+            map.addLayer({
+              id: "ring-fill",
+              type: "fill",
+              source: "ring",
+              paint: { "fill-color": "#3ec6ff", "fill-opacity": 0.08 },
+            });
+            map.addLayer({
+              id: "ring-line",
+              type: "line",
+              source: "ring",
+              paint: { "line-color": "#3ec6ff", "line-width": 1.5 },
+            });
+            const lons = ring.map((point) => point[0]);
+            const lats = ring.map((point) => point[1]);
+            map.fitBounds(
+              [
+                [Math.min(...lons), Math.min(...lats)],
+                [Math.max(...lons), Math.max(...lats)],
+              ],
+              { padding: 24, animate: false },
+            );
+          }
+          map.resize();
+          syncRaster(map, "rain", rainRef.current, rainOn.current, 7);
+          syncRaster(map, "clouds", cloudOn.current ? cloudRef.current : null, cloudOn.current, 7);
+        });
+        mapRef.current = map;
+      } catch (err) {
+        if (!dead) setBroken(err instanceof Error ? err.message : "Map failed to start");
+      }
     })();
     return () => {
       dead = true;
+      watch?.disconnect();
       map?.remove();
       mapRef.current = null;
     };
@@ -152,17 +170,22 @@ function MapPane({
   useEffect(() => {
     const map = mapRef.current;
     if (!map?.isStyleLoaded()) return;
-    syncRaster(map, "rain", radarUrl, item.showRain);
-    syncRaster(map, "clouds", item.showClouds ? cloudTiles(item.lon) : null, item.showClouds);
+    syncRaster(map, "rain", radarUrl, item.showRain, 7);
+    syncRaster(map, "clouds", item.showClouds ? cloudTiles(item.lon, cloudTime) : null, item.showClouds, 7);
   });
 
-  return <div ref={node} className="absolute inset-0" />;
+  return (
+    <div className="relative h-full w-full" style={{ height: "100%", width: "100%", minHeight: 220 }}>
+      <div ref={node} className="h-full w-full" style={{ height: "100%", width: "100%" }} />
+      {broken ? <p className="absolute inset-x-3 top-3 text-sm text-cream">{broken}</p> : null}
+    </div>
+  );
 }
 
-function syncRaster(map: import("maplibre-gl").Map, id: string, tiles: string | null, visible: boolean) {
+function syncRaster(map: import("maplibre-gl").Map, id: string, tiles: string | null, visible: boolean, maxzoom = 12) {
   if (!map.getSource(id) && tiles) {
-    map.addSource(id, { type: "raster", tiles: [tiles], tileSize: 256 });
-    map.addLayer({ id, type: "raster", source: id, paint: { "raster-opacity": id === "clouds" ? 0.72 : 0.62 } });
+    map.addSource(id, { type: "raster", tiles: [tiles], tileSize: 256, maxzoom });
+    map.addLayer({ id, type: "raster", source: id, paint: { "raster-opacity": id === "clouds" ? 0.72 : 0.7 } });
   }
   const source = map.getSource(id) as { setTiles?: (tiles: string[]) => void } | undefined;
   if (source?.setTiles && tiles) source.setTiles([tiles]);
@@ -210,7 +233,7 @@ function WebPane({ item }: { item: DeskWindow }) {
   );
 }
 
-function WindowCard({ item, radarUrl }: { item: DeskWindow; radarUrl: string | null }) {
+function WindowCard({ item, radarUrl, cloudTime }: { item: DeskWindow; radarUrl: string | null; cloudTime: string | null }) {
   const focus = useDesk((s) => s.focus);
   const close = useDesk((s) => s.close);
   const minimize = useDesk((s) => s.minimize);
@@ -223,7 +246,7 @@ function WindowCard({ item, radarUrl }: { item: DeskWindow; radarUrl: string | n
   return (
     <section
       className="pointer-events-auto absolute flex w-[min(440px,calc(100vw-1rem))] flex-col overflow-hidden rounded-2xl border border-line bg-panel/95 shadow-2xl backdrop-blur-md"
-      style={{ left: item.x, top: item.y, zIndex: 10 + item.z, height: 360 }}
+      style={{ left: item.x, top: item.y, zIndex: 10 + item.z, height: 420 }}
       onPointerDown={() => focus(item.id)}
     >
       <header
@@ -241,10 +264,23 @@ function WindowCard({ item, radarUrl }: { item: DeskWindow; radarUrl: string | n
           <X className="size-4" />
         </button>
       </header>
-      <div className="relative min-h-0 flex-1 bg-bg">
+      <div className="relative min-h-0 flex-1 bg-[#101820]" style={{ height: 260 }}>
         {item.kind === "chart" ? <ChartPane item={item} /> : null}
         {item.kind === "web" ? <WebPane item={item} /> : null}
-        {item.kind === "radar" || item.kind === "place" ? <MapPane item={item} radarUrl={radarUrl} /> : null}
+        {item.kind === "radar" || item.kind === "place" ? <MapPane item={item} radarUrl={radarUrl} cloudTime={cloudTime} /> : null}
+        {item.kind === "radar" || item.kind === "place" ? (
+          <div className="pointer-events-none absolute left-2 top-2 z-10 flex max-w-[calc(100%-1rem)] flex-wrap gap-1">
+            {item.weather?.tempC != null ? <span className="rounded-full bg-panel/90 px-2 py-0.5 text-xs">{Math.round(item.weather.tempC)}°C</span> : null}
+            {item.weather ? <span className="rounded-full bg-panel/90 px-2 py-0.5 text-xs">{weatherText(item.weather.code)}</span> : null}
+            {item.weather?.rain != null ? <span className="rounded-full bg-panel/90 px-2 py-0.5 text-xs">Rain {item.weather.rain} mm</span> : null}
+            {item.weather?.wind != null ? <span className="rounded-full bg-panel/90 px-2 py-0.5 text-xs">Wind {Math.round(item.weather.wind)} km/h</span> : null}
+            {item.lat != null && item.lon != null ? (
+              <span className="rounded-full bg-panel/90 px-2 py-0.5 text-xs">
+                {item.lat.toFixed(2)}, {item.lon.toFixed(2)}
+              </span>
+            ) : null}
+          </div>
+        ) : null}
       </div>
       <footer className="flex items-center justify-between gap-2 border-t border-line px-2 py-1.5">
         <p className="truncate text-xs text-muted">
@@ -266,7 +302,7 @@ const KIND_ICON = {
   web: Globe,
 } as const;
 
-export function Desk({ radar, frame }: Props) {
+export function Desk({ radar, frame, cloudTime }: Props) {
   const windows = useDesk((s) => s.windows);
   const widget = useDesk((s) => s.widget);
   const moveWidget = useDesk((s) => s.moveWidget);
@@ -286,7 +322,7 @@ export function Desk({ radar, frame }: Props) {
   return (
     <div className="pointer-events-none absolute inset-0">
       {open.map((item) => (
-        <WindowCard key={item.id} item={item} radarUrl={radarUrl} />
+        <WindowCard key={item.id} item={item} radarUrl={radarUrl} cloudTime={cloudTime} />
       ))}
 
       <div

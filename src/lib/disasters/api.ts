@@ -95,6 +95,8 @@ export const openDeskView = createServerFn({ method: "POST" })
     unit?: string;
     centerLat?: number | null;
     centerLon?: number | null;
+    radarFrames?: number;
+    cloudTime?: string | null;
   }) => {
     const bars: DeskBar[] = (Array.isArray(input?.bars) ? input.bars : [])
       .slice(0, 8)
@@ -117,6 +119,8 @@ export const openDeskView = createServerFn({ method: "POST" })
       unit: cleanKey(input?.unit, 40),
       centerLat: Number.isFinite(lat) && Math.abs(lat) <= 90 ? lat : null,
       centerLon: Number.isFinite(lon) && Math.abs(lon) <= 180 ? lon : null,
+      radarFrames: Number.isFinite(Number(input?.radarFrames)) ? Math.max(0, Math.round(Number(input?.radarFrames))) : 0,
+      cloudTime: typeof input?.cloudTime === "string" && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(input.cloudTime) ? input.cloudTime : null,
     };
   })
   .handler(async ({ data }): Promise<{ note: string; windows: DeskDraft[] }> => {

@@ -1,5 +1,5 @@
 import { n as TSS_SERVER_FUNCTION, t as createServerFn } from "./ssr.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/api-DckkyXMf.js
+//#region node_modules/.nitro/vite/services/ssr/assets/api-Gzg65sQG.js
 var createServerRpc = (serverFnMeta, splitImportFn) => {
 	const url = "/_serverFn/" + serverFnMeta.id;
 	return Object.assign(splitImportFn, {
@@ -103,10 +103,12 @@ var openDeskView = createServerFn({ method: "POST" }).validator((input) => {
 		bars,
 		unit: cleanKey(input?.unit, 40),
 		centerLat: Number.isFinite(lat) && Math.abs(lat) <= 90 ? lat : null,
-		centerLon: Number.isFinite(lon) && Math.abs(lon) <= 180 ? lon : null
+		centerLon: Number.isFinite(lon) && Math.abs(lon) <= 180 ? lon : null,
+		radarFrames: Number.isFinite(Number(input?.radarFrames)) ? Math.max(0, Math.round(Number(input?.radarFrames))) : 0,
+		cloudTime: typeof input?.cloudTime === "string" && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(input.cloudTime) ? input.cloudTime : null
 	};
 }).handler(openDeskView_createServerFn_handler, async ({ data }) => {
-	const { buildDesk } = await import("./plan.server-BMlPKVK0.mjs");
+	const { buildDesk } = await import("./plan.server--FC_FjJC.mjs");
 	return buildDesk(data);
 });
 //#endregion
