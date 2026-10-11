@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Crosshair } from "lucide-react";
+import { ArrowLeft, Crosshair, ExternalLink } from "lucide-react";
 import { pointForecast } from "@/lib/disasters/api";
 import { ago, compactPop, stampKey, weatherText } from "@/lib/disasters/format";
 import { haversineKm } from "@/lib/disasters/geo";
+import { broadcastFor } from "@/lib/disasters/broadcasts";
 import type { CountryStat, SourceStatus } from "@/lib/disasters/types";
 import { KIND_LABEL } from "@/lib/disasters/types";
 import { useAtlas } from "@/lib/atlas/store";
@@ -154,14 +155,31 @@ function CountryDetail({
 }) {
   const distance = location ? haversineKm(location.lat, location.lon, country.lat, country.lon) : null;
   const inside = nearby.filter((item) => item.event.countryId === country.id);
+  const broadcast = broadcastFor(country.iso2, country.continent);
   return (
     <div className="flex flex-col gap-3 text-sm">
       <p className="text-muted">
         Pop {compactPop(country.pop)} · pressure {Math.round(country.score * 100)} · {country.eventTotal} events in the feed
       </p>
-      <div className="h-1.5 overflow-hidden rounded-full bg-bg">
-        <div className="h-full rounded-full bg-amber" style={{ width: `${Math.max(4, Math.round(country.score * 100))}%` }} />
-      </div>
+      {broadcast ? (
+        <div className="rounded-xl border border-line bg-panel-2 p-3">
+          <p className="text-xs uppercase tracking-widest text-muted">National broadcast</p>
+          <a className="mt-1 inline-flex items-center gap-1 text-amber" href={broadcast.broadcastUrl} target="_blank" rel="noopener noreferrer">
+            {broadcast.broadcast} <ExternalLink className="size-3" />
+          </a>
+          {broadcast.available ? <p className="mt-2 text-xs text-muted">Usable: {broadcast.available.join(", ")}</p> : null}
+          {broadcast.canAdd ? <p className="mt-1 text-xs text-muted">Can add: {broadcast.canAdd.join(", ")}</p> : null}
+          <ul className="mt-2 flex flex-col gap-1">
+            {broadcast.links.map((link) => (
+              <li key={link.url}>
+                <a className="text-xs text-cream hover:text-amber" href={link.url} target="_blank" rel="noopener noreferrer">
+                  {link.kind} · {link.name}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
       <dl className="grid grid-cols-2 gap-2">
         <Stat label="Rain window" value={`${country.precipMm.toFixed(1)} mm`} />
         <Stat label="OpenWeather 1h" value={country.owmRain == null ? "—" : `${country.owmRain.toFixed(1)} mm`} />
@@ -198,13 +216,8 @@ function CountryDetail({
       </div>
       <ul className="flex flex-col gap-2">
         {country.events.map((event) => (
-          <li key={event.id}>
-            <button
-              type="button"
-              onClick={() => onEvent(event)}
-              data-on={selectedEventId === event.id ? "true" : "false"}
-              className="w-full rounded-xl border border-line px-3 py-2 text-left data-[on=true]:border-amber"
-            >
+          <li key={event.id} className="rounded-xl border border-line px-3 py-2" data-on={selectedEventId === event.id ? "true" : "false"}>
+            <button type="button" onClick={() => onEvent(event)} className="w-full text-left">
               <span className="text-xs uppercase tracking-wider text-amber">
                 {KIND_LABEL[event.kind]} · {event.source}
                 {event.mag != null ? ` · M${event.mag}` : ""} · {event.alert}
@@ -215,6 +228,11 @@ function CountryDetail({
                 {event.detail ? ` · ${event.detail}` : ""}
               </p>
             </button>
+            {event.url ? (
+              <a className="mt-1 inline-flex items-center gap-1 text-xs text-amber" href={event.url} target="_blank" rel="noopener noreferrer">
+                Open source <ExternalLink className="size-3" />
+              </a>
+            ) : null}
           </li>
         ))}
       </ul>
