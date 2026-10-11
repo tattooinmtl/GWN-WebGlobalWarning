@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Crosshair } from "lucide-react";
+import { ArrowLeft, Crosshair, ExternalLink } from "lucide-react";
 import { pointForecast } from "@/lib/disasters/api";
 import { ago, compactPop, stampKey, weatherText } from "@/lib/disasters/format";
 import { haversineKm } from "@/lib/disasters/geo";
+import { broadcastFor } from "@/lib/disasters/broadcasts";
 import type { CountryStat, SourceStatus } from "@/lib/disasters/types";
 import { KIND_LABEL } from "@/lib/disasters/types";
 import { useAtlas } from "@/lib/atlas/store";
@@ -50,7 +51,7 @@ export function PlacesDock({ countries, selected, sources, loading, error, onRet
         <div className="min-w-0">
           <p className="font-display text-2xl leading-none tracking-wide">{selected ? selected.name : "Hotspots"}</p>
           <p className="text-xs text-muted">
-            {selected ? selected.continent : loading ? "Pulling live feeds…" : `${countries.length} countries with signal`}
+            {selected ? selected.continent : loading ? "Pulling live feeds\u2026" : `${countries.length} countries with signal`}
           </p>
         </div>
       </header>
@@ -82,11 +83,11 @@ export function PlacesDock({ countries, selected, sources, loading, error, onRet
                   </div>
                   <p className="mt-1 text-xs text-muted">
                     {country.precipMm.toFixed(0)} mm rain
-                    {country.counts.flood ? ` · ${country.counts.flood} flood` : ""}
-                    {country.counts.quake ? ` · ${country.counts.quake} quake` : ""}
-                    {country.maxMag ? ` · M${country.maxMag}` : ""}
-                    {country.counts.fire ? ` · ${country.counts.fire} fire` : ""}
-                    {country.counts.storm ? ` · ${country.counts.storm} storm` : ""}
+                    {country.counts.flood ? ` \u00b7 ${country.counts.flood} flood` : ""}
+                    {country.counts.quake ? ` \u00b7 ${country.counts.quake} quake` : ""}
+                    {country.maxMag ? ` \u00b7 M${country.maxMag}` : ""}
+                    {country.counts.fire ? ` \u00b7 ${country.counts.fire} fire` : ""}
+                    {country.counts.storm ? ` \u00b7 ${country.counts.storm} storm` : ""}
                   </p>
                 </button>
               </li>
@@ -119,7 +120,7 @@ export function PlacesDock({ countries, selected, sources, loading, error, onRet
               className="rounded-full border border-line px-2 py-1 text-xs text-muted"
               title={source.error || `${source.ms} ms`}
             >
-              <span className={source.ok ? "text-cyan" : "text-crimson"}>{source.ok ? "●" : "○"}</span> {source.label}{" "}
+              <span className={source.ok ? "text-cyan" : "text-crimson"}>{source.ok ? "\u25cf" : "\u25cb"}</span> {source.label}{" "}
               {source.ok ? source.count : "down"}
             </span>
           ))}
@@ -154,23 +155,40 @@ function CountryDetail({
 }) {
   const distance = location ? haversineKm(location.lat, location.lon, country.lat, country.lon) : null;
   const inside = nearby.filter((item) => item.event.countryId === country.id);
+  const broadcast = broadcastFor(country.iso2, country.continent);
   return (
     <div className="flex flex-col gap-3 text-sm">
       <p className="text-muted">
-        Pop {compactPop(country.pop)} · pressure {Math.round(country.score * 100)} · {country.eventTotal} events in the feed
+        Pop {compactPop(country.pop)} \u00b7 pressure {Math.round(country.score * 100)} \u00b7 {country.eventTotal} events in the feed
       </p>
-      <div className="h-1.5 overflow-hidden rounded-full bg-bg">
-        <div className="h-full rounded-full bg-amber" style={{ width: `${Math.max(4, Math.round(country.score * 100))}%` }} />
-      </div>
+      {broadcast ? (
+        <div className="rounded-xl border border-line bg-panel-2 p-3">
+          <p className="text-xs uppercase tracking-widest text-muted">National broadcast</p>
+          <a className="mt-1 inline-flex items-center gap-1 text-amber" href={broadcast.broadcastUrl} target="_blank" rel="noopener noreferrer">
+            {broadcast.broadcast} <ExternalLink className="size-3" />
+          </a>
+          {broadcast.available ? <p className="mt-2 text-xs text-muted">Usable: {broadcast.available.join(", ")}</p> : null}
+          {broadcast.canAdd ? <p className="mt-1 text-xs text-muted">Can add: {broadcast.canAdd.join(", ")}</p> : null}
+          <ul className="mt-2 flex flex-col gap-1">
+            {broadcast.links.map((link) => (
+              <li key={link.url}>
+                <a className="text-xs text-cream hover:text-amber" href={link.url} target="_blank" rel="noopener noreferrer">
+                  {link.kind} \u00b7 {link.name}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
       <dl className="grid grid-cols-2 gap-2">
         <Stat label="Rain window" value={`${country.precipMm.toFixed(1)} mm`} />
-        <Stat label="OpenWeather 1h" value={country.owmRain == null ? "—" : `${country.owmRain.toFixed(1)} mm`} />
-        <Stat label="Strongest quake" value={country.maxMag ? `M${country.maxMag}` : "—"} />
-        <Stat label="Flood alert" value={country.maxFloodAlert === "info" ? "—" : country.maxFloodAlert} />
+        <Stat label="OpenWeather 1h" value={country.owmRain == null ? "\u2014" : `${country.owmRain.toFixed(1)} mm`} />
+        <Stat label="Strongest quake" value={country.maxMag ? `M${country.maxMag}` : "\u2014"} />
+        <Stat label="Flood alert" value={country.maxFloodAlert === "info" ? "\u2014" : country.maxFloodAlert} />
       </dl>
       {distance != null ? (
         <p className={distance <= radiusKm ? "text-amber" : "text-muted"}>
-          {Math.round(distance)} km from you{distance <= radiusKm ? " · inside your alert radius" : ""}
+          {Math.round(distance)} km from you{distance <= radiusKm ? " \u00b7 inside your alert radius" : ""}
         </p>
       ) : null}
       <div className="rounded-xl border border-line bg-panel-2 p-3">
@@ -178,13 +196,13 @@ function CountryDetail({
         {forecast ? (
           <p className="mt-1">
             {weatherText(forecast.code)}
-            {forecast.tempC != null ? ` · ${Math.round(forecast.tempC)}°C` : ""}
-            {forecast.windKmh != null ? ` · wind ${Math.round(forecast.windKmh)} km/h` : ""}
-            {forecast.owm?.description ? ` · OpenWeather ${forecast.owm.description}` : ""}
-            {forecast.place ? ` · ${forecast.place}` : ""}
+            {forecast.tempC != null ? ` \u00b7 ${Math.round(forecast.tempC)}\u00b0C` : ""}
+            {forecast.windKmh != null ? ` \u00b7 wind ${Math.round(forecast.windKmh)} km/h` : ""}
+            {forecast.owm?.description ? ` \u00b7 OpenWeather ${forecast.owm.description}` : ""}
+            {forecast.place ? ` \u00b7 ${forecast.place}` : ""}
           </p>
         ) : (
-          <p className="mt-1 text-muted">{forecastError || "Reading Open-Meteo…"}</p>
+          <p className="mt-1 text-muted">{forecastError || "Reading Open-Meteo\u2026"}</p>
         )}
         {forecast?.owmError ? <p className="mt-1 text-crimson">{forecast.owmError}</p> : null}
       </div>
@@ -198,23 +216,23 @@ function CountryDetail({
       </div>
       <ul className="flex flex-col gap-2">
         {country.events.map((event) => (
-          <li key={event.id}>
-            <button
-              type="button"
-              onClick={() => onEvent(event)}
-              data-on={selectedEventId === event.id ? "true" : "false"}
-              className="w-full rounded-xl border border-line px-3 py-2 text-left data-[on=true]:border-amber"
-            >
+          <li key={event.id} className="rounded-xl border border-line px-3 py-2" data-on={selectedEventId === event.id ? "true" : "false"}>
+            <button type="button" onClick={() => onEvent(event)} className="w-full text-left">
               <span className="text-xs uppercase tracking-wider text-amber">
-                {KIND_LABEL[event.kind]} · {event.source}
-                {event.mag != null ? ` · M${event.mag}` : ""} · {event.alert}
+                {KIND_LABEL[event.kind]} \u00b7 {event.source}
+                {event.mag != null ? ` \u00b7 M${event.mag}` : ""} \u00b7 {event.alert}
               </span>
               <p className="mt-0.5">{event.title}</p>
               <p className="text-xs text-muted">
                 {ago(event.time)}
-                {event.detail ? ` · ${event.detail}` : ""}
+                {event.detail ? ` \u00b7 ${event.detail}` : ""}
               </p>
             </button>
+            {event.url ? (
+              <a className="mt-1 inline-flex items-center gap-1 text-xs text-amber" href={event.url} target="_blank" rel="noopener noreferrer">
+                Open source <ExternalLink className="size-3" />
+              </a>
+            ) : null}
           </li>
         ))}
       </ul>
