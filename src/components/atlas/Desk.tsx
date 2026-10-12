@@ -103,7 +103,7 @@ function MapPane({
           attributionControl: false,
           style: {
             version: 8,
-            // Free OpenStreetMap tiles (no key, attribution only). CARTO left this window blank on the live site.
+            // Free OpenStreetMap tiles only (no API key, attribution only). Do not use paid/keyed tile hosts.
             sources: {
               osm: {
                 type: "raster",
