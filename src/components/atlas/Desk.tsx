@@ -103,21 +103,27 @@ function MapPane({
           attributionControl: false,
           style: {
             version: 8,
+            // Free OpenStreetMap tiles only (no API key, attribution only). Do not use paid/keyed tile hosts.
             sources: {
               osm: {
                 type: "raster",
-                tiles: ["https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png"],
+                tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
                 tileSize: 256,
-                attribution: "© OpenStreetMap © CARTO",
+                maxzoom: 19,
+                attribution: "© OpenStreetMap contributors",
               },
             },
             layers: [
               { id: "bg", type: "background", paint: { "background-color": "#101820" } },
-              { id: "osm", type: "raster", source: "osm" },
+              { id: "osm", type: "raster", source: "osm", paint: { "raster-brightness-max": 0.85, "raster-saturation": -0.2 } },
             ],
           },
         });
         map.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-left");
+        map.on("error", (event) => {
+          const source = (event as { sourceId?: string }).sourceId;
+          if (source === "osm" && !dead) setBroken("Map tiles could not load. Check your connection or ad blocker.");
+        });
         watch = new ResizeObserver(() => map?.resize());
         watch.observe(node.current);
         map.on("load", () => {
@@ -177,7 +183,7 @@ function MapPane({
   return (
     <div className="relative h-full w-full" style={{ height: "100%", width: "100%", minHeight: 220 }}>
       <div ref={node} className="h-full w-full" style={{ height: "100%", width: "100%" }} />
-      {broken ? <p className="absolute inset-x-3 top-3 text-sm text-cream">{broken}</p> : null}
+      {broken ? <p className="absolute inset-x-3 top-10 z-10 rounded-lg bg-panel/90 px-2 py-1 text-sm text-cream">{broken}</p> : null}
     </div>
   );
 }
