@@ -3,7 +3,7 @@ import { BarChart3, CloudRain, Globe, Map as MapIcon, Minus, Pause, Pin, Play, X
 import "maplibre-gl/dist/maplibre-gl.css";
 import { weatherText } from "@/lib/disasters/format";
 import { openSourcesPage } from "@/lib/desk/sources";
-import { frameLoaded, setFrameLayers, showFrame } from "@/lib/atlas/radar-frames";
+import { frameLoaded, recoloredTiles, registerRadarProtocol, setFrameLayers, showFrame } from "@/lib/atlas/radar-frames";
 import { useDesk } from "@/lib/desk/store";
 import type { DeskWindow } from "@/lib/desk/types";
 
@@ -35,7 +35,10 @@ function rainSet(radar: Radar, noaa: Noaa, lat: number | null, lon: number | nul
       frames: noaa.times.map((time) => ({
         id: time,
         time: Date.parse(time),
-        tiles: `${NOAA_WMS}?service=WMS&version=1.3.0&request=GetMap&layers=conus_base_reflectivity_mosaic&styles=&format=image/png&transparent=true&crs=EPSG:3857&width=256&height=256&bbox={bbox-epsg-3857}&time=${encodeURIComponent(time)}`,
+        tiles: recoloredTiles(
+          "noaa",
+          `${NOAA_WMS}?service=WMS&version=1.3.0&request=GetMap&layers=conus_base_reflectivity_mosaic&styles=&format=image/png&transparent=true&crs=EPSG:3857&width=256&height=256&bbox={bbox-epsg-3857}&time=${encodeURIComponent(time)}`,
+        ),
       })),
     };
   }
@@ -47,7 +50,7 @@ function rainSet(radar: Radar, noaa: Noaa, lat: number | null, lon: number | nul
       frames: radar.frames.map((frame) => ({
         id: frame.path,
         time: frame.time * 1000,
-        tiles: `${radar.host}${frame.path}/256/{z}/{x}/{y}/2/1_1.png`,
+        tiles: recoloredTiles("rainviewer", `${radar.host}${frame.path}/256/{z}/{x}/{y}/2/0_1.png`),
       })),
     };
   }
@@ -128,6 +131,7 @@ function MapPane({ item, rain, cloudTime }: { item: DeskWindow; rain: RainSet; c
         const workerMod = await import("maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url");
         if (dead || !node.current) return;
         maplibregl.setWorkerUrl(workerMod.default);
+        registerRadarProtocol(maplibregl);
         const lat = item.lat ?? 20;
         const lon = item.lon ?? 0;
         map = new maplibregl.Map({

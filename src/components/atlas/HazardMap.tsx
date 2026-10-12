@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import "maplibre-gl/dist/maplibre-gl.css";
-import type { FilterSpecification, GeoJSONSource, Map as MlMap, RasterTileSource } from "maplibre-gl";
+import type { ExpressionSpecification, FilterSpecification, GeoJSONSource, Map as MlMap, RasterTileSource } from "maplibre-gl";
 import { kindWeight } from "@/lib/disasters/aggregate";
 import { ago } from "@/lib/disasters/format";
 import { circleRing } from "@/lib/disasters/geo";
-import type { AssignedEvent, CountryCollection, CountryStat, HazardKind, VolcanoCollection } from "@/lib/disasters/types";
-import { KIND_LABEL } from "@/lib/disasters/types";
+import type { AssignedEvent, CountryCollection, CountryStat, VolcanoCollection } from "@/lib/disasters/types";
+import { KIND_COLOR, KIND_LABEL } from "@/lib/disasters/types";
 import type { LayerPrefs, UserLocation } from "@/lib/atlas/store";
 import { mergeLayers, useAtlas } from "@/lib/atlas/store";
-import { clearFrameLayers, frameLoaded, setFrameLayers, showFrame } from "@/lib/atlas/radar-frames";
+import { ICE_STOPS } from "@/lib/atlas/weather-colors";
+import { clearFrameLayers, frameLoaded, recoloredTiles, registerRadarProtocol, setFrameLayers, showFrame } from "@/lib/atlas/radar-frames";
 
 const EMPTY = {
   type: "FeatureCollection" as const,
@@ -18,17 +19,6 @@ const EMPTY = {
     properties: Record<string, unknown>;
     geometry: { type: string; coordinates: unknown };
   }[],
-};
-
-const KIND_COLOR: Record<HazardKind, string> = {
-  quake: "#e23b4a",
-  flood: "#3ec6ff",
-  fire: "#ff8a2a",
-  storm: "#b9a6ff",
-  volcano: "#f5c518",
-  drought: "#c4a574",
-  landslide: "#d2c0a0",
-  other: "#e8eef6",
 };
 
 type Props = {
@@ -43,6 +33,7 @@ type Props = {
   owmKey: string;
   radiusKm: number;
   location: UserLocation | null;
+  ice: { lat: number; lon: number; code: number; name: string }[];
 };
 
 function volcanoStatus(year: number | null, eruptingNow: boolean): "erupting" | "restless" | "dormant" {
@@ -128,6 +119,7 @@ export function HazardMap(props: Props) {
       const workerMod = await import("maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url");
       if (dead || !wrapRef.current) return;
       maplibregl.setWorkerUrl(workerMod.default);
+      registerRadarProtocol(maplibregl);
       const narrow = wrapRef.current.clientWidth < 800;
       map = new maplibregl.Map({
         container: wrapRef.current,
@@ -361,6 +353,22 @@ export function HazardMap(props: Props) {
       map.setPaintProperty("countries-fill", "fill-opacity", cloudsOn ? 0.22 : countryFillOpacity);
     }
   }, [ready, props.layers.clouds, props.layers.choropleth, props.clouds]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!ready || !map) return;
+    const source = map.getSource("ice") as GeoJSONSource | undefined;
+    source?.setData({
+      type: "FeatureCollection",
+      features: props.layers.radar
+        ? props.ice.map((point) => ({
+            type: "Feature" as const,
+            properties: { code: point.code, name: point.name },
+            geometry: { type: "Point" as const, coordinates: [point.lon, point.lat] },
+          }))
+        : [],
+    });
+  }, [ready, props.ice, props.layers.radar]);
 
   const radarFrames = props.layers.radar ? radarTiles(props.radar) : [];
   const radarKey = radarFrames.join("|");
@@ -720,6 +728,13 @@ function watchBase(map: MlMap) {
   });
 }
 
+const ICE_COLOR = [
+  "match",
+  ["get", "code"],
+  ...ICE_STOPS.flatMap(([code, color]) => [code, color]),
+  ICE_STOPS[0][1],
+] as unknown as ExpressionSpecification;
+
 function addBase(map: MlMap) {
   setBase(map, 0);
   watchBase(map);
@@ -850,6 +865,19 @@ function addBase(map: MlMap) {
       "circle-opacity": ["match", ["get", "status"], "dormant", 0.72, 0.95],
     },
   });
+  // Freezing drizzle/rain reports (Open-Meteo point codes): soft patches in the freezing-rain palette.
+  map.addSource("ice", { type: "geojson", data: EMPTY, attribution: "Freezing rain © Open-Meteo" });
+  map.addLayer({
+    id: "ice-patch",
+    type: "circle",
+    source: "ice",
+    paint: {
+      "circle-radius": ["interpolate", ["exponential", 2], ["zoom"], 1, 9, 4, 28, 7, 150],
+      "circle-color": ICE_COLOR,
+      "circle-blur": 0.55,
+      "circle-opacity": 0.8,
+    },
+  });
   map.addSource("radius", { type: "geojson", data: EMPTY });
   map.addLayer({
     id: "radius-fill",
@@ -922,7 +950,10 @@ const countryFillOpacity = [
 ] as const;
 
 function radarTiles(radar: { host: string; frames: { path: string }[] } | null): string[] {
-  return radar?.frames.map((frame) => `${radar.host}${frame.path}/512/{z}/{x}/{y}/2/1_1.png`) ?? [];
+  // Unsmoothed (0) with snow colors (1): exact source colors, so tiles can be repainted with the app palette.
+  return (
+    radar?.frames.map((frame) => recoloredTiles("rainviewer", `${radar.host}${frame.path}/512/{z}/{x}/{y}/2/0_1.png`)) ?? []
+  );
 }
 
 function syncRaster(

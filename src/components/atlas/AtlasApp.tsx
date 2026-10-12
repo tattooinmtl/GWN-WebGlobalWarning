@@ -17,7 +17,8 @@ import { buildContext } from "@/lib/disasters/context";
 import { ago, stampKey, weatherText } from "@/lib/disasters/format";
 import { haversineKm, prepareCountries } from "@/lib/disasters/geo";
 import type { CountryCollection, CountryStat, HazardKind, Metric, VolcanoCollection } from "@/lib/disasters/types";
-import { KIND_LABEL, METRICS } from "@/lib/disasters/types";
+import { KIND_COLOR, KIND_LABEL, METRICS } from "@/lib/disasters/types";
+import { legendGradient, type PrecipKind } from "@/lib/atlas/weather-colors";
 import type { LayerPrefs } from "@/lib/atlas/store";
 import { mergeLayers, useAtlas } from "@/lib/atlas/store";
 import { APP_TITLE } from "@/lib/brand";
@@ -300,6 +301,7 @@ function AtlasInner() {
         events={model?.events ?? []}
         volcanoes={volcanoQuery.data ?? null}
         radar={atlasQuery.data?.radar ?? null}
+        ice={atlasQuery.data?.ice ?? []}
         clouds={atlasQuery.data?.clouds ?? null}
         frame={frame}
         layers={layers}
@@ -436,10 +438,16 @@ function AtlasInner() {
               </button>
             ))}
           </div>
-          <div className="ramp" />
+          <p className="text-xs text-muted">Country pressure</p>
+          <div className="ramp mt-1" />
           <div className="mt-1 flex justify-between text-xs text-muted">
             <span>Quiet</span>
             <span>Extreme</span>
+          </div>
+          <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-cream">
+            <WeatherKey kind="rain" label="Rain" />
+            <WeatherKey kind="ice" label="Freezing rain" />
+            <WeatherKey kind="snow" label="Snow" />
           </div>
           <p className="mt-1 text-xs text-muted">{metricMeta.blurb}</p>
           {!prefs.hintDismissed ? (
@@ -461,12 +469,14 @@ function AtlasInner() {
           {prefs.owmKey && blendQuery.data && !blendQuery.data.error ? (
             <p className="mt-1 text-xs text-cyan">OpenWeather rain blended into {blendQuery.data.rows.length} countries.</p>
           ) : null}
-          <div className="mt-2 flex items-center justify-between text-xs text-muted">
-            <span className="flex gap-2">
+          <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-xs text-muted">
+            <span className="flex flex-wrap gap-x-2 gap-y-1">
               <Key kind="flood" />
               <Key kind="quake" />
               <Key kind="fire" />
               <Key kind="storm" />
+              <Key kind="volcano" />
+              <Key kind="other" />
             </span>
             <button type="button" className="chip h-8 px-2" data-on={radarPlay ? "true" : "false"} onClick={() => setRadarPlay((play) => !play)}>
               Radar {radarPlay ? "playing" : "paused"}
@@ -570,11 +580,20 @@ function AtlasInner() {
 }
 
 function Key({ kind }: { kind: HazardKind }) {
-  const color = kind === "quake" ? "bg-crimson" : kind === "flood" ? "bg-cyan" : kind === "fire" ? "bg-fire" : "bg-storm";
   return (
     <span className="inline-flex items-center gap-1">
-      <span className={`size-2 rounded-full ${color}`} />
+      <span className="size-2 rounded-full" style={{ background: KIND_COLOR[kind] }} />
       {KIND_LABEL[kind]}
+    </span>
+  );
+}
+
+// Light → heavy, same stops the radar tiles are repainted with.
+function WeatherKey({ kind, label }: { kind: PrecipKind; label: string }) {
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      {label}
+      <span className="h-2.5 w-16 rounded-full" style={{ background: legendGradient(kind) }} />
     </span>
   );
 }

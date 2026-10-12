@@ -1,4 +1,5 @@
 import type { Map as MlMap } from "maplibre-gl";
+import { recolorImage, type RadarSource } from "./weather-colors";
 
 /**
  * Animated radar as one preloaded raster layer per frame (`${prefix}0`, `${prefix}1`, …).
@@ -58,4 +59,57 @@ export function frameLoaded(map: MlMap | null, prefix: string, index: number): b
   } catch {
     return false;
   }
+}
+
+export const RADAR_PROTOCOL = "gwnradar";
+
+/** Route a radar tile template through the recoloring protocol (see weather-colors.ts). */
+export function recoloredTiles(source: RadarSource, url: string): string {
+  return `${RADAR_PROTOCOL}://${source}/${url}`;
+}
+
+let protocolReady = false;
+// Identical tile URLs requested at the same time (world copies, frame rebuilds) share one download.
+const inflight = new Map<string, Promise<ImageData>>();
+
+async function loadRecolored(source: RadarSource, url: string): Promise<ImageData> {
+  // Hard cap so a stalled download can never hold one of MapLibre's 16 shared image slots forever.
+  const res = await fetch(url, { signal: AbortSignal.timeout(20_000) });
+  if (!res.ok) throw new Error(`Radar tile HTTP ${res.status}`);
+  const bitmap = await createImageBitmap(await res.blob());
+  const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
+  const ctx = canvas.getContext("2d", { willReadFrequently: true });
+  if (!ctx) throw new Error("Radar recolor needs a 2D canvas");
+  ctx.drawImage(bitmap, 0, 0);
+  bitmap.close();
+  const image = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  recolorImage(source, image.data);
+  return image;
+}
+
+function untilAborted<T>(work: Promise<T>, signal: AbortSignal): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    if (signal.aborted) return reject(new DOMException("Aborted", "AbortError"));
+    signal.addEventListener("abort", () => reject(new DOMException("Aborted", "AbortError")), { once: true });
+    work.then(resolve, reject);
+  });
+}
+
+/** Fetch each radar tile, repaint its pixels with the app palette, hand MapLibre the bitmap. */
+export function registerRadarProtocol(lib: typeof import("maplibre-gl")) {
+  if (protocolReady) return;
+  protocolReady = true;
+  lib.addProtocol(RADAR_PROTOCOL, async (params, abortController) => {
+    const rest = params.url.slice(`${RADAR_PROTOCOL}://`.length);
+    const slash = rest.indexOf("/");
+    const source = rest.slice(0, slash) as RadarSource;
+    const url = rest.slice(slash + 1);
+    let work = inflight.get(params.url);
+    if (!work) {
+      work = loadRecolored(source, url).finally(() => inflight.delete(params.url));
+      inflight.set(params.url, work);
+    }
+    const image = await untilAborted(work, abortController.signal);
+    return { data: await createImageBitmap(image) };
+  });
 }

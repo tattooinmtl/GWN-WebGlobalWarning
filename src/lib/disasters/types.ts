@@ -50,6 +50,8 @@ export type AtlasPayload = {
   fetchedAt: string;
   events: DisasterEvent[];
   precip: { id: string; mm: number }[];
+  /** Open-Meteo sample points currently reporting freezing drizzle/rain (codes 56, 57, 66, 67). */
+  ice: { lat: number; lon: number; code: number; name: string }[];
   radar: { host: string; frames: RadarFrame[] } | null;
   /** NOAA nowCOAST MRMS radar frame times (ISO), CONUS + southern Canada, ~4 min apart. */
   noaaRadar: { times: string[] } | null;
@@ -178,6 +180,18 @@ export const METRICS: { id: Metric; label: string; kicker: string; blurb: string
     blurb: "The stronger of flood, quake, fire, storm, and volcano pressure in each country.",
   },
 ];
+
+/** Event dot colors (map and legend). Storm is teal so lilac/purple stays reserved for snow. */
+export const KIND_COLOR: Record<HazardKind, string> = {
+  quake: "#e23b4a",
+  flood: "#3ec6ff",
+  fire: "#ff8a2a",
+  storm: "#2dd4bf",
+  volcano: "#f5c518",
+  drought: "#c4a574",
+  landslide: "#d2c0a0",
+  other: "#e8eef6",
+};
 
 export const KIND_LABEL: Record<HazardKind, string> = {
   quake: "Quake",
