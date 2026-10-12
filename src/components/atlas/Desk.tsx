@@ -103,33 +103,26 @@ function MapPane({
           attributionControl: false,
           style: {
             version: 8,
-            // Same Esri host as the main map's imagery — CARTO tiles left this window blank on the live site.
+            // Free OpenStreetMap tiles (no key, attribution only). CARTO left this window blank on the live site.
             sources: {
-              sat: {
+              osm: {
                 type: "raster",
-                tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"],
+                tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
                 tileSize: 256,
-                maxzoom: 17,
-                attribution: "Imagery © Esri",
-              },
-              labels: {
-                type: "raster",
-                tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"],
-                tileSize: 256,
-                maxzoom: 17,
+                maxzoom: 19,
+                attribution: "© OpenStreetMap contributors",
               },
             },
             layers: [
               { id: "bg", type: "background", paint: { "background-color": "#101820" } },
-              { id: "sat", type: "raster", source: "sat", paint: { "raster-brightness-max": 0.8 } },
-              { id: "labels", type: "raster", source: "labels" },
+              { id: "osm", type: "raster", source: "osm", paint: { "raster-brightness-max": 0.85, "raster-saturation": -0.2 } },
             ],
           },
         });
         map.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-left");
         map.on("error", (event) => {
           const source = (event as { sourceId?: string }).sourceId;
-          if (source === "sat" && !dead) setBroken("Map tiles could not load. Check your connection or ad blocker.");
+          if (source === "osm" && !dead) setBroken("Map tiles could not load. Check your connection or ad blocker.");
         });
         watch = new ResizeObserver(() => map?.resize());
         watch.observe(node.current);
