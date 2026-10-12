@@ -103,21 +103,34 @@ function MapPane({
           attributionControl: false,
           style: {
             version: 8,
+            // Same Esri host as the main map's imagery — CARTO tiles left this window blank on the live site.
             sources: {
-              osm: {
+              sat: {
                 type: "raster",
-                tiles: ["https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png"],
+                tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"],
                 tileSize: 256,
-                attribution: "© OpenStreetMap © CARTO",
+                maxzoom: 17,
+                attribution: "Imagery © Esri",
+              },
+              labels: {
+                type: "raster",
+                tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"],
+                tileSize: 256,
+                maxzoom: 17,
               },
             },
             layers: [
               { id: "bg", type: "background", paint: { "background-color": "#101820" } },
-              { id: "osm", type: "raster", source: "osm" },
+              { id: "sat", type: "raster", source: "sat", paint: { "raster-brightness-max": 0.8 } },
+              { id: "labels", type: "raster", source: "labels" },
             ],
           },
         });
         map.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-left");
+        map.on("error", (event) => {
+          const source = (event as { sourceId?: string }).sourceId;
+          if (source === "sat" && !dead) setBroken("Map tiles could not load. Check your connection or ad blocker.");
+        });
         watch = new ResizeObserver(() => map?.resize());
         watch.observe(node.current);
         map.on("load", () => {
@@ -177,7 +190,7 @@ function MapPane({
   return (
     <div className="relative h-full w-full" style={{ height: "100%", width: "100%", minHeight: 220 }}>
       <div ref={node} className="h-full w-full" style={{ height: "100%", width: "100%" }} />
-      {broken ? <p className="absolute inset-x-3 top-3 text-sm text-cream">{broken}</p> : null}
+      {broken ? <p className="absolute inset-x-3 top-10 z-10 rounded-lg bg-panel/90 px-2 py-1 text-sm text-cream">{broken}</p> : null}
     </div>
   );
 }
