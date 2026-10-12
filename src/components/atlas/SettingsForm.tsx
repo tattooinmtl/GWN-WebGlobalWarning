@@ -52,8 +52,8 @@ export function SettingsForm({ onClose }: { onClose: () => void }) {
           </span>
           <input
             type="range"
-            min={2.5}
-            max={7}
+            min={0}
+            max={9.5}
             step={0.5}
             value={prefs.minQuakeAlert}
             className="accent-amber"
