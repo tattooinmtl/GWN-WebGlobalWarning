@@ -51,6 +51,8 @@ export type AtlasPayload = {
   events: DisasterEvent[];
   precip: { id: string; mm: number }[];
   radar: { host: string; frames: RadarFrame[] } | null;
+  /** NOAA nowCOAST MRMS radar frame times (ISO), CONUS + southern Canada, ~4 min apart. */
+  noaaRadar: { times: string[] } | null;
   clouds: { time: string } | null;
   headlines: Headline[];
   sources: SourceStatus[];

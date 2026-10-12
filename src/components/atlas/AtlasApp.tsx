@@ -307,7 +307,11 @@ function AtlasInner() {
         radiusKm={prefs.radiusKm}
         location={location}
       />
-      <Desk radar={atlasQuery.data?.radar ?? null} frame={frame} cloudTime={atlasQuery.data?.clouds?.time ?? null} />
+      <Desk
+        radar={atlasQuery.data?.radar ?? null}
+        noaa={atlasQuery.data?.noaaRadar ?? null}
+        cloudTime={atlasQuery.data?.clouds?.time ?? null}
+      />
 
       <header className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between gap-2 p-3">
         <div className="pointer-events-auto flex items-center gap-2">

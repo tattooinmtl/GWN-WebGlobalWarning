@@ -541,6 +541,22 @@ async function loadRadar(): Promise<{ value: AtlasPayload["radar"]; count: numbe
   return { value: { host: json.host, frames }, count: frames.length };
 }
 
+const NOAA_RADAR_WMS = "https://nowcoast.noaa.gov/geoserver/observations/weather_radar/wms";
+
+async function loadNoaaRadar(): Promise<{ value: AtlasPayload["noaaRadar"]; count: number }> {
+  const xml = await getText(`${NOAA_RADAR_WMS}?service=WMS&version=1.3.0&request=GetCapabilities`, 12000);
+  const at = xml.indexOf("<Name>conus_base_reflectivity_mosaic</Name>");
+  if (at < 0) throw new Error("no CONUS radar layer");
+  const dim = /<Dimension[^>]*name="time"[^>]*>([^<]+)<\/Dimension>/.exec(xml.slice(at));
+  const times = (dim?.[1] ?? "")
+    .split(",")
+    .map((time) => time.trim())
+    .filter(Boolean)
+    .slice(-12);
+  if (!times.length) throw new Error("no radar times");
+  return { value: { times }, count: times.length };
+}
+
 async function loadPrecip(): Promise<{ value: { id: string; mm: number }[]; count: number }> {
   const chunks: (typeof SAMPLE_POINTS)[] = [];
   for (let i = 0; i < SAMPLE_POINTS.length; i += 50) chunks.push(SAMPLE_POINTS.slice(i, i + 50));
@@ -749,7 +765,7 @@ async function loadCanadaFires(): Promise<{ value: DisasterEvent[]; count: numbe
 
 async function fetchAtlas(): Promise<AtlasPayload> {
   const sources: SourceStatus[] = [];
-  const [usgs, canadaQuakes, eonet, gdacs, nws, canadaAlerts, canadaFires, radar, clouds, headlines, precip] = await Promise.all([
+  const [usgs, canadaQuakes, eonet, gdacs, nws, canadaAlerts, canadaFires, radar, noaaRadar, clouds, headlines, precip] = await Promise.all([
     timed(sources, "usgs", "USGS quakes", loadUsgs),
     timed(sources, "canquake", "Earthquakes Canada", loadCanadaQuakes),
     timed(sources, "eonet", "NASA EONET", async () => {
@@ -761,6 +777,7 @@ async function fetchAtlas(): Promise<AtlasPayload> {
     timed(sources, "eccc", "Canada alerts", loadCanadaAlerts),
     timed(sources, "cwfis", "Canada wildfires", loadCanadaFires),
     timed(sources, "radar", "RainViewer", loadRadar),
+    timed(sources, "noaa", "NOAA radar", loadNoaaRadar),
     timed(sources, "goes", "GOES clouds", loadClouds),
     timed(sources, "wires", "Headlines", loadHeadlines),
     timed(sources, "meteo", "Open-Meteo rain", loadPrecip),
@@ -788,6 +805,7 @@ async function fetchAtlas(): Promise<AtlasPayload> {
     events,
     precip: precip ?? [],
     radar: radar ?? null,
+    noaaRadar: noaaRadar ?? null,
     clouds: clouds ?? null,
     headlines: headlines ?? [],
     sources,
