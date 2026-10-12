@@ -1,24 +1,60 @@
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
-import { BarChart3, CloudRain, Globe, Map as MapIcon, Minus, Pin, X } from "lucide-react";
+import { BarChart3, CloudRain, Globe, Map as MapIcon, Minus, Pause, Pin, Play, X } from "lucide-react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { weatherText } from "@/lib/disasters/format";
 import { openSourcesPage } from "@/lib/desk/sources";
 import { useDesk } from "@/lib/desk/store";
 import type { DeskWindow } from "@/lib/desk/types";
 
-type Radar = { host: string; frames: { path: string }[] } | null;
+type Radar = { host: string; frames: { time: number; path: string }[] } | null;
+type Noaa = { times: string[] } | null;
 
 type Props = {
   radar: Radar;
-  frame: number;
+  noaa: Noaa;
   cloudTime: string | null;
 };
 
-function rainTiles(radar: Radar, frame: number): string | null {
-  if (!radar?.frames.length) return null;
-  const path = radar.frames[frame % radar.frames.length]?.path;
-  if (!path) return null;
-  return `${radar.host}${path}/256/{z}/{x}/{y}/2/1_1.png`;
+const NOAA_WMS = "https://nowcoast.noaa.gov/geoserver/observations/weather_radar/wms";
+// Extent of conus_base_reflectivity_mosaic in the service capabilities (covers southern Canada too).
+const NOAA_BOX = { west: -130, east: -60, south: 20, north: 55 };
+
+type RainFrame = { id: string; time: number; tiles: string };
+type RainSet = { label: string; attribution: string; maxzoom: number; frames: RainFrame[] };
+
+// NOAA MRMS (1 km, ~4 min) inside its coverage, RainViewer (worldwide) everywhere else.
+function rainSet(radar: Radar, noaa: Noaa, lat: number | null, lon: number | null): RainSet {
+  const inNoaa =
+    lat != null && lon != null && lon >= NOAA_BOX.west && lon <= NOAA_BOX.east && lat >= NOAA_BOX.south && lat <= NOAA_BOX.north;
+  if (inNoaa && noaa?.times.length) {
+    return {
+      label: "NOAA",
+      attribution: "Radar © NOAA/NWS MRMS",
+      maxzoom: 10,
+      frames: noaa.times.map((time) => ({
+        id: time,
+        time: Date.parse(time),
+        tiles: `${NOAA_WMS}?service=WMS&version=1.3.0&request=GetMap&layers=conus_base_reflectivity_mosaic&styles=&format=image/png&transparent=true&crs=EPSG:3857&width=256&height=256&bbox={bbox-epsg-3857}&time=${encodeURIComponent(time)}`,
+      })),
+    };
+  }
+  if (radar?.frames.length) {
+    return {
+      label: "RainViewer",
+      attribution: "Radar © RainViewer",
+      maxzoom: 7,
+      frames: radar.frames.map((frame) => ({
+        id: frame.path,
+        time: frame.time * 1000,
+        tiles: `${radar.host}${frame.path}/256/{z}/{x}/{y}/2/1_1.png`,
+      })),
+    };
+  }
+  return { label: "", attribution: "", maxzoom: 7, frames: [] };
+}
+
+function clock(ms: number): string {
+  return new Date(ms).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 
 function cloudTiles(lon: number | null, time: string | null): string | null {
@@ -61,26 +97,23 @@ function drag(start: { x: number; y: number }, onMove: (x: number, y: number) =>
   };
 }
 
-function MapPane({
-  item,
-  radarUrl,
-  cloudTime,
-}: {
-  item: DeskWindow;
-  radarUrl: string | null;
-  cloudTime: string | null;
-}) {
+function MapPane({ item, rain, cloudTime }: { item: DeskWindow; rain: RainSet; cloudTime: string | null }) {
   const node = useRef<HTMLDivElement>(null);
   const mapRef = useRef<import("maplibre-gl").Map | null>(null);
-  const rainRef = useRef(radarUrl);
-  const rainOn = useRef(item.showRain);
   const cloudOn = useRef(item.showClouds);
   const cloudRef = useRef(cloudTiles(item.lon, cloudTime));
   const [broken, setBroken] = useState("");
-  rainRef.current = radarUrl;
-  rainOn.current = item.showRain;
+  const [ready, setReady] = useState(false);
+  const [index, setIndex] = useState(-1);
+  const [, setTilesTick] = useState(0);
+  const [playing, setPlaying] = useState(
+    () => typeof window === "undefined" || !window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  );
   cloudOn.current = item.showClouds;
   cloudRef.current = cloudTiles(item.lon, cloudTime);
+  const frames = item.showRain ? rain.frames : [];
+  const framesKey = frames.map((frame) => frame.id).join("|");
+  const current = frames.length ? (index < 0 || index >= frames.length ? frames.length - 1 : index) : -1;
 
   useEffect(() => {
     const host = node.current;
@@ -119,7 +152,7 @@ function MapPane({
             ],
           },
         });
-        map.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-left");
+        map.addControl(new maplibregl.AttributionControl({ compact: true }), "top-right");
         map.on("error", (event) => {
           const source = (event as { sourceId?: string }).sourceId;
           if (source === "osm" && !dead) setBroken("Map tiles could not load. Check your connection or ad blocker.");
@@ -157,8 +190,12 @@ function MapPane({
             );
           }
           map.resize();
-          syncRaster(map, "rain", rainRef.current, rainOn.current, 7);
           syncRaster(map, "clouds", cloudOn.current ? cloudRef.current : null, cloudOn.current, 7);
+          setReady(true);
+        });
+        // Re-render as radar frames finish loading so playback and the "loading" label stay current.
+        map.on("sourcedata", (event) => {
+          if (event.sourceId?.startsWith("rain-") && event.isSourceLoaded) setTilesTick((tick) => tick + 1);
         });
         mapRef.current = map;
       } catch (err) {
@@ -167,6 +204,7 @@ function MapPane({
     })();
     return () => {
       dead = true;
+      setReady(false);
       watch?.disconnect();
       map?.remove();
       mapRef.current = null;
@@ -176,22 +214,118 @@ function MapPane({
   useEffect(() => {
     const map = mapRef.current;
     if (!map?.isStyleLoaded()) return;
-    syncRaster(map, "rain", radarUrl, item.showRain, 7);
     syncRaster(map, "clouds", item.showClouds ? cloudTiles(item.lon, cloudTime) : null, item.showClouds, 7);
   });
+
+  // One preloaded layer per radar frame; playback only flips opacity, so frames never reload or flicker.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!ready || !map) return;
+    for (const layer of map.getStyle().layers) {
+      if (!layer.id.startsWith("rain-")) continue;
+      map.removeLayer(layer.id);
+      map.removeSource(layer.id);
+    }
+    frames.forEach((frame, i) => {
+      const id = `rain-${i}`;
+      map.addSource(id, {
+        type: "raster",
+        tiles: [frame.tiles],
+        tileSize: 256,
+        maxzoom: rain.maxzoom,
+        attribution: i === 0 ? rain.attribution : undefined,
+      });
+      map.addLayer({
+        id,
+        type: "raster",
+        source: id,
+        paint: { "raster-opacity": 0, "raster-opacity-transition": { duration: 0 }, "raster-fade-duration": 0 },
+      });
+    });
+    setIndex(-1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, framesKey]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!ready || !map) return;
+    frames.forEach((_, i) => {
+      const id = `rain-${i}`;
+      if (map.getLayer(id)) map.setPaintProperty(id, "raster-opacity", i === current ? 0.75 : 0);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, framesKey, current]);
+
+  // Only step onto a frame whose tiles are in, so the loop never flashes an empty frame while buffering.
+  useEffect(() => {
+    if (!playing || frames.length < 2) return;
+    const timer = window.setInterval(() => {
+      setIndex((at) => {
+        const from = at < 0 ? frames.length - 1 : at;
+        const next = (from + 1) % frames.length;
+        return frameLoaded(mapRef.current, next) ? next : from;
+      });
+    }, 800);
+    return () => window.clearInterval(timer);
+  }, [playing, frames.length]);
 
   return (
     <div className="relative h-full w-full" style={{ height: "100%", width: "100%", minHeight: 220 }}>
       <div ref={node} className="h-full w-full" style={{ height: "100%", width: "100%" }} />
       {broken ? <p className="absolute inset-x-3 top-10 z-10 rounded-lg bg-panel/90 px-2 py-1 text-sm text-cream">{broken}</p> : null}
+      {current >= 0 ? (
+        <div className="absolute inset-x-2 bottom-2 z-10 flex items-center gap-2 rounded-full border border-line bg-panel/90 py-1 pl-1 pr-3">
+          <button
+            type="button"
+            className="grid size-7 shrink-0 place-items-center rounded-full bg-panel-2"
+            aria-label={playing ? "Pause radar" : "Play radar"}
+            onClick={() => setPlaying((on) => !on)}
+          >
+            {playing ? <Pause className="size-3.5" /> : <Play className="size-3.5" />}
+          </button>
+          <input
+            type="range"
+            min={0}
+            max={frames.length - 1}
+            step={1}
+            value={current}
+            aria-label="Radar time"
+            className="min-w-0 flex-1 accent-[#3ec6ff]"
+            onChange={(event) => {
+              setPlaying(false);
+              setIndex(Number(event.target.value));
+            }}
+          />
+          <span className="shrink-0 text-xs tabular-nums text-cream">
+            {rain.label} {clock(frames[current].time)}
+            {frameLoaded(mapRef.current, current) ? "" : " · loading…"}
+          </span>
+        </div>
+      ) : item.showRain && ready ? (
+        <p className="absolute inset-x-2 bottom-2 z-10 rounded-full bg-panel/90 px-3 py-1 text-xs text-muted">
+          No radar frames loaded yet.
+        </p>
+      ) : null}
     </div>
   );
+}
+
+function frameLoaded(map: import("maplibre-gl").Map | null, index: number): boolean {
+  try {
+    return Boolean(map?.getSource(`rain-${index}`) && map.isSourceLoaded(`rain-${index}`));
+  } catch {
+    return false;
+  }
 }
 
 function syncRaster(map: import("maplibre-gl").Map, id: string, tiles: string | null, visible: boolean, maxzoom = 12) {
   if (!map.getSource(id) && tiles) {
     map.addSource(id, { type: "raster", tiles: [tiles], tileSize: 256, maxzoom });
-    map.addLayer({ id, type: "raster", source: id, paint: { "raster-opacity": id === "clouds" ? 0.72 : 0.7 } });
+    // Keep clouds under the radar frames.
+    map.addLayer(
+      { id, type: "raster", source: id, paint: { "raster-opacity": id === "clouds" ? 0.72 : 0.7 } },
+      map.getLayer("rain-0") ? "rain-0" : undefined,
+    );
   }
   const source = map.getSource(id) as { setTiles?: (tiles: string[]) => void } | undefined;
   if (source?.setTiles && tiles) source.setTiles([tiles]);
@@ -239,7 +373,7 @@ function WebPane({ item }: { item: DeskWindow }) {
   );
 }
 
-function WindowCard({ item, radarUrl, cloudTime }: { item: DeskWindow; radarUrl: string | null; cloudTime: string | null }) {
+function WindowCard({ item, radar, noaa, cloudTime }: { item: DeskWindow; radar: Radar; noaa: Noaa; cloudTime: string | null }) {
   const focus = useDesk((s) => s.focus);
   const close = useDesk((s) => s.close);
   const minimize = useDesk((s) => s.minimize);
@@ -273,7 +407,7 @@ function WindowCard({ item, radarUrl, cloudTime }: { item: DeskWindow; radarUrl:
       <div className="relative min-h-0 flex-1 bg-[#101820]" style={{ height: 260 }}>
         {item.kind === "chart" ? <ChartPane item={item} /> : null}
         {item.kind === "web" ? <WebPane item={item} /> : null}
-        {item.kind === "radar" || item.kind === "place" ? <MapPane item={item} radarUrl={radarUrl} cloudTime={cloudTime} /> : null}
+        {item.kind === "radar" || item.kind === "place" ? <MapPane item={item} rain={rainSet(radar, noaa, item.lat, item.lon)} cloudTime={cloudTime} /> : null}
         {item.kind === "radar" || item.kind === "place" ? (
           <div className="pointer-events-none absolute left-2 top-2 z-10 flex max-w-[calc(100%-1rem)] flex-wrap gap-1">
             {item.weather?.tempC != null ? <span className="rounded-full bg-panel/90 px-2 py-0.5 text-xs">{Math.round(item.weather.tempC)}°C</span> : null}
@@ -308,14 +442,13 @@ const KIND_ICON = {
   web: Globe,
 } as const;
 
-export function Desk({ radar, frame, cloudTime }: Props) {
+export function Desk({ radar, noaa, cloudTime }: Props) {
   const windows = useDesk((s) => s.windows);
   const widget = useDesk((s) => s.widget);
   const moveWidget = useDesk((s) => s.moveWidget);
   const restore = useDesk((s) => s.restore);
   const focus = useDesk((s) => s.focus);
   const close = useDesk((s) => s.close);
-  const radarUrl = rainTiles(radar, frame);
 
   useEffect(() => {
     void Promise.resolve(useDesk.persist.rehydrate());
@@ -328,7 +461,7 @@ export function Desk({ radar, frame, cloudTime }: Props) {
   return (
     <div className="pointer-events-none absolute inset-0">
       {open.map((item) => (
-        <WindowCard key={item.id} item={item} radarUrl={radarUrl} cloudTime={cloudTime} />
+        <WindowCard key={item.id} item={item} radar={radar} noaa={noaa} cloudTime={cloudTime} />
       ))}
 
       <div

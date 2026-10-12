@@ -114,7 +114,7 @@ export async function buildDesk(input: DeskRequest): Promise<{ note: string; win
       "RainViewer radar",
       frames > 0 ? "found" : "empty",
       frames > 0
-        ? `${frames} recent radar frames are already loaded. The window paints the newest one over about 100 km.`
+        ? `${frames} recent radar frames are already loaded. The window animates them with a time slider over about 100 km, and switches to NOAA MRMS radar (frames every ~4 min) inside the US and southern Canada.`
         : "RainViewer had no radar frames loaded, so the window has no rain picture.",
       frames > 0 ? "https://www.rainviewer.com/map.html" : "",
     );
