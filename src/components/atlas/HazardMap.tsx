@@ -8,6 +8,7 @@ import type { AssignedEvent, CountryCollection, CountryStat, HazardKind, Volcano
 import { KIND_LABEL } from "@/lib/disasters/types";
 import type { LayerPrefs, UserLocation } from "@/lib/atlas/store";
 import { mergeLayers, useAtlas } from "@/lib/atlas/store";
+import { clearFrameLayers, frameLoaded, setFrameLayers, showFrame } from "@/lib/atlas/radar-frames";
 
 const EMPTY = {
   type: "FeatureCollection" as const,
@@ -66,6 +67,8 @@ export function HazardMap(props: Props) {
   const tagKey = useRef("");
   propsRef.current = props;
   const [ready, setReady] = useState(false);
+  const [radarTick, setRadarTick] = useState(0);
+  const shownFrame = useRef(-1);
   const fly = useAtlas((s) => s.flyRequest);
   const zoomNonce = useAtlas((s) => s.zoomNonce);
   const selectedIso = useAtlas((s) => s.selectedIso);
@@ -147,6 +150,10 @@ export function HazardMap(props: Props) {
       watch.observe(wrapRef.current);
       map.on("error", (event) => {
         if (event.error?.message) console.warn(event.error.message);
+      });
+      // Re-render when a radar frame finishes loading so the animation can step onto it.
+      map.on("sourcedata", (event) => {
+        if (event.sourceId?.startsWith("radar-") && event.isSourceLoaded) setRadarTick((tick) => tick + 1);
       });
       map.on("load", () => {
         if (dead || !map) return;
@@ -348,13 +355,49 @@ export function HazardMap(props: Props) {
       0.92,
       7,
     );
-    syncRaster(map, "radar", "Radar © RainViewer", props.layers.radar, radarUrl(props.radar, props.frame), 0.55);
-    if (map.getLayer("radar") && map.getLayer("clouds-east")) map.moveLayer("clouds-east", "radar");
+    if (map.getLayer("radar-0") && map.getLayer("clouds-east")) map.moveLayer("clouds-east", "radar-0");
     if (map.getLayer("clouds-east") && map.getLayer("clouds-west")) map.moveLayer("clouds-west", "clouds-east");
     if (map.getLayer("countries-fill") && props.layers.choropleth) {
       map.setPaintProperty("countries-fill", "fill-opacity", cloudsOn ? 0.22 : countryFillOpacity);
     }
-  }, [ready, props.radar, props.frame, props.layers.radar, props.layers.clouds, props.layers.choropleth, props.clouds]);
+  }, [ready, props.layers.clouds, props.layers.choropleth, props.clouds]);
+
+  const radarFrames = props.layers.radar ? radarTiles(props.radar) : [];
+  const radarKey = radarFrames.join("|");
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!ready || !map?.getLayer("countries-fill")) return;
+    shownFrame.current = -1;
+    if (!radarFrames.length) {
+      clearFrameLayers(map, "radar-");
+      return;
+    }
+    // Below the country fill, above the clouds. 512 px tiles cut the world-view request count ~4x (every
+    // frame preloads); RainViewer's free tiles stop at zoom 7, deeper zooms overzoom.
+    setFrameLayers(map, "radar-", radarFrames, {
+      maxzoom: 7,
+      tileSize: 512,
+      attribution: "Radar © RainViewer",
+      beforeId: "countries-fill",
+    });
+    if (map.getLayer("clouds-east")) map.moveLayer("clouds-east", "radar-0");
+    if (map.getLayer("clouds-east") && map.getLayer("clouds-west")) map.moveLayer("clouds-west", "clouds-east");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, radarKey]);
+
+  // Step onto the requested frame only once its tiles are in; until then keep the last loaded frame on screen.
+  useEffect(() => {
+    const map = mapRef.current;
+    const count = radarFrames.length;
+    if (!ready || !map || !count) return;
+    const target = props.frame % count;
+    if (shownFrame.current < 0 || shownFrame.current >= count || frameLoaded(map, "radar-", target)) {
+      shownFrame.current = target;
+    }
+    showFrame(map, "radar-", count, shownFrame.current, 0.55);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, radarKey, props.frame, radarTick]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -878,11 +921,8 @@ const countryFillOpacity = [
   0.82,
 ] as const;
 
-function radarUrl(radar: { host: string; frames: { path: string }[] } | null, frame: number): string[] | null {
-  if (!radar?.frames.length) return null;
-  const path = radar.frames[frame % radar.frames.length]?.path;
-  if (!path) return null;
-  return [`${radar.host}${path}/256/{z}/{x}/{y}/2/1_1.png`];
+function radarTiles(radar: { host: string; frames: { path: string }[] } | null): string[] {
+  return radar?.frames.map((frame) => `${radar.host}${frame.path}/512/{z}/{x}/{y}/2/1_1.png`) ?? [];
 }
 
 function syncRaster(
