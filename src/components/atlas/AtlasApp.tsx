@@ -9,8 +9,10 @@ import {
   Plus,
   RefreshCw,
   Settings,
+  Waves,
   X,
 } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { blendOpenWeather, loadAtlas, pointForecast } from "@/lib/disasters/api";
 import { buildAtlasModel, topCountries } from "@/lib/disasters/aggregate";
 import { buildContext } from "@/lib/disasters/context";
@@ -316,7 +318,7 @@ function AtlasInner() {
       />
 
       <header className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between gap-2 p-3">
-        <div className="pointer-events-auto flex items-center gap-2">
+        <div className="pointer-events-auto flex flex-col items-start gap-2 sm:flex-row sm:items-center">
           <div className="rounded-full border border-line bg-panel/90 px-3 py-2 backdrop-blur-md">
             <p className="flex items-center gap-2 font-display text-sm leading-tight tracking-wide sm:text-base">
               <span className="live-dot inline-block size-2 shrink-0 rounded-full bg-crimson" aria-hidden />
@@ -324,6 +326,10 @@ function AtlasInner() {
             </p>
             <p className="text-xs text-muted">{updated ? `Live · ${updated}` : "Connecting feeds"}</p>
           </div>
+          <Link to="/copernicus" className="cm-launch" aria-label="Open Copernicus mode">
+            <Waves className="size-4" />
+            Copernicus mode
+          </Link>
         </div>
         <div className="pointer-events-auto flex flex-wrap justify-end gap-2">
           <button type="button" className="icon-btn hidden sm:inline-flex" onClick={() => nudgeZoom(0.6)} aria-label="Zoom in">

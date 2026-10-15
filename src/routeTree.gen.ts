@@ -10,33 +10,53 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CopernicusRouteImport } from './routes/copernicus'
+import { Route as ApiCmemsRouteImport } from './routes/api/cmems'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CopernicusRoute = CopernicusRouteImport.update({
+  id: '/copernicus',
+  path: '/copernicus',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCmemsRoute = ApiCmemsRouteImport.update({
+  id: '/api/cmems',
+  path: '/api/cmems',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/copernicus': typeof CopernicusRoute
+  '/api/cmems': typeof ApiCmemsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/copernicus': typeof CopernicusRoute
+  '/api/cmems': typeof ApiCmemsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/copernicus': typeof CopernicusRoute
+  '/api/cmems': typeof ApiCmemsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/copernicus' | '/api/cmems'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/copernicus' | '/api/cmems'
+  id: '__root__' | '/' | '/copernicus' | '/api/cmems'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CopernicusRoute: typeof CopernicusRoute
+  ApiCmemsRoute: typeof ApiCmemsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +68,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/copernicus': {
+      id: '/copernicus'
+      path: '/copernicus'
+      fullPath: '/copernicus'
+      preLoaderRoute: typeof CopernicusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cmems': {
+      id: '/api/cmems'
+      path: '/api/cmems'
+      fullPath: '/api/cmems'
+      preLoaderRoute: typeof ApiCmemsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CopernicusRoute: CopernicusRoute,
+  ApiCmemsRoute: ApiCmemsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
