@@ -3,6 +3,7 @@ import { BarChart3, CloudRain, Globe, Map as MapIcon, Minus, Pause, Pin, Play, X
 import "maplibre-gl/dist/maplibre-gl.css";
 import { weatherText } from "@/lib/disasters/format";
 import { openSourcesPage } from "@/lib/desk/sources";
+import { frameLoaded, recoloredTiles, registerRadarProtocol, setFrameLayers, showFrame } from "@/lib/atlas/radar-frames";
 import { useDesk } from "@/lib/desk/store";
 import type { DeskWindow } from "@/lib/desk/types";
 
@@ -34,7 +35,10 @@ function rainSet(radar: Radar, noaa: Noaa, lat: number | null, lon: number | nul
       frames: noaa.times.map((time) => ({
         id: time,
         time: Date.parse(time),
-        tiles: `${NOAA_WMS}?service=WMS&version=1.3.0&request=GetMap&layers=conus_base_reflectivity_mosaic&styles=&format=image/png&transparent=true&crs=EPSG:3857&width=256&height=256&bbox={bbox-epsg-3857}&time=${encodeURIComponent(time)}`,
+        tiles: recoloredTiles(
+          "noaa",
+          `${NOAA_WMS}?service=WMS&version=1.3.0&request=GetMap&layers=conus_base_reflectivity_mosaic&styles=&format=image/png&transparent=true&crs=EPSG:3857&width=256&height=256&bbox={bbox-epsg-3857}&time=${encodeURIComponent(time)}`,
+        ),
       })),
     };
   }
@@ -46,7 +50,7 @@ function rainSet(radar: Radar, noaa: Noaa, lat: number | null, lon: number | nul
       frames: radar.frames.map((frame) => ({
         id: frame.path,
         time: frame.time * 1000,
-        tiles: `${radar.host}${frame.path}/256/{z}/{x}/{y}/2/1_1.png`,
+        tiles: recoloredTiles("rainviewer", `${radar.host}${frame.path}/256/{z}/{x}/{y}/2/0_1.png`),
       })),
     };
   }
@@ -127,6 +131,7 @@ function MapPane({ item, rain, cloudTime }: { item: DeskWindow; rain: RainSet; c
         const workerMod = await import("maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url");
         if (dead || !node.current) return;
         maplibregl.setWorkerUrl(workerMod.default);
+        registerRadarProtocol(maplibregl);
         const lat = item.lat ?? 20;
         const lon = item.lon ?? 0;
         map = new maplibregl.Map({
@@ -217,44 +222,23 @@ function MapPane({ item, rain, cloudTime }: { item: DeskWindow; rain: RainSet; c
     syncRaster(map, "clouds", item.showClouds ? cloudTiles(item.lon, cloudTime) : null, item.showClouds, 7);
   });
 
-  // One preloaded layer per radar frame; playback only flips opacity, so frames never reload or flicker.
   useEffect(() => {
     const map = mapRef.current;
     if (!ready || !map) return;
-    for (const layer of map.getStyle().layers) {
-      if (!layer.id.startsWith("rain-")) continue;
-      map.removeLayer(layer.id);
-      map.removeSource(layer.id);
-    }
-    frames.forEach((frame, i) => {
-      const id = `rain-${i}`;
-      map.addSource(id, {
-        type: "raster",
-        tiles: [frame.tiles],
-        tileSize: 256,
-        maxzoom: rain.maxzoom,
-        attribution: i === 0 ? rain.attribution : undefined,
-      });
-      map.addLayer({
-        id,
-        type: "raster",
-        source: id,
-        paint: { "raster-opacity": 0, "raster-opacity-transition": { duration: 0 }, "raster-fade-duration": 0 },
-      });
-    });
+    setFrameLayers(
+      map,
+      "rain-",
+      frames.map((frame) => frame.tiles),
+      { maxzoom: rain.maxzoom, attribution: rain.attribution },
+    );
     setIndex(-1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready, framesKey]);
 
   useEffect(() => {
     const map = mapRef.current;
-    if (!ready || !map) return;
-    frames.forEach((_, i) => {
-      const id = `rain-${i}`;
-      if (map.getLayer(id)) map.setPaintProperty(id, "raster-opacity", i === current ? 0.75 : 0);
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ready, framesKey, current]);
+    if (ready && map) showFrame(map, "rain-", frames.length, current, 0.75);
+  }, [ready, framesKey, frames.length, current]);
 
   // Only step onto a frame whose tiles are in, so the loop never flashes an empty frame while buffering.
   useEffect(() => {
@@ -263,7 +247,7 @@ function MapPane({ item, rain, cloudTime }: { item: DeskWindow; rain: RainSet; c
       setIndex((at) => {
         const from = at < 0 ? frames.length - 1 : at;
         const next = (from + 1) % frames.length;
-        return frameLoaded(mapRef.current, next) ? next : from;
+        return frameLoaded(mapRef.current, "rain-", next) ? next : from;
       });
     }, 800);
     return () => window.clearInterval(timer);
@@ -298,7 +282,7 @@ function MapPane({ item, rain, cloudTime }: { item: DeskWindow; rain: RainSet; c
           />
           <span className="shrink-0 text-xs tabular-nums text-cream">
             {rain.label} {clock(frames[current].time)}
-            {frameLoaded(mapRef.current, current) ? "" : " · loading…"}
+            {frameLoaded(mapRef.current, "rain-", current) ? "" : " · loading…"}
           </span>
         </div>
       ) : item.showRain && ready ? (
@@ -308,14 +292,6 @@ function MapPane({ item, rain, cloudTime }: { item: DeskWindow; rain: RainSet; c
       ) : null}
     </div>
   );
-}
-
-function frameLoaded(map: import("maplibre-gl").Map | null, index: number): boolean {
-  try {
-    return Boolean(map?.getSource(`rain-${index}`) && map.isSourceLoaded(`rain-${index}`));
-  } catch {
-    return false;
-  }
 }
 
 function syncRaster(map: import("maplibre-gl").Map, id: string, tiles: string | null, visible: boolean, maxzoom = 12) {

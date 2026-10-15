@@ -1,3 +1,4 @@
+import { ICE_CODES } from "@/lib/atlas/weather-colors";
 import { SAMPLE_POINTS } from "./samples";
 import type {
   AlertLevel,
@@ -557,18 +558,20 @@ async function loadNoaaRadar(): Promise<{ value: AtlasPayload["noaaRadar"]; coun
   return { value: { times }, count: times.length };
 }
 
-async function loadPrecip(): Promise<{ value: { id: string; mm: number }[]; count: number }> {
+type PrecipPack = { precip: AtlasPayload["precip"]; ice: AtlasPayload["ice"] };
+
+async function loadPrecip(): Promise<{ value: PrecipPack; count: number }> {
   const chunks: (typeof SAMPLE_POINTS)[] = [];
   for (let i = 0; i < SAMPLE_POINTS.length; i += 50) chunks.push(SAMPLE_POINTS.slice(i, i + 50));
   const rows: { id: string; mm: number }[] = [];
+  const ice: AtlasPayload["ice"] = [];
   await Promise.all(
     chunks.map(async (chunk) => {
       const lats = chunk.map((p) => p.lat).join(",");
       const lons = chunk.map((p) => p.lon).join(",");
-      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lats}&longitude=${lons}&daily=precipitation_sum&past_days=2&forecast_days=2&timezone=UTC`;
-      const json = JSON.parse(await getText(url, 14000)) as
-        | { daily?: { precipitation_sum?: (number | null)[] } }
-        | { daily?: { precipitation_sum?: (number | null)[] } }[];
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lats}&longitude=${lons}&daily=precipitation_sum&current=weather_code&past_days=2&forecast_days=2&timezone=UTC`;
+      type Row = { daily?: { precipitation_sum?: (number | null)[] }; current?: { weather_code?: number } };
+      const json = JSON.parse(await getText(url, 14000)) as Row | Row[];
       const list = Array.isArray(json) ? json : [json];
       list.forEach((row, index) => {
         const point = chunk[index];
@@ -576,14 +579,18 @@ async function loadPrecip(): Promise<{ value: { id: string; mm: number }[]; coun
         const sums = row.daily?.precipitation_sum ?? [];
         const mm = sums.reduce<number>((sum, value) => sum + (typeof value === "number" ? value : 0), 0);
         rows.push({ id: point.id, mm: Math.round(mm * 10) / 10 });
+        const code = row.current?.weather_code;
+        if (code != null && (ICE_CODES as readonly number[]).includes(code)) {
+          ice.push({ lat: point.lat, lon: point.lon, code, name: point.name });
+        }
       });
     }),
   );
   const max = new Map<string, number>();
   for (const row of rows) max.set(row.id, Math.max(max.get(row.id) ?? 0, row.mm));
-  const value = [...max.entries()].map(([id, mm]) => ({ id, mm }));
-  const wet = value.filter((row) => row.mm > 0).length;
-  return { value, count: wet };
+  const precip = [...max.entries()].map(([id, mm]) => ({ id, mm }));
+  const wet = precip.filter((row) => row.mm > 0).length;
+  return { value: { precip, ice }, count: wet };
 }
 
 async function loadDonki(nasaKey: string): Promise<{ notes: { title: string; time: string }[]; note: string | null }> {
@@ -803,7 +810,8 @@ async function fetchAtlas(): Promise<AtlasPayload> {
   return {
     fetchedAt: new Date().toISOString(),
     events,
-    precip: precip ?? [],
+    precip: precip?.precip ?? [],
+    ice: precip?.ice ?? [],
     radar: radar ?? null,
     noaaRadar: noaaRadar ?? null,
     clouds: clouds ?? null,
