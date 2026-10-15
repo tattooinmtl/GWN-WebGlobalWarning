@@ -1,6 +1,6 @@
 # Spec — Copernicus Mode (V.0.2.0)
 
-Status: **DRAFT, waiting for approval** · Branch: `tattooai/sharp-johnson-9w61sm`
+Status: **BUILT** (approved 2026-10-15) · Branch: `tattooai/sharp-johnson-9w61sm`
 
 ## Goal
 A separate page, `/copernicus`, that only shows Copernicus data. It has its own interface: a big ocean map, toggleable layers, a time slider, click-for-value, and small charts.
@@ -73,8 +73,17 @@ The Copernicus Climate Data Store (ERA5) needs an account and runs about 5 days 
 1. Separate route keeps the live site safe. ✅
 2. Only free, keyless sources. ✅
 3. Rain mm comes from ECMWF via Open-Meteo, not the CDS (needs an account and isn't live). ✅
-4. Charts are hand-drawn SVG, so no new chart library is needed (pending).
-5. Version bump to V.0.2.0 (pending).
+4. Charts use `recharts`, which was already installed, so no new dependency. ✅
+5. Version bumped to V.0.2.0. ✅
 
 ## Verification
 Typecheck, build, and Playwright smoke tests (desktop and mobile) with mocked Copernicus responses, plus a TinyFish check of real tile URLs before merge.
+6. Depth is one shared filter in the time bar (it applies to every 3-D layer and to the spot values). ✅
+7. Tiles load straight from Copernicus. If the browser blocks that, they switch to the `/api/cmems` relay, which only accepts the Copernicus host. ✅
+8. Playback moves to the next day only after the map has finished drawing the current one (the same lesson as the radar fix). ✅
+9. Waves are 3-hourly, so the slider shows them at 12:00 UTC; the daily layers use 00:00 UTC. ✅
+
+## Results
+- Real Copernicus URLs built by the code (tiles, values at depth, legends) were checked live: all return data.
+- Unit tests: `src/lib/copernicus/layers.test.ts`, 6 passing.
+- Browser runs with mocked data (dev and production build, desktop and phone): layers toggle, filters, spot panel and charts work; play steps through days; no console errors; no sideways scroll on a phone.
