@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useQuery, useQueryClient, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Crosshair,
+  Globe2,
   Layers,
   LocateFixed,
   MessageSquare,
@@ -329,6 +330,10 @@ function AtlasInner() {
           <Link to="/copernicus" className="cm-launch" aria-label="Open Copernicus mode">
             <Waves className="size-4" />
             Copernicus mode
+          </Link>
+          <Link to="/globe" className="cm-launch" activeProps={{ "aria-current": "page" }} aria-label="Open the 3D globe">
+            <Globe2 className="size-4" />
+            3D Globe
           </Link>
         </div>
         <div className="pointer-events-auto flex flex-wrap justify-end gap-2">

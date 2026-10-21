@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CopernicusRouteImport } from './routes/copernicus'
+import { Route as GlobeRouteImport } from './routes/globe'
 import { Route as ApiCmemsRouteImport } from './routes/api/cmems'
 
 const IndexRoute = IndexRouteImport.update({
@@ -23,6 +24,11 @@ const CopernicusRoute = CopernicusRouteImport.update({
   path: '/copernicus',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GlobeRoute = GlobeRouteImport.update({
+  id: '/globe',
+  path: '/globe',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiCmemsRoute = ApiCmemsRouteImport.update({
   id: '/api/cmems',
   path: '/api/cmems',
@@ -32,30 +38,34 @@ const ApiCmemsRoute = ApiCmemsRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/copernicus': typeof CopernicusRoute
+  '/globe': typeof GlobeRoute
   '/api/cmems': typeof ApiCmemsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/copernicus': typeof CopernicusRoute
+  '/globe': typeof GlobeRoute
   '/api/cmems': typeof ApiCmemsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/copernicus': typeof CopernicusRoute
+  '/globe': typeof GlobeRoute
   '/api/cmems': typeof ApiCmemsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/copernicus' | '/api/cmems'
+  fullPaths: '/' | '/copernicus' | '/globe' | '/api/cmems'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/copernicus' | '/api/cmems'
-  id: '__root__' | '/' | '/copernicus' | '/api/cmems'
+  to: '/' | '/copernicus' | '/globe' | '/api/cmems'
+  id: '__root__' | '/' | '/copernicus' | '/globe' | '/api/cmems'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CopernicusRoute: typeof CopernicusRoute
+  GlobeRoute: typeof GlobeRoute
   ApiCmemsRoute: typeof ApiCmemsRoute
 }
 
@@ -75,6 +85,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CopernicusRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/globe': {
+      id: '/globe'
+      path: '/globe'
+      fullPath: '/globe'
+      preLoaderRoute: typeof GlobeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/cmems': {
       id: '/api/cmems'
       path: '/api/cmems'
@@ -88,6 +105,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CopernicusRoute: CopernicusRoute,
+  GlobeRoute: GlobeRoute,
   ApiCmemsRoute: ApiCmemsRoute,
 }
 export const routeTree = rootRouteImport
