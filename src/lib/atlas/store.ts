@@ -3,7 +3,6 @@ import { persist } from "zustand/middleware";
 import type { Metric } from "@/lib/disasters/types";
 
 export type LayerPrefs = {
-  choropleth: boolean;
   radar: boolean;
   clouds: boolean;
   owmTiles: boolean;
@@ -72,7 +71,6 @@ type AtlasState = {
 };
 
 const defaultLayers: LayerPrefs = {
-  choropleth: true,
   radar: true,
   clouds: true,
   owmTiles: false,
@@ -88,7 +86,9 @@ const defaultLayers: LayerPrefs = {
 };
 
 export function mergeLayers(layers?: Partial<LayerPrefs> | null): LayerPrefs {
-  return { ...defaultLayers, ...layers };
+  // Drop the retired country-shading flag from older saved prefs.
+  const { choropleth: _choropleth, ...rest } = (layers ?? {}) as Partial<LayerPrefs> & { choropleth?: boolean };
+  return { ...defaultLayers, ...rest };
 }
 
 export const defaultPrefs: Prefs = {

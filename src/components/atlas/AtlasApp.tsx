@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useQuery, useQueryClient, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Crosshair,
+  Globe2,
   Layers,
   LocateFixed,
   MessageSquare,
@@ -18,7 +19,7 @@ import { buildAtlasModel, topCountries } from "@/lib/disasters/aggregate";
 import { buildContext } from "@/lib/disasters/context";
 import { ago, stampKey, weatherText } from "@/lib/disasters/format";
 import { haversineKm, prepareCountries } from "@/lib/disasters/geo";
-import type { CountryCollection, CountryStat, HazardKind, Metric, VolcanoCollection } from "@/lib/disasters/types";
+import type { CountryCollection, CountryStat, HazardKind, VolcanoCollection } from "@/lib/disasters/types";
 import { KIND_COLOR, KIND_LABEL, METRICS } from "@/lib/disasters/types";
 import { legendGradient, type PrecipKind } from "@/lib/atlas/weather-colors";
 import type { LayerPrefs } from "@/lib/atlas/store";
@@ -49,7 +50,6 @@ function AtlasInner() {
   const queryClient = useQueryClient();
   const prefs = useAtlas((s) => s.prefs);
   const metric = useAtlas((s) => s.metric);
-  const setMetric = useAtlas((s) => s.setMetric);
   const selectedIso = useAtlas((s) => s.selectedIso);
   const location = useAtlas((s) => s.location);
   const setLocation = useAtlas((s) => s.setLocation);
@@ -330,6 +330,10 @@ function AtlasInner() {
             <Waves className="size-4" />
             Copernicus mode
           </Link>
+          <Link to="/globe" className="cm-launch" activeProps={{ "aria-current": "page" }} aria-label="Open the 3D globe">
+            <Globe2 className="size-4" />
+            3D Globe
+          </Link>
         </div>
         <div className="pointer-events-auto flex flex-wrap justify-end gap-2">
           <button type="button" className="icon-btn hidden sm:inline-flex" onClick={() => nudgeZoom(0.6)} aria-label="Zoom in">
@@ -431,31 +435,14 @@ function AtlasInner() {
 
       <div className="absolute inset-x-3 bottom-16 z-20 flex justify-center md:bottom-4 md:left-80 lg:right-96">
         <div className="w-full max-w-md rounded-2xl border border-line bg-panel/90 p-3 backdrop-blur-md">
-          <div className="mb-2 flex gap-1 overflow-x-auto">
-            {METRICS.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                className="chip shrink-0"
-                data-on={metric === item.id ? "true" : "false"}
-                onClick={() => setMetric(item.id as Metric)}
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
-          <p className="text-xs text-muted">Country pressure</p>
-          <div className="ramp mt-1" />
-          <div className="mt-1 flex justify-between text-xs text-muted">
-            <span>Quiet</span>
-            <span>Extreme</span>
-          </div>
-          <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-cream">
-            <WeatherKey kind="rain" label="Rain" />
-            <WeatherKey kind="ice" label="Freezing rain" />
-            <WeatherKey kind="snow" label="Snow" />
-          </div>
-          <p className="mt-1 text-xs text-muted">{metricMeta.blurb}</p>
+          <p className="text-xs text-muted">Legend</p>
+          {prefs.layers.radar ? (
+            <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-cream">
+              <WeatherKey kind="rain" label="Rain" />
+              <WeatherKey kind="ice" label="Freezing rain" />
+              <WeatherKey kind="snow" label="Snow" />
+            </div>
+          ) : null}
           {!prefs.hintDismissed ? (
             <p className="mt-1 text-xs text-muted">
               Feeds run without keys.{" "}
@@ -467,9 +454,6 @@ function AtlasInner() {
                 Hide
               </button>
             </p>
-          ) : null}
-          {aiLayer && aiLayer.metric === metric ? (
-            <p className="mt-1 text-xs text-amber">Agent blend on: {aiLayer.note || "weights mixed with the live index."}</p>
           ) : null}
           {blendQuery.data?.error ? <p className="mt-1 text-xs text-crimson">{blendQuery.data.error}</p> : null}
           {prefs.owmKey && blendQuery.data && !blendQuery.data.error ? (
@@ -503,7 +487,6 @@ function AtlasInner() {
             </button>
           </div>
           <div className="flex flex-col gap-1">
-            <LayerRow label="Country color" on={prefs.layers.choropleth} onClick={() => toggleLayer("choropleth")} />
             <LayerRow label="Clouds" on={layers.clouds} onClick={() => toggleLayer("clouds")} />
             <LayerRow label="Rain radar" on={prefs.layers.radar} onClick={() => toggleLayer("radar")} />
             <LayerRow label="OpenWeather tiles" on={prefs.layers.owmTiles} onClick={() => toggleLayer("owmTiles")} />

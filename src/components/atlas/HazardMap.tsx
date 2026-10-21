@@ -278,7 +278,6 @@ export function HazardMap(props: Props) {
     const filter = ["in", ["get", "kind"], ["literal", kinds]] as FilterSpecification;
     map.setFilter("events-circle", filter);
     map.setFilter("events-glow", filter);
-    map.setLayoutProperty("countries-fill", "visibility", layers.choropleth ? "visible" : "none");
     if (map.getLayer("faults-active")) {
       map.setLayoutProperty("faults-active", "visibility", layers.faultsActive ? "visible" : "none");
     }
@@ -350,10 +349,7 @@ export function HazardMap(props: Props) {
     );
     if (map.getLayer("radar-0") && map.getLayer("clouds-east")) map.moveLayer("clouds-east", "radar-0");
     if (map.getLayer("clouds-east") && map.getLayer("clouds-west")) map.moveLayer("clouds-west", "clouds-east");
-    if (map.getLayer("countries-fill") && props.layers.choropleth) {
-      map.setPaintProperty("countries-fill", "fill-opacity", cloudsOn ? 0.22 : countryFillOpacity);
-    }
-  }, [ready, props.layers.clouds, props.layers.choropleth, props.clouds]);
+  }, [ready, props.layers.clouds, props.clouds]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -672,38 +668,8 @@ function addBase(map: MlMap) {
     id: "countries-fill",
     type: "fill",
     source: "countries",
-    paint: {
-      "fill-color": [
-        "interpolate",
-        ["linear"],
-        ["coalesce", ["get", "score"], 0],
-        0,
-        "#163044",
-        0.2,
-        "#0e6e8c",
-        0.4,
-        "#1c8cff",
-        0.58,
-        "#7a3cff",
-        0.76,
-        "#e23b4a",
-        1,
-        "#f5c518",
-      ],
-      "fill-opacity": [
-        "interpolate",
-        ["linear"],
-        ["coalesce", ["get", "score"], 0],
-        0,
-        0.18,
-        0.18,
-        0.45,
-        0.5,
-        0.62,
-        1,
-        0.82,
-      ],
-    },
+    // No country shading: the fill stays invisible and only serves hover/click hit-testing and layer ordering.
+    paint: { "fill-color": "#000000", "fill-opacity": 0 },
   });
   map.addLayer({
     id: "countries-line",
@@ -864,19 +830,6 @@ function goesTiles(layer: string, time: string): string[] {
   ];
 }
 
-const countryFillOpacity = [
-  "interpolate",
-  ["linear"],
-  ["coalesce", ["get", "score"], 0],
-  0,
-  0.18,
-  0.18,
-  0.45,
-  0.5,
-  0.62,
-  1,
-  0.82,
-] as const;
 
 function radarTiles(radar: { host: string; frames: { path: string }[] } | null): string[] {
   // Unsmoothed (0) with snow colors (1): exact source colors, so tiles can be repainted with the app palette.
