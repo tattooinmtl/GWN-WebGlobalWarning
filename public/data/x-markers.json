@@ -1,256 +1,366 @@
 {
-  "updated": "2026-10-24T09:15:00Z",
+  "updated": "2026-10-25T09:20:00Z",
   "source": "daily X scan",
   "markers": [
     {
-      "id": "x-2026-10-24-quake-vanuatu-m72",
-      "title": "M7.2 earthquake (EMSC M6.9) ~200 km W of Sola, Vanuatu; tsunami warning for coasts within 300 km, later cancelled with no significant waves",
-      "lat": -13.85,
-      "lon": 165.8,
-      "level": "red",
+      "id": "x-2026-10-25-quake-bonin-deep-m70",
+      "title": "Deep M7.0 earthquake (JMA; USGS M6.5) ~470 km below the sea west of the Ogasawara (Bonin) Islands; felt in eastern Japan, no tsunami or damage (approx. position)",
+      "lat": 27.1,
+      "lon": 139.55,
+      "level": "orange",
       "type": "quake",
-      "source_url": "https://x.com/i/trending/2113825023098036482",
-      "time": "2026-10-24T02:31:00Z"
+      "source_url": "https://x.com/i/trending/2114182515564888332",
+      "time": "2026-10-25T02:10:00Z"
     },
     {
-      "id": "x-2026-10-24-quake-vanuatu-m62",
-      "title": "M6.2 aftershock 173 km NW of Port-Olry, Vanuatu",
+      "id": "x-2026-10-25-quake-bonin-m48",
+      "title": "M4.8 aftershock 253 km W of Futami, Ogasawara Islands, Japan",
+      "lat": 27.15,
+      "lon": 139.7,
+      "level": "green",
+      "type": "quake",
+      "source_url": "https://x.com/EMSC/status/2114188328924745795",
+      "time": "2026-10-25T02:36:00Z"
+    },
+    {
+      "id": "x-2026-10-25-quake-vanuatu-m62",
+      "title": "M6.2 earthquake 27 km E of Port-Olry, Espiritu Santo, Vanuatu",
+      "lat": -15.05,
+      "lon": 167.32,
+      "level": "orange",
+      "type": "quake",
+      "source_url": "https://x.com/EMSC/status/2114183279184159146",
+      "time": "2026-10-25T02:24:00Z"
+    },
+    {
+      "id": "x-2026-10-25-quake-vanuatu-m54",
+      "title": "M5.4 aftershock 205 km NW of Port-Olry, Vanuatu; sequence after the Oct 24 M7.2 is ongoing",
+      "lat": -13.8,
+      "lon": 165.8,
+      "level": "yellow",
+      "type": "quake",
+      "source_url": "https://x.com/EMSC/status/2114278176675234168",
+      "time": "2026-10-25T08:41:00Z"
+    },
+    {
+      "id": "x-2026-10-25-quake-vanuatu-m51-a",
+      "title": "M5.1 aftershock 159 km NW of Port-Olry, Vanuatu",
+      "lat": -14.05,
+      "lon": 166.05,
+      "level": "yellow",
+      "type": "quake",
+      "source_url": "https://x.com/EMSC/status/2114186421116248187",
+      "time": "2026-10-25T02:05:00Z"
+    },
+    {
+      "id": "x-2026-10-25-quake-vanuatu-m51-b",
+      "title": "M5.1 aftershock 164 km NW of Port-Olry, Vanuatu",
       "lat": -14.0,
       "lon": 166.0,
-      "level": "orange",
-      "type": "quake",
-      "source_url": "https://x.com/EMSC/status/2113825167205900790",
-      "time": "2026-10-24T02:36:00Z"
-    },
-    {
-      "id": "x-2026-10-24-quake-vanuatu-m58-a",
-      "title": "M5.8 aftershock 202 km NW of Port-Olry, Vanuatu (one of dozens of M4.8-5.6 aftershocks)",
-      "lat": -13.8,
-      "lon": 165.85,
       "level": "yellow",
       "type": "quake",
-      "source_url": "https://x.com/EMSC/status/2113849372173603068",
-      "time": "2026-10-24T04:11:00Z"
+      "source_url": "https://x.com/EMSC/status/2114179149564612683",
+      "time": "2026-10-25T01:46:00Z"
     },
     {
-      "id": "x-2026-10-24-quake-vanuatu-m58-b",
-      "title": "M5.8 aftershock 190 km NW of Port-Olry, Vanuatu",
+      "id": "x-2026-10-24-quake-vanuatu-m50-a",
+      "title": "M5.0 aftershock 191 km NW of Port-Olry, Vanuatu",
       "lat": -13.9,
-      "lon": 165.95,
+      "lon": 165.9,
       "level": "yellow",
       "type": "quake",
-      "source_url": "https://x.com/EMSC/status/2113866211079451096",
-      "time": "2026-10-24T05:23:00Z"
+      "source_url": "https://x.com/EMSC/status/2114147720910790878",
+      "time": "2026-10-24T23:45:00Z"
     },
     {
-      "id": "x-2026-10-24-quake-vanuatu-m52-ne",
-      "title": "M5.2 earthquake 56 km NE of Port-Olry, Vanuatu",
-      "lat": -14.7,
-      "lon": 167.45,
-      "level": "yellow",
-      "type": "quake",
-      "source_url": "https://x.com/EMSC/status/2113886202222768225",
-      "time": "2026-10-24T06:42:00Z"
-    },
-    {
-      "id": "x-2026-10-24-quake-vanuatu-m52-latest",
-      "title": "M5.2 aftershock 215 km NW of Port-Olry, Vanuatu (sequence ongoing)",
+      "id": "x-2026-10-24-quake-vanuatu-m50-b",
+      "title": "M5.0 aftershock 209 km NW of Port-Olry, Vanuatu",
       "lat": -13.75,
-      "lon": 165.75,
+      "lon": 165.78,
       "level": "yellow",
       "type": "quake",
-      "source_url": "https://x.com/EMSC/status/2113916848425107513",
-      "time": "2026-10-24T08:27:00Z"
+      "source_url": "https://x.com/EMSC/status/2114133851362517025",
+      "time": "2026-10-24T22:47:00Z"
     },
     {
-      "id": "x-2026-10-23-quake-sicily-m57",
-      "title": "M5.7 earthquake in the southern Tyrrhenian Sea ~61 km WNW of Leni (Aeolian Islands); brief tsunami advisory lifted, Palermo schools evacuated, no damage reported",
-      "lat": 38.75,
-      "lon": 14.15,
-      "level": "orange",
+      "id": "x-2026-10-24-quake-vanuatu-m50-c",
+      "title": "M5.0 aftershock 192 km NW of Port-Olry, Vanuatu",
+      "lat": -13.85,
+      "lon": 165.92,
+      "level": "yellow",
       "type": "quake",
-      "source_url": "https://x.com/i/trending/2113591098983813627",
-      "time": "2026-10-23T10:19:00Z"
+      "source_url": "https://x.com/EMSC/status/2114078485043888499",
+      "time": "2026-10-24T19:07:00Z"
     },
     {
-      "id": "x-2026-10-24-quake-aeolian-swarm",
-      "title": "Aftershock swarm continues NW of Lipari and N of Cefalu, Sicily (M2.1-2.5)",
-      "lat": 38.72,
-      "lon": 14.3,
+      "id": "x-2026-10-24-quake-isangel",
+      "title": "M4.9 earthquake 72 km SW of Isangel, Tanna, Vanuatu",
+      "lat": -20.0,
+      "lon": 168.8,
       "level": "green",
       "type": "quake",
-      "source_url": "https://x.com/EMSC/status/2113908898646073463",
-      "time": "2026-10-24T08:08:00Z"
+      "source_url": "https://x.com/EMSC/status/2114080411617726778",
+      "time": "2026-10-24T19:18:00Z"
     },
     {
-      "id": "x-2026-10-24-quake-nagqu-aftershock",
-      "title": "M5.2 aftershock 222 km NE of Nagqu, Tibet, in the zone of the Oct 22 M7.0 quake that killed at least 16; 12,000+ relocated",
-      "lat": 32.9,
-      "lon": 93.6,
-      "level": "orange",
-      "type": "quake",
-      "source_url": "https://x.com/EMSC/status/2113915539638690030",
-      "time": "2026-10-24T08:39:00Z"
-    },
-    {
-      "id": "x-2026-10-24-quake-nagqu-m49",
-      "title": "M4.9 aftershock 213 km NE of Nagqu, Tibet",
-      "lat": 32.85,
-      "lon": 93.5,
+      "id": "x-2026-10-25-quake-lae-png",
+      "title": "M5.2 earthquake 64 km N of Lae, Papua New Guinea",
+      "lat": -6.15,
+      "lon": 147.0,
       "level": "yellow",
       "type": "quake",
-      "source_url": "https://x.com/EMSC/status/2113789996083675233",
-      "time": "2026-10-24T00:07:00Z"
+      "source_url": "https://x.com/EMSC/status/2114201784604381275",
+      "time": "2026-10-25T03:29:00Z"
     },
     {
-      "id": "x-2026-10-24-quake-kuqa",
-      "title": "M4.8 earthquake 194 km NW of Kuqa, Xinjiang, China",
-      "lat": 42.95,
-      "lon": 81.6,
+      "id": "x-2026-10-24-quake-miyazaki",
+      "title": "M5.3 earthquake 41 km SE of Miyazaki, Kyushu, Japan",
+      "lat": 31.65,
+      "lon": 131.72,
       "level": "yellow",
       "type": "quake",
-      "source_url": "https://x.com/EMSC/status/2113917928177389952",
-      "time": "2026-10-24T08:29:00Z"
+      "source_url": "https://x.com/EMSC/status/2114147107690926422",
+      "time": "2026-10-24T23:59:00Z"
     },
     {
-      "id": "x-2026-10-23-quake-kiselevsk",
-      "title": "M5.0 earthquake 24 km NW of Kiselyovsk, Kemerovo, Russia",
-      "lat": 54.15,
-      "lon": 86.4,
+      "id": "x-2026-10-24-quake-kamchatka",
+      "title": "M5.5 earthquake 98 km S of Petropavlovsk-Kamchatsky, Russia",
+      "lat": 52.14,
+      "lon": 158.65,
       "level": "yellow",
       "type": "quake",
-      "source_url": "https://x.com/EMSC/status/2113760593026904320",
-      "time": "2026-10-23T22:23:00Z"
+      "source_url": "https://x.com/EMSC/status/2114096189909942649",
+      "time": "2026-10-24T20:35:00Z"
     },
     {
-      "id": "x-2026-10-23-quake-hualien",
-      "title": "M4.8 earthquake 32 km E of Hualien, Taiwan",
-      "lat": 23.98,
-      "lon": 121.92,
+      "id": "x-2026-10-24-quake-southern-ocean",
+      "title": "M5.9 earthquake in the far Southern Ocean, ~2,400 km S of Cape Town (approx. position)",
+      "lat": -55.5,
+      "lon": 18.5,
       "level": "green",
       "type": "quake",
-      "source_url": "https://x.com/EMSC/status/2113737992611226042",
-      "time": "2026-10-23T20:58:00Z"
+      "source_url": "https://x.com/EMSC/status/2114017864491409616",
+      "time": "2026-10-24T15:24:00Z"
     },
     {
-      "id": "x-2026-10-24-quake-dutch-harbor",
-      "title": "M4.5 earthquake 65 mi SE of Dutch Harbor, Alaska",
+      "id": "x-2026-10-25-quake-pyrgos",
+      "title": "M4.8 earthquake 29 km W of Pyrgos, western Greece",
+      "lat": 37.67,
+      "lon": 21.11,
+      "level": "green",
+      "type": "quake",
+      "source_url": "https://x.com/EMSC/status/2114224933131690368",
+      "time": "2026-10-25T05:15:00Z"
+    },
+    {
+      "id": "x-2026-10-24-quake-sorong",
+      "title": "M4.8 earthquake 111 km NE of Sorong, West Papua, Indonesia",
+      "lat": -0.2,
+      "lon": 131.95,
+      "level": "green",
+      "type": "quake",
+      "source_url": "https://x.com/EMSC/status/2114117239322374611",
+      "time": "2026-10-24T21:42:00Z"
+    },
+    {
+      "id": "x-2026-10-24-quake-gulf-of-aden",
+      "title": "M4.9 earthquake in the Gulf of Aden, 168 km N of Bereeda, Somalia",
+      "lat": 13.38,
+      "lon": 51.06,
+      "level": "green",
+      "type": "quake",
+      "source_url": "https://x.com/EMSC/status/2113957731304370576",
+      "time": "2026-10-24T11:20:00Z"
+    },
+    {
+      "id": "x-2026-10-25-quake-ambikapur",
+      "title": "M4.0 earthquake 21 km SW of Ambikapur, Chhattisgarh, India",
+      "lat": 22.98,
+      "lon": 83.05,
+      "level": "green",
+      "type": "quake",
+      "source_url": "https://x.com/EMSC/status/2114259646969962581",
+      "time": "2026-10-25T07:29:00Z"
+    },
+    {
+      "id": "x-2026-10-25-quake-acari-peru",
+      "title": "M4.6 earthquake 72 km S of Acari, Peru",
+      "lat": -16.08,
+      "lon": -74.62,
+      "level": "green",
+      "type": "quake",
+      "source_url": "https://x.com/EMSC/status/2114259958199955885",
+      "time": "2026-10-25T07:12:00Z"
+    },
+    {
+      "id": "x-2026-10-25-quake-dutch-harbor",
+      "title": "M4.6 and M4.2 earthquakes ~65 mi SE of Dutch Harbor, Alaska",
       "lat": 53.2,
       "lon": -165.4,
       "level": "green",
       "type": "quake",
-      "source_url": "https://x.com/EMSC/status/2113915531073880236",
-      "time": "2026-10-24T08:33:00Z"
+      "source_url": "https://x.com/EMSC/status/2114269862931345748",
+      "time": "2026-10-25T07:44:00Z"
     },
     {
-      "id": "x-2026-10-24-quake-panama",
-      "title": "M3.9 earthquake 30 km SW of Las Minas, Panama; M3.5 near Macaracas",
-      "lat": 7.6,
-      "lon": -80.9,
+      "id": "x-2026-10-25-quake-suchiate",
+      "title": "M4.1 earthquake offshore, 120 km SW of Suchiate, Chiapas, Mexico",
+      "lat": 13.85,
+      "lon": -93.0,
       "level": "green",
       "type": "quake",
-      "source_url": "https://x.com/EMSC/status/2113912414877970548",
-      "time": "2026-10-24T08:28:00Z"
+      "source_url": "https://x.com/EMSC/status/2114273207645577368",
+      "time": "2026-10-25T08:06:00Z"
     },
     {
-      "id": "x-2026-10-24-typhoon-champi",
-      "title": "Champi weakens to a tropical storm after lashing NE Taiwan: 1 dead, 500+ injured, ~1,000 flights cancelled; heading toward China and southern Japan (approx. position)",
-      "lat": 25.5,
-      "lon": 122.5,
+      "id": "x-2026-10-25-quake-aeolian-swarm",
+      "title": "Aftershocks continue NW of Lipari, Aeolian Islands, after the Oct 23 M5.7 (latest M2.3)",
+      "lat": 39.0,
+      "lon": 14.3,
+      "level": "green",
+      "type": "quake",
+      "source_url": "https://x.com/EMSC/status/2114277900144824488",
+      "time": "2026-10-25T08:37:00Z"
+    },
+    {
+      "id": "x-2026-10-25-hurricane-vance",
+      "title": "Hurricane Vance weakens slightly (NHC advisory 16) while drifting NNW off southern Mexico; dangerous swells for the Pacific coast (approx. position)",
+      "lat": 13.5,
+      "lon": -103.5,
+      "level": "orange",
+      "type": "storm",
+      "source_url": "https://x.com/NHC_Pacific/status/2114275278826430969",
+      "time": "2026-10-25T08:38:00Z"
+    },
+    {
+      "id": "x-2026-10-25-cyclone-arnab",
+      "title": "Bay of Bengal depression near 15.3N 91.2E set to become Cyclone Arnab; IMD expects a very severe cyclonic storm (115-125 km/h, gusts 140)",
+      "lat": 15.3,
+      "lon": 91.2,
+      "level": "orange",
+      "type": "storm",
+      "source_url": "https://x.com/i/trending/2114279597827379674",
+      "time": "2026-10-25T09:00:00Z"
+    },
+    {
+      "id": "x-2026-10-25-arnab-landfall-andhra",
+      "title": "Expected Cyclone Arnab landfall between Bapatla and Visakhapatnam around Oct 28; extremely heavy rain for coastal Andhra Pradesh and south Odisha, fishermen warned",
+      "lat": 16.9,
+      "lon": 81.6,
+      "level": "orange",
+      "type": "storm",
+      "source_url": "https://x.com/i/trending/2114279597827379674",
+      "time": "2026-10-25T09:00:00Z"
+    },
+    {
+      "id": "x-2026-10-25-tamil-nadu-rain",
+      "title": "Three days of heavy rain in interior Tamil Nadu (Trichy, Salem); landslide risk in hill areas",
+      "lat": 10.8,
+      "lon": 78.7,
+      "level": "yellow",
+      "type": "flood",
+      "source_url": "https://x.com/i/trending/2114056884051402817",
+      "time": "2026-10-25T07:25:00Z"
+    },
+    {
+      "id": "x-2026-10-24-typhoon-champi-taiwan",
+      "title": "Typhoon Champi aftermath in Taiwan: 1 dead, 616 injured, 340,000+ homes lost power, ~1,000 flights grounded; storm weakening toward China and southern Japan",
+      "lat": 23.7,
+      "lon": 121.0,
       "level": "orange",
       "type": "storm",
       "source_url": "https://x.com/i/trending/2113692021957537872",
-      "time": "2026-10-24T08:11:00Z"
+      "time": "2026-10-24T18:50:00Z"
     },
     {
-      "id": "x-2026-10-24-hurricane-vance",
-      "title": "Hurricane Vance, Category 2 (105-110 mph) ~385 mi SSW of Acapulco, may briefly reach Cat 3; dangerous swells for southern Mexico (approx. position)",
-      "lat": 11.8,
-      "lon": -102.0,
+      "id": "x-2026-10-25-storm-boelo-uk",
+      "title": "Storm Boelo: Met Office amber wind warnings for Scotland, Northern Ireland and northern England until 9pm Sunday, gusts up to 80 mph",
+      "lat": 55.5,
+      "lon": -3.5,
       "level": "orange",
       "type": "storm",
-      "source_url": "https://x.com/i/trending/2113782523310330128",
-      "time": "2026-10-24T06:52:00Z"
+      "source_url": "https://x.com/i/trending/2114170532195430419",
+      "time": "2026-10-25T01:48:00Z"
     },
     {
-      "id": "x-2026-10-24-bay-of-bengal-low",
-      "title": "Bay of Bengal low forecast to become Cyclone Arnab by Oct 26, heading for north Andhra Pradesh/south Odisha; IMD warns of extremely heavy rain Oct 27-28 (approx.)",
-      "lat": 13.0,
-      "lon": 88.0,
+      "id": "x-2026-10-24-storm-boelo-ireland",
+      "title": "Storm Boelo: Met Eireann orange alerts for western Ireland (Donegal, Mayo), 52 mm of rain since midnight",
+      "lat": 54.3,
+      "lon": -9.0,
+      "level": "orange",
+      "type": "storm",
+      "source_url": "https://x.com/i/trending/2113928928511557825",
+      "time": "2026-10-24T16:31:00Z"
+    },
+    {
+      "id": "x-2026-10-25-boelo-aintree",
+      "title": "Boelo winds of ~45 mph force Aintree racecourse to cancel Sunday's meeting",
+      "lat": 53.48,
+      "lon": -2.94,
       "level": "yellow",
       "type": "storm",
-      "source_url": "https://x.com/i/trending/2113451400256454808",
-      "time": "2026-10-24T08:59:00Z"
+      "source_url": "https://x.com/i/trending/2114280945851502617",
+      "time": "2026-10-25T09:04:00Z"
     },
     {
-      "id": "x-2026-10-24-landslide-nilgiris",
-      "title": "Landslide buries a bus near Burliyar, Nilgiris, killing the driver; slides at 19 spots, roads closed and schools shut",
-      "lat": 11.34,
-      "lon": 76.83,
+      "id": "x-2026-10-25-tornado-santa-fe",
+      "title": "Rare tornado touches down in Santa Fe, New Mexico near Rancho Siringo: roofs damaged, trees and power lines down, no injuries",
+      "lat": 35.66,
+      "lon": -105.97,
       "level": "orange",
-      "type": "landslide",
-      "source_url": "https://x.com/i/trending/2113917242878329139",
-      "time": "2026-10-24T08:59:00Z"
-    },
-    {
-      "id": "x-2026-10-24-flood-pagosa-springs",
-      "title": "San Juan River crests above 15 ft at Pagosa Springs, Colorado, highest since 1911; evacuations and disaster declaration",
-      "lat": 37.27,
-      "lon": -107.01,
-      "level": "red",
-      "type": "flood",
-      "source_url": "https://x.com/i/trending/2113449199769723380",
-      "time": "2026-10-24T08:26:00Z"
-    },
-    {
-      "id": "x-2026-10-24-flood-farmington-nm",
-      "title": "San Juan River flooding in Farmington, New Mexico forces hundreds from homes; dozens of water rescues",
-      "lat": 36.73,
-      "lon": -108.22,
-      "level": "red",
-      "type": "flood",
-      "source_url": "https://x.com/i/trending/2113449199769723380",
-      "time": "2026-10-24T08:26:00Z"
-    },
-    {
-      "id": "x-2026-10-24-hail-el-paso",
-      "title": "Severe supercell drops up to 2-inch hail across East El Paso, 60 mph winds; storms also hit Albuquerque",
-      "lat": 31.78,
-      "lon": -106.3,
-      "level": "orange",
-      "type": "storm",
+      "type": "tornado",
       "source_url": "https://x.com/i/trending/2113848182765674796",
-      "time": "2026-10-24T02:00:00Z"
+      "time": "2026-10-25T01:01:00Z"
     },
     {
-      "id": "x-2026-10-24-storms-orange-county",
-      "title": "Rare thunderstorms over Orange County, California with lightning, pea-sized hail and minor flooding risk",
-      "lat": 33.75,
-      "lon": -117.83,
+      "id": "x-2026-10-25-snow-fort-mcmurray",
+      "title": "Environment Canada snowfall warnings: 20-30 cm of early snow in northeastern Alberta (Fort McMurray, Wood Buffalo)",
+      "lat": 56.73,
+      "lon": -111.38,
       "level": "yellow",
-      "type": "storm",
-      "source_url": "https://x.com/i/trending/2113821489732685843",
-      "time": "2026-10-24T04:00:00Z"
+      "type": "cold",
+      "source_url": "https://x.com/i/trending/2114122376489414896",
+      "time": "2026-10-25T04:21:00Z"
     },
     {
-      "id": "x-2026-10-23-rockslide-provo-canyon",
-      "title": "Rain-triggered rockslide closes part of the Provo River Trail near Bridal Veil Falls, Utah; no injuries",
-      "lat": 40.34,
-      "lon": -111.6,
-      "level": "green",
-      "type": "landslide",
-      "source_url": "https://x.com/i/trending/2113830108473782572",
-      "time": "2026-10-23T20:30:00Z"
+      "id": "x-2026-10-24-heat-nigeria",
+      "title": "NiMet heat-stress alerts: 40-45 C in northern Nigeria (41 C at Nguru)",
+      "lat": 12.88,
+      "lon": 10.45,
+      "level": "orange",
+      "type": "heat",
+      "source_url": "https://x.com/i/trending/2114045831146025336",
+      "time": "2026-10-24T17:34:00Z"
     },
     {
-      "id": "x-2026-10-24-coastal-flood-san-francisco",
-      "title": "San Francisco declares emergency ahead of king tides and storms; NWS warns of up to 1.9 ft inundation around the Bay",
-      "lat": 37.77,
-      "lon": -122.42,
+      "id": "x-2026-10-24-fire-way-kambas",
+      "title": "Wildfires in Way Kambas National Park, Sumatra threaten rhinos, tigers and elephants",
+      "lat": -4.93,
+      "lon": 105.78,
+      "level": "orange",
+      "type": "fire",
+      "source_url": "https://x.com/i/trending/2114037784629444920",
+      "time": "2026-10-24T20:07:00Z"
+    },
+    {
+      "id": "x-2026-10-24-fire-borneo",
+      "title": "Borneo fires: 48,500+ ha burned this year, 53 orangutans rescued (approx. position)",
+      "lat": -1.6,
+      "lon": 113.4,
       "level": "yellow",
+      "type": "fire",
+      "source_url": "https://x.com/i/trending/2114037784629444920",
+      "time": "2026-10-24T20:07:00Z"
+    },
+    {
+      "id": "x-2026-10-24-coastal-flood-miami",
+      "title": "NWS Miami Coastal Flood Watch: major tidal flooding expected Sun-Mon, surf up to 12 ft",
+      "lat": 25.77,
+      "lon": -80.19,
+      "level": "orange",
       "type": "flood",
-      "source_url": "https://x.com/i/trending/2113813790307520935",
-      "time": "2026-10-24T07:31:00Z"
+      "source_url": "https://x.com/i/trending/2113892390838620580",
+      "time": "2026-10-24T07:20:00Z"
     },
     {
       "id": "x-2026-10-24-coastal-flood-socal",
@@ -263,44 +373,14 @@
       "time": "2026-10-24T07:20:00Z"
     },
     {
-      "id": "x-2026-10-24-coastal-flood-miami",
-      "title": "NWS Miami's first Coastal Flood Watch since 2022: major tidal flooding expected Sun-Mon, surf up to 12 ft",
-      "lat": 25.77,
-      "lon": -80.19,
-      "level": "orange",
+      "id": "x-2026-10-24-coastal-flood-san-francisco",
+      "title": "San Francisco emergency for king tides and storms; up to 1.9 ft inundation around the Bay through Thursday",
+      "lat": 37.77,
+      "lon": -122.42,
+      "level": "yellow",
       "type": "flood",
-      "source_url": "https://x.com/i/trending/2113892390838620580",
-      "time": "2026-10-24T07:20:00Z"
-    },
-    {
-      "id": "x-2026-10-23-storm-austen-brighton",
-      "title": "Storm Austen: part of Brighton's West Pier collapses into the sea; gusts over 100 mph in Cornwall, tens of thousands without power",
-      "lat": 50.82,
-      "lon": -0.15,
-      "level": "orange",
-      "type": "storm",
-      "source_url": "https://x.com/i/trending/2113527593957736689",
-      "time": "2026-10-23T16:00:00Z"
-    },
-    {
-      "id": "x-2026-10-24-storm-boelo",
-      "title": "Storm Boelo brings gusts up to 80 mph and heavy rain to Northern Ireland, Scotland and northern England this weekend; Met Office warnings in force",
-      "lat": 54.6,
-      "lon": -4.0,
-      "level": "orange",
-      "type": "storm",
-      "source_url": "https://x.com/i/trending/2113714638655254650",
-      "time": "2026-10-24T08:00:00Z"
-    },
-    {
-      "id": "x-2026-10-24-heat-nigeria",
-      "title": "Record October heat in Nigeria: NiMet heat-stress alerts for 40-45 C in the north",
-      "lat": 12.0,
-      "lon": 8.52,
-      "level": "orange",
-      "type": "heat",
-      "source_url": "https://x.com/i/trending/2113272745865703832",
-      "time": "2026-10-24T08:32:00Z"
+      "source_url": "https://x.com/i/trending/2113813790307520935",
+      "time": "2026-10-24T07:31:00Z"
     }
   ]
 }
