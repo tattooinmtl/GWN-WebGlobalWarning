@@ -712,6 +712,7 @@ export class GlobeEngine {
         r.position.copy(p.clone().multiplyScalar(0.0015));
         r.lookAt(p.clone().multiplyScalar(3));
         r.renderOrder = 11;
+        r.userData.markerId = marker.id;
         group.add(r);
       }
       group.add(sprite);
@@ -767,20 +768,53 @@ export class GlobeEngine {
   };
 
   private onUp = (e: PointerEvent) => {
-    if (!this.downAt || Math.hypot(e.clientX - this.downAt.x, e.clientY - this.downAt.y) > 6) return;
-    const rect = this.renderer.domElement.getBoundingClientRect();
-    this.pointer.set(((e.clientX - rect.left) / rect.width) * 2 - 1, -((e.clientY - rect.top) / rect.height) * 2 + 1);
-    this.raycaster.setFromCamera(this.pointer, this.camera);
-    const earthHit = this.raycaster.intersectObject(this.earth, false)[0];
-    const hits = this.raycaster.intersectObjects(
-      this.markers.map((m) => m.sprite),
-      false,
-    );
-    const hit = hits.find((h) => !earthHit || h.distance < earthHit.distance + 0.005);
-    const id = hit?.object.userData.markerId as string | undefined;
-    const marker = this.markers.find((m) => m.marker.id === id)?.marker ?? null;
+    if (!this.downAt || Math.hypot(e.clientX - this.downAt.x, e.clientY - this.downAt.y) > 6) {
+      this.downAt = null;
+      return;
+    }
+    this.downAt = null;
+    const marker = this.pickAt(e.clientX, e.clientY);
     this.select(marker?.id ?? null);
     this.cb.onPick(marker);
+  };
+
+  /**
+   * Hit-test a marker under a screen point. Sprites alone are tiny (the glow rings are what you see),
+   * so we also pick by screen-space proximity to any front-facing marker (~32 CSS px).
+   */
+  pickAt(clientX: number, clientY: number): GlobeMarker | null {
+    const rect = this.renderer.domElement.getBoundingClientRect();
+    if (!rect.width || !rect.height) return null;
+    this.pointer.set(((clientX - rect.left) / rect.width) * 2 - 1, -((clientY - rect.top) / rect.height) * 2 + 1);
+    this.raycaster.setFromCamera(this.pointer, this.camera);
+
+    const pickables = this.markers.flatMap((m) => [m.sprite, m.ring, m.ring2]);
+    const hits = this.raycaster.intersectObjects(pickables, false);
+    for (const h of hits) {
+      const id = h.object.userData.markerId as string | undefined;
+      const found = id ? this.markers.find((m) => m.marker.id === id) : undefined;
+      if (found) return found.marker;
+    }
+
+    // Screen-space nearest: rings animate much larger than the sprite, so raycasts miss what users click.
+    const threshold = 32; // CSS pixels
+    let best: { marker: GlobeMarker; d2: number } | null = null;
+    const camDir = this.camera.position.clone().normalize();
+    for (const m of this.markers) {
+      const world = m.group.position.clone().normalize();
+      // Back-facing relative to the camera (hidden behind the globe).
+      if (world.dot(camDir) < 0.02) continue;
+      const tip = world.clone().multiplyScalar(1.02);
+      tip.project(this.camera);
+      if (tip.z < -1 || tip.z > 1) continue;
+      const sx = (tip.x * 0.5 + 0.5) * rect.width + rect.left;
+      const sy = (-tip.y * 0.5 + 0.5) * rect.height + rect.top;
+      const dx = clientX - sx;
+      const dy = clientY - sy;
+      const d2 = dx * dx + dy * dy;
+      if (d2 <= threshold * threshold && (!best || d2 < best.d2)) best = { marker: m.marker, d2 };
+    }
+    return best?.marker ?? null;
   };
 
   // ---------- sky ----------

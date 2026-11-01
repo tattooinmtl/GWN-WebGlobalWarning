@@ -166,7 +166,6 @@ function GlobeInner() {
         engine = new GlobeEngine(mountRef.current, {
           onPick: (marker) => {
             setPicked(marker);
-            if (marker) setPanelOpen(true);
           },
           onLayerState: (id, state, note) => setStates((prev) => ({ ...prev, [id]: { state, note } })),
           onSky: setSky,
@@ -351,6 +350,58 @@ function GlobeInner() {
         </button>
       </div>
 
+      {picked && (
+        <div
+          className="cm-tile pointer-events-auto absolute top-16 left-3 z-40 w-[min(22rem,calc(100vw-1.5rem))] border p-3 text-sm shadow-lg"
+          style={{ borderColor: LEVEL_STYLE[picked.level].color }}
+          role="dialog"
+          aria-label="Marker details"
+        >
+          <div className="flex items-start gap-2">
+            <LevelIcon level={picked.level} />
+            <div className="min-w-0 flex-1">
+              <p className="font-semibold leading-snug">
+                {TYPE_EMOJI[picked.type] ?? "⚠️"} {picked.title}
+              </p>
+              <p className="mt-1 text-xs text-muted">
+                <span className="capitalize">{picked.type}</span>
+                {" · "}
+                {LEVEL_STYLE[picked.level].label}
+                {" · "}
+                {picked.source}
+              </p>
+              <p className="mt-0.5 text-xs text-muted">
+                {formatToronto(picked.time)}
+                {" · "}
+                {formatLatLon(picked.lat, picked.lon)}
+              </p>
+              {picked.detail && <p className="mt-1 text-xs text-muted">{picked.detail}</p>}
+              {picked.source_url ? (
+                <a
+                  href={picked.source_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-2 inline-flex items-center gap-1 text-xs text-cyan"
+                >
+                  Source <ExternalLink className="size-3" />
+                </a>
+              ) : null}
+            </div>
+            <button
+              type="button"
+              className="rounded p-1 text-muted hover:text-cream"
+              aria-label="Close marker info"
+              onClick={() => {
+                setPicked(null);
+                engineRef.current?.select(null);
+              }}
+            >
+              <X className="size-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
       {!panelOpen && (
         <button
           type="button"
@@ -422,18 +473,36 @@ function GlobeInner() {
 
             {picked && (
               <div className="mx-3 mt-2 rounded-md border p-2 text-xs" style={{ borderColor: LEVEL_STYLE[picked.level].color }}>
-                <p className="font-semibold">
-                  {TYPE_EMOJI[picked.type] ?? "⚠️"} {picked.title}
-                </p>
-                <p className="mt-0.5 text-muted">
-                  {LEVEL_STYLE[picked.level].label} · {picked.source} · {ago(picked.time, now)} · {formatLatLon(picked.lat, picked.lon)}
-                </p>
-                {picked.detail && <p className="mt-1 text-muted">{picked.detail}</p>}
-                {picked.source_url && (
-                  <a href={picked.source_url} target="_blank" rel="noreferrer" className="mt-1 inline-flex items-center gap-1 text-cyan">
-                    Source <ExternalLink className="size-3" />
-                  </a>
-                )}
+                <div className="flex items-start gap-2">
+                  <div className="min-w-0 flex-1">
+                    <p className="font-semibold">
+                      {TYPE_EMOJI[picked.type] ?? "⚠️"} {picked.title}
+                    </p>
+                    <p className="mt-0.5 text-muted">
+                      <span className="capitalize">{picked.type}</span> · {LEVEL_STYLE[picked.level].label} · {picked.source}
+                    </p>
+                    <p className="mt-0.5 text-muted">
+                      {formatToronto(picked.time)} · {ago(picked.time, now)} · {formatLatLon(picked.lat, picked.lon)}
+                    </p>
+                    {picked.detail && <p className="mt-1 text-muted">{picked.detail}</p>}
+                    {picked.source_url && (
+                      <a href={picked.source_url} target="_blank" rel="noreferrer" className="mt-1 inline-flex items-center gap-1 text-cyan">
+                        Source <ExternalLink className="size-3" />
+                      </a>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    className="rounded p-1 text-muted hover:text-cream"
+                    aria-label="Close marker info"
+                    onClick={() => {
+                      setPicked(null);
+                      engineRef.current?.select(null);
+                    }}
+                  >
+                    <X className="size-3.5" />
+                  </button>
+                </div>
               </div>
             )}
 
@@ -559,6 +628,24 @@ function MoonPhaseIcon({ deg }: { deg: number }) {
       <path d={d} fill="#e8eef6" />
     </svg>
   );
+}
+
+function formatToronto(iso: string): string {
+  const t = Date.parse(iso);
+  if (!Number.isFinite(t)) return iso;
+  try {
+    return new Intl.DateTimeFormat("en-CA", {
+      timeZone: "America/Toronto",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZoneName: "short",
+    }).format(new Date(t));
+  } catch {
+    return new Date(t).toISOString();
+  }
 }
 
 function ago(iso: string, now: number): string {
