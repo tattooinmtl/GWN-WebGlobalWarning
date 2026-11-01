@@ -1,346 +1,276 @@
 {
-  "updated": "2026-10-31T09:20:00Z",
+  "updated": "2026-11-01T10:15:00Z",
   "source": "daily X scan",
   "markers": [
     {
-      "id": "x-2026-10-31-henderson-flash-flood",
-      "title": "Flash flooding in Henderson, NV: 1 dead and 3 rescued from flooded washes along Lake Mead Parkway; NWS Flash Flood Warning for Cadence and old Henderson",
-      "lat": 36.04,
-      "lon": -114.98,
+      "id": "x-2026-11-01-pearl-river-ffe",
+      "title": "NWS Flash Flood Emergency near Crossroads, Pearl River County, MS: 6-10 in of rain, water over roads, rescues from vehicles and homes flooded",
+      "lat": 30.8,
+      "lon": -89.55,
       "level": "red",
       "type": "flood",
-      "source_url": "https://x.com/News3LV/status/2116329307702280275",
-      "time": "2026-10-31T00:40:01Z"
+      "source_url": "https://x.com/NWSNewOrleans/status/2116723940907233564",
+      "time": "2026-11-01T02:48:08Z"
     },
     {
-      "id": "x-2026-10-31-lasvegas-ffw",
-      "title": "NWS Flash Flood Warning for the central Las Vegas Valley; 0.5-1 in of rain near downtown",
-      "lat": 36.17,
-      "lon": -115.14,
+      "id": "x-2026-11-01-bogalusa-ffw",
+      "title": "NWS Flash Flood Warning including Bogalusa, LA",
+      "lat": 30.79,
+      "lon": -89.85,
       "level": "orange",
       "type": "flood",
-      "source_url": "https://x.com/NWSVegas/status/2116260500212469858",
-      "time": "2026-10-30T20:06:36Z"
+      "source_url": "https://x.com/NWSNewOrleans/status/2116770031614693552",
+      "time": "2026-11-01T05:51:17Z"
     },
     {
-      "id": "x-2026-10-31-laughlin-ffw",
-      "title": "NWS Flash Flood Warning and Severe Thunderstorm Warning (large hail) for Laughlin and Bullhead City",
-      "lat": 35.16,
-      "lon": -114.57,
+      "id": "x-2026-11-01-metairie-ffw",
+      "title": "NWS Flash Flood Warning for considerable flooding in Metairie, LA; unofficial totals of 6-7 in",
+      "lat": 29.98,
+      "lon": -90.15,
       "level": "orange",
       "type": "flood",
-      "source_url": "https://x.com/NWSVegas/status/2116289307115745310",
-      "time": "2026-10-30T22:01:04Z"
+      "source_url": "https://x.com/NWSNewOrleans/status/2116672096164257796",
+      "time": "2026-10-31T23:22:08Z"
     },
     {
-      "id": "x-2026-10-31-mohave-flood-watch",
-      "title": "Flash Flood Watch for parts of Mohave County, AZ, Sat night through Sun night; over 1 in of rain expected",
-      "lat": 35.2,
-      "lon": -114.0,
+      "id": "x-2026-11-01-las-vegas-ffw",
+      "title": "NWS Flash Flood Warning (considerable damage threat) for northwestern Clark County incl. Las Vegas and North Las Vegas, NV",
+      "lat": 36.28,
+      "lon": -115.28,
+      "level": "orange",
+      "type": "flood",
+      "source_url": "https://x.com/OfficialYallbot/status/2116708676626976886",
+      "time": "2026-11-01T01:47:29Z"
+    },
+    {
+      "id": "x-2026-11-01-prescott-ffw",
+      "title": "NWS Flash Flood Warning (considerable damage threat) for Prescott and Chino Valley, Yavapai County, AZ",
+      "lat": 34.54,
+      "lon": -112.47,
+      "level": "orange",
+      "type": "flood",
+      "source_url": "https://x.com/NWSFlashFlood/status/2116815044365181075",
+      "time": "2026-11-01T08:50:09Z"
+    },
+    {
+      "id": "x-2026-11-01-kauai-ffw",
+      "title": "Flash flood warning extended for Kauai, Hawaii (Hawaii News Now)",
+      "lat": 22.05,
+      "lon": -159.5,
       "level": "yellow",
       "type": "flood",
-      "source_url": "https://x.com/NWSVegas/status/2116356988015612121",
-      "time": "2026-10-31T02:30:00Z"
+      "source_url": "https://x.com/ninjaloha50/status/2116746485580918822",
+      "time": "2026-11-01T04:17:44Z"
     },
     {
-      "id": "x-2026-10-31-lake-mead-advisory",
-      "title": "Flood Advisory for Searchlight, Temple Bar, Meadview and Pierce Ferry roads (Lake Mead area)",
-      "lat": 35.9,
-      "lon": -114.2,
+      "id": "x-2026-11-01-sfl-tidal-flood",
+      "title": "NWS Miami: moderate tidal flooding at high tide through Sunday plus rain bands that may cause street flooding along the southeast Florida coast",
+      "lat": 25.9,
+      "lon": -80.13,
       "level": "yellow",
       "type": "flood",
-      "source_url": "https://x.com/NWSVegas/status/2116317674192216199",
-      "time": "2026-10-30T23:53:47Z"
+      "source_url": "https://x.com/NWSMiami/status/2116831682623938914",
+      "time": "2026-11-01T09:56:16Z"
     },
     {
-      "id": "x-2026-10-31-phoenix-ffw",
-      "title": "NWS Flash Flood Warnings for Maricopa County: over 1 in/hr rain in north Phoenix and Scottsdale; six rescued from submerged vehicles",
-      "lat": 33.6,
-      "lon": -111.95,
-      "level": "orange",
-      "type": "flood",
-      "source_url": "https://x.com/NWSPhoenix/status/2116341253549826262",
-      "time": "2026-10-31T01:27:29Z"
-    },
-    {
-      "id": "x-2026-10-31-cave-creek-ffw",
-      "title": "NWS Flash Flood Warning for Cave Creek and Carefree, AZ after severe thunderstorm",
-      "lat": 33.83,
-      "lon": -111.93,
-      "level": "orange",
-      "type": "flood",
-      "source_url": "https://x.com/NWSPhoenix/status/2116368610583027982",
-      "time": "2026-10-31T03:16:11Z"
-    },
-    {
-      "id": "x-2026-10-31-paradise-valley-ffw",
-      "title": "NWS Flash Flood Warning for Paradise Valley, AZ",
-      "lat": 33.53,
-      "lon": -111.94,
-      "level": "orange",
-      "type": "flood",
-      "source_url": "https://x.com/NWSPhoenix/status/2116361805094088931",
-      "time": "2026-10-31T02:49:09Z"
-    },
-    {
-      "id": "x-2026-10-31-anthem-svr",
-      "title": "NWS Severe Thunderstorm Warning for Anthem, AZ",
-      "lat": 33.87,
-      "lon": -112.15,
+      "id": "x-2026-11-01-plains-tornado-risk",
+      "title": "Slight Risk of severe storms with damaging winds and isolated tornadoes for Kansas, Oklahoma and north Texas on Monday evening, Nov 2",
+      "lat": 36.0,
+      "lon": -98.0,
       "level": "yellow",
+      "type": "tornado",
+      "source_url": "https://x.com/i/trending/2116731970528891241",
+      "time": "2026-11-01T03:23:42Z"
+    },
+    {
+      "id": "x-2026-11-01-murasu-cyclone",
+      "title": "IMD: Deep depression intensified into Cyclonic Storm Murasu over the southwest Bay of Bengal; cyclone alert for Andhra Pradesh and north Tamil Nadu coasts",
+      "lat": 12.5,
+      "lon": 83.0,
+      "level": "orange",
       "type": "storm",
-      "source_url": "https://x.com/NWSPhoenix/status/2116314046416765147",
-      "time": "2026-10-30T23:39:22Z"
+      "source_url": "https://x.com/Indiametdept/status/2116810522968703260",
+      "time": "2026-11-01T06:00:00Z"
     },
     {
-      "id": "x-2026-10-31-el-mirage-lightning",
-      "title": "Lightning strike near El Mirage Elementary, AZ sends four adults to hospital",
-      "lat": 33.61,
-      "lon": -112.32,
-      "level": "yellow",
+      "id": "x-2026-11-01-murasu-landfall-ap",
+      "title": "Murasu forecast to cross the Andhra Pradesh coast between Nellore and Narsapur early Nov 3 as a severe cyclonic storm (100-110 km/h); very heavy rain near Nellore and Ongole",
+      "lat": 15.5,
+      "lon": 80.05,
+      "level": "orange",
       "type": "storm",
-      "source_url": "https://x.com/i/trending/2116286592700588115",
-      "time": "2026-10-30T15:39:00Z"
+      "source_url": "https://x.com/i/trending/2116400722283782612",
+      "time": "2026-11-01T09:56:03Z"
     },
     {
-      "id": "x-2026-10-31-mayon-alert3",
-      "title": "PHIVOLCS: Mayon Volcano remains at Alert Level 3 after moderately explosive eruption; new ash emission 200 m above crater on 31 Oct, 6 km danger zone evacuated",
+      "id": "x-2026-11-01-infa-iwo-to",
+      "title": "Typhoon In-Fa about 340 km SE of Iwo To, Japan, ~105 mph (JMA typhoon), 967 hPa, drifting SSW",
+      "lat": 22.3,
+      "lon": 144.1,
+      "level": "orange",
+      "type": "storm",
+      "source_url": "https://x.com/TrevorTropicsWX/status/2116823960700555400",
+      "time": "2026-11-01T09:25:35Z"
+    },
+    {
+      "id": "x-2026-11-01-mayon-alert3",
+      "title": "PHIVOLCS: Mayon Volcano stays at Alert Level 3 with a small lava flow at the summit crater, rockfalls down Bonga Gully and ash emissions; 6 km danger zone",
       "lat": 13.257,
       "lon": 123.685,
       "level": "red",
       "type": "volcano",
-      "source_url": "https://x.com/phivolcs_dost/status/2116293888872968270",
-      "time": "2026-10-30T21:17:00Z"
+      "source_url": "https://x.com/ABSCBNNews/status/2116737088297308465",
+      "time": "2026-11-01T03:40:23Z"
     },
     {
-      "id": "x-2026-10-31-mayon-ashfall",
-      "title": "Ashfall over Guinobatan and Camalig, Albay; classes suspended and mandatory evacuations in Tabaco City",
-      "lat": 13.19,
-      "lon": 123.6,
+      "id": "x-2026-11-01-mayon-evacuees",
+      "title": "746 families from Tabaco, Ligao and Camalig, Albay evacuated after Mayon's explosive eruption",
+      "lat": 13.18,
+      "lon": 123.65,
       "level": "orange",
       "type": "volcano",
-      "source_url": "https://x.com/ABSCBNNews/status/2116097658049962348",
-      "time": "2026-10-30T09:19:31Z"
+      "source_url": "https://x.com/radyopilipinas1/status/2116490970233798910",
+      "time": "2026-10-31T11:22:24Z"
     },
     {
-      "id": "x-2026-10-31-ganjam-floods",
-      "title": "Odisha floods after Cyclone Arnab: about 105,000 affected in Ganjam district, Rushikulya River 2 m above danger level",
-      "lat": 19.38,
-      "lon": 84.88,
-      "level": "red",
-      "type": "flood",
-      "source_url": "https://x.com/ANI/status/2116438238277890447",
-      "time": "2026-10-31T07:52:52Z"
-    },
-    {
-      "id": "x-2026-10-31-gajapati-floods",
-      "title": "Floods and landslides in Gajapati district, Odisha: about 21,000 affected, Kaipur-Gangabad road blocked",
-      "lat": 18.95,
-      "lon": 84.1,
-      "level": "orange",
-      "type": "flood",
-      "source_url": "https://x.com/ANI/status/2116431820858519952",
-      "time": "2026-10-31T07:27:22Z"
-    },
-    {
-      "id": "x-2026-10-31-kandhamal-landslide",
-      "title": "Rain-triggered landslide in Kandhamal, Odisha kills three including a baby; four landslide deaths confirmed statewide, several missing",
-      "lat": 20.13,
-      "lon": 84.0,
-      "level": "red",
-      "type": "landslide",
-      "source_url": "https://x.com/PTI_News/status/2116434265420509320",
-      "time": "2026-10-31T07:37:04Z"
-    },
-    {
-      "id": "x-2026-10-31-bay-of-bengal-low",
-      "title": "IMD: well-marked low over southeast Bay of Bengal likely to become a depression, possible cyclonic storm near Andhra Pradesh/Tamil Nadu coast around 2 Nov",
-      "lat": 11.5,
-      "lon": 90.0,
-      "level": "yellow",
-      "type": "storm",
-      "source_url": "https://x.com/Indiametdept/status/2116421230844842045",
-      "time": "2026-10-31T06:45:17Z"
-    },
-    {
-      "id": "x-2026-10-31-gasa-glof",
-      "title": "Bhutan glacial lake outburst (Shintaphu Lake, Gasa): hot springs and roads destroyed; new artificial lake downstream being monitored",
-      "lat": 27.88,
-      "lon": 89.72,
-      "level": "orange",
-      "type": "flood",
-      "source_url": "https://x.com/i/trending/2115902241655726139",
-      "time": "2026-10-30T18:38:11Z"
-    },
-    {
-      "id": "x-2026-10-31-sankosh-alert",
-      "title": "High alert along the Sankosh River in Assam and West Bengal; over 10,000 evacuated after Bhutan lake burst",
-      "lat": 26.45,
-      "lon": 89.85,
-      "level": "orange",
-      "type": "flood",
-      "source_url": "https://x.com/i/trending/2115902241655726139",
-      "time": "2026-10-30T18:38:11Z"
-    },
-    {
-      "id": "x-2026-10-31-infa-marianas",
-      "title": "Typhoon In-Fa moving away from the far northern Marianas; elevated surf continues (NWS Guam)",
-      "lat": 18.77,
-      "lon": 145.67,
-      "level": "orange",
-      "type": "storm",
-      "source_url": "https://x.com/NWSGuam/status/2116319499313942690",
-      "time": "2026-10-31T00:01:02Z"
-    },
-    {
-      "id": "x-2026-10-31-nairobi-floods",
-      "title": "Overnight heavy rain floods Nairobi roads (Githurai, Uhuru Highway); shuttle bus veers off road",
-      "lat": -1.29,
-      "lon": 36.82,
+      "id": "x-2026-11-01-nairobi-floods",
+      "title": "Flash floods after heavy overnight rain submerge roads in Parklands, Westlands and Githurai, Nairobi; traffic halted",
+      "lat": -1.27,
+      "lon": 36.81,
       "level": "yellow",
       "type": "flood",
       "source_url": "https://x.com/i/trending/2116445822892089364",
-      "time": "2026-10-31T08:27:13Z"
+      "time": "2026-10-31T10:46:35Z"
     },
     {
-      "id": "x-2026-10-31-greece-m47",
-      "title": "M4.7 earthquake in the Aegean Sea 42 km SE of Sykia, Greece; felt in Halkidiki, no damage",
-      "lat": 39.731,
-      "lon": 24.228,
+      "id": "x-2026-11-01-mie-m60",
+      "title": "M6.0 deep earthquake (~350 km) 58 km SSE of Shima, Japan; felt up to intensity 3 in Fukushima, no tsunami, no damage",
+      "lat": 33.822,
+      "lon": 136.985,
       "level": "yellow",
       "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tu7m",
-      "time": "2026-10-30T10:45:03Z"
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tuku",
+      "time": "2026-10-31T22:15:02Z"
     },
     {
-      "id": "x-2026-10-31-balleny-m51",
-      "title": "M5.1 earthquake, Balleny Islands region",
-      "lat": -62.446,
-      "lon": 155.262,
-      "level": "green",
+      "id": "x-2026-11-01-bushehr-m50",
+      "title": "M5.0 shallow earthquake 115 km SE of Bushehr, Iran; no damage reported",
+      "lat": 28.114,
+      "lon": 51.508,
+      "level": "yellow",
       "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tu7j",
-      "time": "2026-10-30T10:12:28Z"
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tukm",
+      "time": "2026-10-31T21:20:39Z"
     },
     {
-      "id": "x-2026-10-31-vanuatu-m48",
-      "title": "M4.8 earthquake 97 km ENE of Port-Olry, Vanuatu",
-      "lat": -14.809,
-      "lon": 167.948,
-      "level": "green",
+      "id": "x-2026-11-01-vanuatu-swarm-m54",
+      "title": "Earthquake swarm NW of Port-Olry, Vanuatu: largest M5.4 (USGS green alert) among six M4.7-5.4 shocks in 24 h",
+      "lat": -13.867,
+      "lon": 165.617,
+      "level": "yellow",
       "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tugd",
-      "time": "2026-10-31T00:26:35Z"
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tun8",
+      "time": "2026-11-01T06:26:42Z"
     },
     {
-      "id": "x-2026-10-31-vanuatu-m47",
-      "title": "M4.7 earthquake 222 km NW of Port-Olry, Vanuatu",
-      "lat": -13.829,
-      "lon": 165.428,
+      "id": "x-2026-11-01-vanuatu-m52",
+      "title": "M5.2 earthquake 200 km NW of Port-Olry, Vanuatu (part of ongoing swarm)",
+      "lat": -13.873,
+      "lon": 165.646,
       "level": "green",
       "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tufc",
-      "time": "2026-10-30T22:14:55Z"
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tuky",
+      "time": "2026-10-31T22:42:39Z"
     },
     {
-      "id": "x-2026-10-31-izu-m46",
-      "title": "M4.6 earthquake, Izu Islands region, Japan",
-      "lat": 30.91,
-      "lon": 142.519,
-      "level": "green",
+      "id": "x-2026-11-01-panama-m52",
+      "title": "M5.2 earthquake 4 km S of Bajo Corral, Panama, depth 10 km",
+      "lat": 7.569,
+      "lon": -80.255,
+      "level": "yellow",
       "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tugv",
-      "time": "2026-10-31T03:14:13Z"
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tujf",
+      "time": "2026-10-31T15:50:18Z"
     },
     {
-      "id": "x-2026-10-31-katsuura-m45",
-      "title": "M4.5 earthquake 223 km SE of Katsuura, Japan",
-      "lat": 33.555,
-      "lon": 141.812,
+      "id": "x-2026-11-01-taiwan-m48",
+      "title": "M4.8 earthquake 33 km SE of Jiufen, Taiwan, depth 119 km",
+      "lat": 24.881,
+      "lon": 122.062,
       "level": "green",
       "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tugf",
-      "time": "2026-10-31T00:32:46Z"
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tunq",
+      "time": "2026-11-01T08:20:07Z"
     },
     {
-      "id": "x-2026-10-31-kuji-m45",
-      "title": "M4.5 earthquake 68 km ENE of Kuji, Japan, depth 43 km",
-      "lat": 40.48,
-      "lon": 142.475,
+      "id": "x-2026-11-01-argentina-m48",
+      "title": "M4.8 earthquake 71 km NNW of San Antonio de los Cobres, Argentina, depth 202 km",
+      "lat": -23.639,
+      "lon": -66.632,
       "level": "green",
       "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tu83",
-      "time": "2026-10-30T13:18:19Z"
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tumy",
+      "time": "2026-11-01T05:31:54Z"
     },
     {
-      "id": "x-2026-10-31-tago-m46",
-      "title": "M4.6 earthquake 7 km NE of Tago, Surigao del Sur, Philippines",
-      "lat": 9.059,
-      "lon": 126.283,
+      "id": "x-2026-11-01-ollague-m45",
+      "title": "M4.5 earthquake 55 km SSW of Ollague, Chile, depth 120 km",
+      "lat": -21.698,
+      "lon": -68.435,
       "level": "green",
       "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tub8",
-      "time": "2026-10-30T17:06:26Z"
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tuly",
+      "time": "2026-11-01T01:24:52Z"
     },
     {
-      "id": "x-2026-10-31-barcelona-ph-m45",
-      "title": "M4.5 earthquake 104 km ENE of Barcelona, Philippines",
-      "lat": 8.373,
-      "lon": 127.362,
+      "id": "x-2026-11-01-atka-m45",
+      "title": "M4.5 earthquake 111 km ESE of Atka, Alaska",
+      "lat": 51.699,
+      "lon": -172.793,
       "level": "green",
       "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tu7k",
-      "time": "2026-10-30T10:24:11Z"
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tuk4",
+      "time": "2026-10-31T18:51:02Z"
     },
     {
-      "id": "x-2026-10-31-peru-m46",
-      "title": "M4.6 earthquake 33 km NE of Mazo Cruz, Peru, depth 195 km",
-      "lat": -16.544,
-      "lon": -69.484,
+      "id": "x-2026-11-01-tadine-m45",
+      "title": "M4.5 earthquake 295 km ESE of Tadine, New Caledonia",
+      "lat": -22.8,
+      "lon": 170.407,
       "level": "green",
       "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tufp",
-      "time": "2026-10-30T22:46:57Z"
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tumt",
+      "time": "2026-10-31T13:56:59Z"
     },
     {
-      "id": "x-2026-10-31-zyryanka-m45",
-      "title": "M4.5 earthquake 236 km ESE of Zyryanka, Russia",
-      "lat": 65.099,
-      "lon": 155.76,
+      "id": "x-2026-11-01-surigao-m42",
+      "title": "PHIVOLCS: M4.2 earthquake 115 km ENE of Lingig, Surigao del Sur, depth 13 km",
+      "lat": 8.34,
+      "lon": 127.41,
       "level": "green",
       "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tudk",
-      "time": "2026-10-30T18:01:10Z"
+      "source_url": "https://x.com/phivolcs_dost/status/2116823369748475948",
+      "time": "2026-11-01T09:12:00Z"
     },
     {
-      "id": "x-2026-10-31-mid-atlantic-m45",
-      "title": "M4.5 earthquake, central Mid-Atlantic Ridge",
-      "lat": 7.087,
-      "lon": -34.683,
+      "id": "x-2026-11-01-calayan-m42",
+      "title": "PHIVOLCS: M4.2 earthquake near Dalupiri Island, Calayan, Cagayan, felt locally",
+      "lat": 19.08,
+      "lon": 120.97,
       "level": "green",
       "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tugs",
-      "time": "2026-10-31T02:37:19Z"
+      "source_url": "https://x.com/phivolcs_dost/status/2116737478753423511",
+      "time": "2026-10-31T13:31:00Z"
     },
     {
-      "id": "x-2026-10-31-taumarunui-m36",
-      "title": "GeoNet: M3.6 quake causing light shaking near Taumarunui, New Zealand",
-      "lat": -38.88,
-      "lon": 175.26,
+      "id": "x-2026-11-01-masbate-m35",
+      "title": "PHIVOLCS: M3.5 felt earthquake 11 km SW of Monreal, Masbate",
+      "lat": 12.57,
+      "lon": 123.59,
       "level": "green",
       "type": "quake",
-      "source_url": "https://x.com/geonet/status/2116435886367981899",
-      "time": "2026-10-31T07:43:31Z"
-    },
-    {
-      "id": "x-2026-10-31-glan-m32",
-      "title": "PHIVOLCS: M3.2 earthquake 9 km SSE of Glan, Sarangani, depth 14 km",
-      "lat": 5.74,
-      "lon": 125.23,
-      "level": "green",
-      "type": "quake",
-      "source_url": "https://x.com/phivolcs_dost/status/2116448383921791107",
-      "time": "2026-10-31T08:22:00Z"
+      "source_url": "https://x.com/phivolcs_dost/status/2116812725099860478",
+      "time": "2026-11-01T08:11:00Z"
     }
   ]
 }
