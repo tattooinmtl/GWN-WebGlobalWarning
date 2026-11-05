@@ -1,226 +1,136 @@
 {
-  "updated": "2026-11-04T10:05:08Z",
+  "updated": "2026-11-05T10:00:49Z",
   "source": "daily X scan",
   "markers": [
     {
-      "id": "x-2026-11-04-colombia-tolima-m56",
-      "title": "M5.6 quake near Chaparral, Tolima, Colombia; felt in Bogota, one injury, minor damage",
-      "lat": 3.72,
-      "lon": -75.48,
-      "level": "orange",
-      "type": "quake",
-      "source_url": "https://x.com/i/trending/2117555837568958701",
-      "time": "2026-11-03T09:13:00Z"
+      "id": "x-2026-11-05-brazil-chapeco-tornado",
+      "title": "Tornado hits Chapeco Airport, Santa Catarina, Brazil; second tornado in Xanxere, state of emergency, outages",
+      "lat": -27.13,
+      "lon": -52.66,
+      "level": "red",
+      "type": "tornado",
+      "source_url": "https://x.com/i/trending/2118113409799799241",
+      "time": "2026-11-04T20:00:00Z"
     },
     {
-      "id": "x-2026-11-04-mexico-delta-m47",
-      "title": "M4.7 quake near Delta, Baja California, felt in Mexicali and Southern California; no damage",
-      "lat": 32.45,
-      "lon": -115.2,
-      "level": "yellow",
-      "type": "quake",
-      "source_url": "https://x.com/i/trending/2117707590801203211",
-      "time": "2026-11-03T16:27:00Z"
-    },
-    {
-      "id": "x-2026-11-04-palm-bay-flood",
-      "title": "Historic 1-in-1000-year flood in Palm Bay/Brevard County, Florida: up to 28 in rain, 2 dead, 160+ rescues, state of emergency",
-      "lat": 28.03,
-      "lon": -80.59,
+      "id": "x-2026-11-05-georgia-fannin-flash-flood",
+      "title": "Flash flood emergency in Fannin and Gilmer counties, north Georgia; 5-8 in of rain, mudslides, rescues",
+      "lat": 34.86,
+      "lon": -84.32,
       "level": "red",
       "type": "flood",
-      "source_url": "https://x.com/i/trending/2117797929997979966",
-      "time": "2026-11-03T12:00:00Z"
+      "source_url": "https://x.com/i/trending/2118172330643824731",
+      "time": "2026-11-05T03:00:00Z"
     },
     {
-      "id": "x-2026-11-04-murasu-remnant-flood",
-      "title": "Cyclone Murasu remnants flood Andhra Pradesh and Telangana: 269 mm at Edlapadu, crop damage, overflowing streams",
-      "lat": 16.3,
-      "lon": 80.4,
+      "id": "x-2026-11-05-india-murasu-floods",
+      "title": "Cyclone Murasu remnants flood Andhra Pradesh and Telangana; 2 deaths, 300+ houses damaged",
+      "lat": 17.25,
+      "lon": 80.15,
       "level": "orange",
       "type": "flood",
-      "source_url": "https://x.com/i/trending/2117890896423530958",
-      "time": "2026-11-04T06:00:00Z"
+      "source_url": "https://x.com/i/trending/2118231611787624819",
+      "time": "2026-11-04T18:00:00Z"
     },
     {
-      "id": "x-2026-11-04-murasu-landfall",
-      "title": "Cyclone Murasu landfall near Ongole, Andhra Pradesh, gusts to 120 km/h; NDRF/SDRF deployed",
-      "lat": 15.5,
-      "lon": 80.05,
+      "id": "x-2026-11-05-tanzania-m51",
+      "title": "M5.1 quake near Masumbwe, Tanzania; tremor felt in Nairobi and Kampala, no damage reported",
+      "lat": -3.46,
+      "lon": 32.15,
+      "level": "yellow",
+      "type": "quake",
+      "source_url": "https://x.com/i/trending/2118275750998536377",
+      "time": "2026-11-05T09:22:32Z"
+    },
+    {
+      "id": "x-2026-11-05-california-petrolia-m50",
+      "title": "M5.0 quake 114 km W of Petrolia, CA; light shaking, no tsunami threat",
+      "lat": 40.43,
+      "lon": -125.63,
+      "level": "yellow",
+      "type": "quake",
+      "source_url": "https://x.com/i/trending/2118225430662861009",
+      "time": "2026-11-05T04:56:01Z"
+    },
+    {
+      "id": "x-2026-11-05-philippines-mayon-al3",
+      "title": "Mayon Volcano at Alert Level 3 (high unrest), PHIVOLCS",
+      "lat": 13.26,
+      "lon": 123.69,
       "level": "orange",
-      "type": "storm",
-      "source_url": "https://x.com/i/trending/2117118852995711024",
-      "time": "2026-11-03T00:00:00Z"
+      "type": "volcano",
+      "source_url": "https://x.com/phivolcs_dost/status/2118085880393199637",
+      "time": "2026-11-04T21:00:00Z"
     },
     {
-      "id": "x-2026-11-04-chennai-rain",
-      "title": "Murasu outer bands: up to 149 mm rain in north Chennai",
-      "lat": 13.12,
-      "lon": 80.29,
+      "id": "x-2026-11-05-philippines-kanlaon-al2",
+      "title": "Kanlaon Volcano at Alert Level 2 (increasing unrest), PHIVOLCS",
+      "lat": 10.41,
+      "lon": 123.13,
+      "level": "yellow",
+      "type": "volcano",
+      "source_url": "https://x.com/phivolcs_dost/status/2118085889545191831",
+      "time": "2026-11-04T21:00:00Z"
+    },
+    {
+      "id": "x-2026-11-05-philippines-taal-al1",
+      "title": "Taal Volcano at Alert Level 1, 15 volcanic quakes, PHIVOLCS",
+      "lat": 14.01,
+      "lon": 120.99,
+      "level": "green",
+      "type": "volcano",
+      "source_url": "https://x.com/phivolcs_dost/status/2118085883945476568",
+      "time": "2026-11-04T21:00:00Z"
+    },
+    {
+      "id": "x-2026-11-05-philippines-davao-m44",
+      "title": "M4.4 quake off Balut Island, Davao Occidental, PHIVOLCS",
+      "lat": 5.29,
+      "lon": 125.36,
+      "level": "yellow",
+      "type": "quake",
+      "source_url": "https://x.com/phivolcs_dost/status/2118229312419897648",
+      "time": "2026-11-05T06:20:00Z"
+    },
+    {
+      "id": "x-2026-11-05-tamilnadu-heavy-rain",
+      "title": "Heavy rain and thunderstorms in Tamil Nadu and Puducherry; IMD heavy rain alerts Nov 5-8",
+      "lat": 11.0,
+      "lon": 78.9,
       "level": "yellow",
       "type": "flood",
-      "source_url": "https://x.com/i/trending/2117118852995711024",
-      "time": "2026-11-03T03:00:00Z"
+      "source_url": "https://x.com/i/trending/2118275753569562816",
+      "time": "2026-11-05T09:30:00Z"
     },
     {
-      "id": "x-2026-11-04-pagosa-flood",
-      "title": "San Juan River crests at 16.81 ft (2nd highest on record) in Pagosa Springs, Colorado; museum damaged, 50+ rescued",
-      "lat": 37.27,
-      "lon": -107.01,
-      "level": "orange",
-      "type": "flood",
-      "source_url": "https://x.com/i/trending/2117479212948890034",
-      "time": "2026-11-02T20:00:00Z"
-    },
-    {
-      "id": "x-2026-11-04-shreveport-tornado",
-      "title": "Confirmed tornadoes SW of Shreveport (Stonewall, Belcher area), Louisiana; power outages",
-      "lat": 32.28,
-      "lon": -93.82,
-      "level": "orange",
-      "type": "tornado",
-      "source_url": "https://x.com/i/trending/2117752197983395947",
-      "time": "2026-11-03T15:00:00Z"
-    },
-    {
-      "id": "x-2026-11-04-sw-arkansas-tornado",
-      "title": "Tornado warnings and reported twister near Lewiston, SW Arkansas",
-      "lat": 33.3,
-      "lon": -93.6,
+      "id": "x-2026-11-05-alabama-bibb-tornado-warning",
+      "title": "Brief tornado warning in eastern Bibb County, Alabama; debris signature, cancelled",
+      "lat": 33.0,
+      "lon": -87.0,
       "level": "yellow",
       "type": "tornado",
-      "source_url": "https://x.com/i/trending/2117752197983395947",
-      "time": "2026-11-03T16:00:00Z"
+      "source_url": "https://x.com/i/trending/2118100744179949600",
+      "time": "2026-11-04T21:20:00Z"
     },
     {
-      "id": "x-2026-11-04-ne-oklahoma-tornado",
-      "title": "Tornadoes reported near Adair, Big Cabin and Vinita, NE Oklahoma; large hail, 75 mph winds",
-      "lat": 36.6,
-      "lon": -95.2,
-      "level": "orange",
-      "type": "tornado",
-      "source_url": "https://x.com/i/trending/2117452821519819146",
-      "time": "2026-11-03T03:00:00Z"
-    },
-    {
-      "id": "x-2026-11-04-southeast-us-rain",
-      "title": "Heavy rain and storms from cold front across Southeast US (Atlanta, Nashville), 2-3 in possible",
-      "lat": 33.75,
-      "lon": -84.39,
-      "level": "yellow",
-      "type": "storm",
-      "source_url": "https://x.com/i/trending/2117861747776422384",
-      "time": "2026-11-04T06:00:00Z"
-    },
-    {
-      "id": "x-2026-11-04-ashanti-wind",
-      "title": "Damaging winds uproot historic Okomfo Anokye tree in Asante Agona, Ghana",
-      "lat": 6.93,
-      "lon": -1.48,
+      "id": "x-2026-11-05-fiji-m46",
+      "title": "M4.6 quake south of the Fiji Islands (USGS)",
+      "lat": -25.23,
+      "lon": 179.88,
       "level": "green",
-      "type": "storm",
-      "source_url": "https://x.com/i/trending/2117748874576318921",
-      "time": "2026-11-03T18:00:00Z"
+      "type": "quake",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tw43",
+      "time": "2026-11-04T21:24:24Z"
     },
     {
-      "id": "usgs-us7000tvwj",
-      "title": "M5.0 earthquake, 207 km ESE of Sarangani, Philippines",
-      "lat": 4.389,
-      "lon": 127.032,
+      "id": "x-2026-11-05-nicaragua-chinandega-m45",
+      "title": "M4.5 quake 2 km W of Chinandega, Nicaragua (USGS)",
+      "lat": 12.63,
+      "lon": -87.15,
       "level": "yellow",
       "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tvwj",
-      "time": "2026-11-04T07:40:12Z"
-    },
-    {
-      "id": "usgs-us7000tvuv",
-      "title": "M4.6 earthquake, Fiji region",
-      "lat": -19.269,
-      "lon": -177.505,
-      "level": "green",
-      "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tvuv",
-      "time": "2026-11-04T00:32:59Z"
-    },
-    {
-      "id": "usgs-us7000tvu9",
-      "title": "M4.5 earthquake, 99 km ESE of Kyzyl-Eshme, Kyrgyzstan",
-      "lat": 39.294,
-      "lon": 73.373,
-      "level": "green",
-      "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tvu9",
-      "time": "2026-11-03T22:50:33Z"
-    },
-    {
-      "id": "usgs-us7000tvtj",
-      "title": "M5.2 earthquake, 91 km ESE of Kyzyl-Eshme, Kyrgyzstan",
-      "lat": 39.362,
-      "lon": 73.302,
-      "level": "yellow",
-      "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tvtj",
-      "time": "2026-11-03T21:34:08Z"
-    },
-    {
-      "id": "usgs-ci41572064",
-      "title": "M4.9 earthquake, 9 km N of Delta, B.C., MX",
-      "lat": 32.431,
-      "lon": -115.18,
-      "level": "green",
-      "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/ci41572064",
-      "time": "2026-11-03T18:27:31Z"
-    },
-    {
-      "id": "usgs-us7000tvs3",
-      "title": "M5.2 earthquake, Mid-Indian Ridge",
-      "lat": -35.52,
-      "lon": 78.303,
-      "level": "yellow",
-      "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tvs3",
-      "time": "2026-11-03T18:21:13Z"
-    },
-    {
-      "id": "usgs-us7000tvie",
-      "title": "M5.2 earthquake, Volcano Islands, Japan region",
-      "lat": 24.144,
-      "lon": 141.673,
-      "level": "yellow",
-      "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tvie",
-      "time": "2026-11-03T16:48:13Z"
-    },
-    {
-      "id": "usgs-us7000tva7",
-      "title": "M4.8 earthquake, 85 km S of Gorontalo, Indonesia",
-      "lat": -0.23,
-      "lon": 123.153,
-      "level": "green",
-      "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tva7",
-      "time": "2026-11-03T15:37:51Z"
-    },
-    {
-      "id": "usgs-us7000tv5i",
-      "title": "M4.9 earthquake, South Sandwich Islands region",
-      "lat": -58.819,
-      "lon": -26.377,
-      "level": "green",
-      "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tv5i",
-      "time": "2026-11-03T13:34:06Z"
-    },
-    {
-      "id": "usgs-us7000tv51",
-      "title": "M4.9 earthquake, 101 km SSE of Palekastro, Greece",
-      "lat": 34.325,
-      "lon": 26.571,
-      "level": "green",
-      "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tv51",
-      "time": "2026-11-03T11:03:47Z"
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tw3k",
+      "time": "2026-11-04T19:55:26Z"
     }
   ]
 }
