@@ -1,466 +1,476 @@
 {
-  "updated": "2026-11-09T10:20:00Z",
+  "updated": "2026-11-10T10:30:00Z",
   "source": "daily X scan",
   "markers": [
     {
-      "id": "x-2026-11-09-gaza-tent-floods",
-      "title": "Heavy winter rains flooded about 70,000 tents in Gaza displacement camps; a sand dune collapse in Deir al-Balah killed five, and a child died from the cold",
+      "id": "x-2026-11-10-madeira-charles-red",
+      "title": "IPMA red warnings for Madeira as Storm Charles nears: gusts up to 140 km/h and 100+ mm of rain in 12 h on the mountains from Tuesday evening",
+      "lat": 32.75,
+      "lon": -16.95,
+      "level": "red",
+      "type": "storm",
+      "source_url": "https://x.com/i/trending/2120079252335026629",
+      "time": "2026-11-10T10:11:56Z"
+    },
+    {
+      "id": "x-2026-11-10-spain-avila-caceres-red",
+      "title": "Protección Civil: extreme-risk (red) rain warning for southern Ávila and northern Cáceres, up to 120 mm in 12 h, as storms Bruna and Charles hit Spain",
+      "lat": 40.25,
+      "lon": -5.6,
+      "level": "red",
+      "type": "flood",
+      "source_url": "https://x.com/proteccioncivil/status/2119741622145482753",
+      "time": "2026-11-10T08:09:48Z"
+    },
+    {
+      "id": "x-2026-11-10-gaza-tent-floods",
+      "title": "Heavy winter rains flooded about 70,000 tents in Gaza camps affecting ~350,000 people; a collapse in Deir al-Balah killed five, including three children",
       "lat": 31.42,
       "lon": 34.35,
       "level": "red",
       "type": "flood",
       "source_url": "https://x.com/i/trending/2119527369556005190",
-      "time": "2026-11-09T09:50:23Z"
+      "time": "2026-11-10T08:27:44Z"
     },
     {
-      "id": "x-2026-11-09-mayon-al3",
-      "title": "PHIVOLCS: Mayon Volcano stays at Alert Level 3 (high unrest), 11 volcanic earthquakes in 24 h; 6 km danger zone off-limits",
+      "id": "x-2026-11-10-mayon-al3",
+      "title": "PHIVOLCS: Mayon Volcano remains at Alert Level 3 (high unrest) in the 24-hour bulletin to Nov 10",
       "lat": 13.257,
       "lon": 123.685,
       "level": "red",
       "type": "volcano",
-      "source_url": "https://x.com/phivolcs_dost/status/2119534171836059782",
-      "time": "2026-11-08T20:55:00Z"
+      "source_url": "https://x.com/phivolcs_dost/status/2119897824716570810",
+      "time": "2026-11-09T21:00:01Z"
     },
     {
-      "id": "x-2026-11-09-lata-m64",
-      "title": "M6.4 shallow earthquake 30 km WSW of Lata, Santa Cruz Islands, Solomon Islands (USGS green alert, no tsunami threat)",
-      "lat": -10.867,
-      "lon": 165.562,
-      "level": "orange",
-      "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tx16",
-      "time": "2026-11-09T03:34:59Z"
-    },
-    {
-      "id": "x-2026-11-09-lata-m48",
-      "title": "M4.8 aftershock 26 km SW of Lata, Solomon Islands",
-      "lat": -10.912,
-      "lon": 165.64,
-      "level": "green",
-      "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tx1p",
-      "time": "2026-11-09T05:16:56Z"
-    },
-    {
-      "id": "x-2026-11-09-cempaka-typhoon",
-      "title": "Typhoon Cempaka (local name Samuel) entered the Philippine area of responsibility about 1,370 km ENE of northern Luzon, 120 km/h winds; PAGASA expects no land threat",
-      "lat": 24.0,
-      "lon": 134.9,
+      "id": "x-2026-11-10-portugal-charles-landfall",
+      "title": "Storm Charles (explosive cyclogenesis per AEMET) may make landfall near Lisbon Wednesday with gusts over 100 km/h in central and southern Portugal",
+      "lat": 38.72,
+      "lon": -9.14,
       "level": "orange",
       "type": "storm",
-      "source_url": "https://x.com/gmanews/status/2119380646632026488",
-      "time": "2026-11-09T06:00:00Z"
+      "source_url": "https://x.com/AEMET_Esp/status/2120087466497442236",
+      "time": "2026-11-10T09:33:35Z"
     },
     {
-      "id": "x-2026-11-09-erbil-flash-flood",
-      "title": "Flash floods in Erbil, Iraqi Kurdistan after ~80 mm of rain: two dead, cars and homes submerged, losses estimated above $8 million",
-      "lat": 36.19,
-      "lon": 44.01,
+      "id": "x-2026-11-10-andalucia-rain",
+      "title": "Protección Civil: orange rain warnings across Andalucía, Extremadura and Castilla-La Mancha, totals up to 300 mm through Thursday",
+      "lat": 37.5,
+      "lon": -5.9,
       "level": "orange",
       "type": "flood",
-      "source_url": "https://x.com/i/trending/2119172436855841181",
-      "time": "2026-11-08T16:14:16Z"
+      "source_url": "https://x.com/proteccioncivil/status/2119820887494959431",
+      "time": "2026-11-09T15:54:18Z"
     },
     {
-      "id": "x-2026-11-09-kanlaon-al2",
-      "title": "PHIVOLCS: Kanlaon Volcano at Alert Level 2 (increasing unrest), 6 volcanic earthquakes in 24 h",
+      "id": "x-2026-11-10-canarias-wind-rain",
+      "title": "Protección Civil: orange rain and wind warnings for the Canary Islands from storm Charles",
+      "lat": 28.3,
+      "lon": -15.6,
+      "level": "orange",
+      "type": "storm",
+      "source_url": "https://x.com/proteccioncivil/status/2120066381529878615",
+      "time": "2026-11-10T08:09:48Z"
+    },
+    {
+      "id": "x-2026-11-10-kanlaon-al2",
+      "title": "PHIVOLCS: Kanlaon Volcano at Alert Level 2 (increasing unrest), 5 volcanic earthquakes in 24 h",
       "lat": 10.412,
       "lon": 123.132,
       "level": "orange",
       "type": "volcano",
-      "source_url": "https://x.com/phivolcs_dost/status/2119534171794071837",
-      "time": "2026-11-08T20:55:00Z"
+      "source_url": "https://x.com/phivolcs_dost/status/2119897823776796902",
+      "time": "2026-11-09T21:00:01Z"
     },
     {
-      "id": "x-2026-11-09-rocksprings-ffw",
-      "title": "NWS Flash Flood Warning for Rocksprings, Loma Alta and Carta Valley, TX (Edwards, Kinney, Val Verde counties) with flooded roads",
-      "lat": 30.02,
-      "lon": -100.21,
-      "level": "orange",
-      "type": "flood",
-      "source_url": "https://x.com/NWSSanAntonio/status/2119615806707527796",
-      "time": "2026-11-09T02:19:23Z"
-    },
-    {
-      "id": "x-2026-11-09-kingsville-ffw",
-      "title": "NWS Flash Flood Warning for Kingsville, Premont and Ricardo, TX",
-      "lat": 27.52,
-      "lon": -97.86,
-      "level": "orange",
-      "type": "flood",
-      "source_url": "https://x.com/NWSCorpus/status/2119511217643323710",
-      "time": "2026-11-08T19:23:47Z"
-    },
-    {
-      "id": "x-2026-11-09-corpus-ffw",
-      "title": "NWS Flash Flood Warning for Corpus Christi and Viola, TX",
-      "lat": 27.8,
-      "lon": -97.4,
-      "level": "orange",
-      "type": "flood",
-      "source_url": "https://x.com/NWSCorpus/status/2119456067021119637",
-      "time": "2026-11-08T15:44:38Z"
-    },
-    {
-      "id": "x-2026-11-09-benavides-ffw",
-      "title": "NWS Flash Flood Warning for Benavides, Ben Bolt and Palito Blanco, TX",
-      "lat": 27.6,
-      "lon": -98.41,
-      "level": "orange",
-      "type": "flood",
-      "source_url": "https://x.com/NWSCorpus/status/2119474670575472663",
-      "time": "2026-11-08T16:58:34Z"
-    },
-    {
-      "id": "x-2026-11-09-brownsville-ffw",
-      "title": "NWS Flash Flood Warning for Brownsville, San Benito and Los Fresnos, TX; later replaced by an areal Flood Warning as roads slowly drained",
-      "lat": 25.9,
-      "lon": -97.5,
-      "level": "orange",
-      "type": "flood",
-      "source_url": "https://x.com/NWSBrownsville/status/2119477550833393822",
-      "time": "2026-11-08T17:10:00Z"
-    },
-    {
-      "id": "x-2026-11-09-south-texas-rain",
-      "title": "NWS WPC: 6-8 in of rain fell across southern Texas Sunday; Slight Risk of excessive rainfall today from Corpus Christi to Brownsville on saturated soils",
-      "lat": 27.0,
-      "lon": -97.8,
-      "level": "yellow",
-      "type": "flood",
-      "source_url": "https://x.com/NWSWPC/status/2119715860289876191",
-      "time": "2026-11-09T08:56:58Z"
-    },
-    {
-      "id": "x-2026-11-09-fajardo-ffw",
-      "title": "NWS Flash Flood Warning for Fajardo, Ceiba and Naguabo, Puerto Rico",
-      "lat": 18.33,
-      "lon": -65.65,
-      "level": "yellow",
-      "type": "flood",
-      "source_url": "https://x.com/NWSFlashFlood/status/2119511082154807654",
-      "time": "2026-11-08T19:23:15Z"
-    },
-    {
-      "id": "x-2026-11-09-gurabo-ffw",
-      "title": "NWS Flash Flood Warning for Gurabo, Juncos and Las Piedras, Puerto Rico",
-      "lat": 18.25,
-      "lon": -65.97,
-      "level": "yellow",
-      "type": "flood",
-      "source_url": "https://x.com/NWSFlashFlood/status/2119504214778925160",
-      "time": "2026-11-08T18:55:57Z"
-    },
-    {
-      "id": "x-2026-11-09-pena-ts",
-      "title": "NHC: Tropical Storm Pena moving west well south of the Hawaiian Islands, first November Central Pacific tropical storm since 1982",
-      "lat": 11.3,
-      "lon": -158.4,
-      "level": "yellow",
-      "type": "storm",
-      "source_url": "https://x.com/NHC_Pacific/status/2119711604149305682",
-      "time": "2026-11-09T08:40:03Z"
-    },
-    {
-      "id": "x-2026-11-09-swio-tc02",
-      "title": "Tropical Cyclone 02 (2026-27 season) in the southwest Indian Ocean near northern Madagascar (GDACS green)",
-      "lat": -11.8,
-      "lon": 50.54,
-      "level": "green",
-      "type": "storm",
-      "source_url": "https://www.gdacs.org/report.aspx?eventid=1001349&episodeid=6&eventtype=TC",
-      "time": "2026-11-08T12:00:00Z"
-    },
-    {
-      "id": "x-2026-11-09-hasaki-m57",
-      "title": "M5.7 earthquake 106 km ENE of Hasaki, off Ibaraki, Japan; JMA max intensity 3, no tsunami",
-      "lat": 36.247,
-      "lon": 141.83,
-      "level": "yellow",
-      "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tx1f",
-      "time": "2026-11-09T04:52:51Z"
-    },
-    {
-      "id": "x-2026-11-09-takahagi-m46",
-      "title": "M4.6 earthquake 69 km ESE of Takahagi, Japan",
-      "lat": 36.494,
-      "lon": 141.448,
-      "level": "green",
-      "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tx1i",
-      "time": "2026-11-09T05:01:53Z"
-    },
-    {
-      "id": "x-2026-11-09-onagawa-m45",
-      "title": "M4.5 earthquake 43 km E of Onagawa, Japan",
-      "lat": 38.378,
-      "lon": 141.937,
-      "level": "green",
-      "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000twz2",
-      "time": "2026-11-08T20:16:30Z"
-    },
-    {
-      "id": "x-2026-11-09-masohi-m52",
-      "title": "M5.2 shallow earthquake 162 km E of Masohi, Seram, Indonesia",
-      "lat": -3.055,
-      "lon": 130.41,
-      "level": "yellow",
-      "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tx32",
-      "time": "2026-11-09T09:48:27Z"
-    },
-    {
-      "id": "x-2026-11-09-fiji-m51",
-      "title": "M5.1 deep earthquake south of the Fiji Islands (535 km)",
-      "lat": -23.677,
-      "lon": 179.212,
-      "level": "yellow",
-      "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tx0f",
-      "time": "2026-11-09T00:46:59Z"
-    },
-    {
-      "id": "x-2026-11-09-fiji-m49",
-      "title": "M4.9 earthquake south of the Fiji Islands",
-      "lat": -25.186,
-      "lon": -176.996,
-      "level": "green",
-      "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tx0x",
-      "time": "2026-11-09T02:21:57Z"
-    },
-    {
-      "id": "x-2026-11-09-kokopo-m47",
-      "title": "M4.7 earthquake 119 km SW of Kokopo, Papua New Guinea",
-      "lat": -5.094,
-      "lon": 151.488,
-      "level": "green",
-      "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000twzn",
-      "time": "2026-11-08T22:30:10Z"
-    },
-    {
-      "id": "x-2026-11-09-tobelo-m46",
-      "title": "M4.6 earthquake 117 km NE of Tobelo, Indonesia",
-      "lat": 2.55,
-      "lon": 128.675,
-      "level": "green",
-      "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000twyd",
-      "time": "2026-11-08T16:45:12Z"
-    },
-    {
-      "id": "x-2026-11-09-klyuchi-m46",
-      "title": "M4.6 earthquake 54 km S of Klyuchi, Kamchatka, Russia",
-      "lat": 55.834,
-      "lon": 160.975,
-      "level": "green",
-      "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tx2g",
-      "time": "2026-11-09T07:04:13Z"
-    },
-    {
-      "id": "x-2026-11-09-mar-m48",
-      "title": "M4.8 earthquake, central Mid-Atlantic Ridge",
-      "lat": 7.703,
-      "lon": -36.945,
-      "level": "green",
-      "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000twyc",
-      "time": "2026-11-08T16:33:24Z"
-    },
-    {
-      "id": "x-2026-11-09-swir-m47",
-      "title": "M4.7 earthquake, Southwest Indian Ridge",
-      "lat": -27.69,
-      "lon": 64.443,
-      "level": "green",
-      "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000twxn",
-      "time": "2026-11-08T12:29:17Z"
-    },
-    {
-      "id": "x-2026-11-09-huara-m47",
-      "title": "M4.7 earthquake 46 km NW of Huara, Chile",
-      "lat": -19.681,
-      "lon": -70.06,
-      "level": "green",
-      "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000twxf",
-      "time": "2026-11-08T11:58:32Z"
-    },
-    {
-      "id": "x-2026-11-09-taal-al1",
-      "title": "PHIVOLCS: Taal Volcano at Alert Level 1 (low-level unrest), 12 volcanic earthquakes in 24 h",
+      "id": "x-2026-11-10-taal-al1",
+      "title": "PHIVOLCS: Taal Volcano at Alert Level 1 (low-level unrest), 4 volcanic earthquakes in 24 h",
       "lat": 14.002,
       "lon": 120.993,
       "level": "yellow",
       "type": "volcano",
-      "source_url": "https://x.com/phivolcs_dost/status/2119534172142502201",
-      "time": "2026-11-08T20:55:00Z"
+      "source_url": "https://x.com/phivolcs_dost/status/2119897829619704027",
+      "time": "2026-11-09T21:00:03Z"
     },
     {
-      "id": "x-2026-11-09-tamil-nadu-rain",
-      "title": "IMD: heavy rainfall (7-11 cm) recorded over Tamil Nadu; isolated heavy rain likely Nov 9-10",
-      "lat": 10.8,
-      "lon": 79.1,
+      "id": "x-2026-11-10-bulusan-al1",
+      "title": "PHIVOLCS: Bulusan Volcano at Alert Level 1 (low-level unrest), 7 volcanic earthquakes in 24 h",
+      "lat": 12.77,
+      "lon": 124.05,
+      "level": "yellow",
+      "type": "volcano",
+      "source_url": "https://x.com/phivolcs_dost/status/2119897827006710002",
+      "time": "2026-11-09T21:00:02Z"
+    },
+    {
+      "id": "x-2026-11-10-cempaka-typhoon",
+      "title": "Typhoon Cempaka (Samuel) leaving the Philippine area far east of Luzon, 120 km/h winds, no land threat (GDACS green)",
+      "lat": 25.4,
+      "lon": 139.9,
+      "level": "yellow",
+      "type": "storm",
+      "source_url": "http://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001347",
+      "time": "2026-11-09T04:15:09Z"
+    },
+    {
+      "id": "x-2026-11-10-pena-ts",
+      "title": "NHC: Tropical Storm Pena, poorly organized, moving west well south of Hawaii (advisory 15)",
+      "lat": 11.7,
+      "lon": -163.9,
+      "level": "yellow",
+      "type": "storm",
+      "source_url": "https://x.com/NHC_Pacific/status/2120072478479290409",
+      "time": "2026-11-10T08:34:02Z"
+    },
+    {
+      "id": "x-2026-11-10-south-texas-rain",
+      "title": "NWS: slight risk (level 2 of 4) of excessive rainfall for coastal South Texas, up to 6 in along the Rio Grande",
+      "lat": 27.8,
+      "lon": -97.4,
       "level": "yellow",
       "type": "flood",
-      "source_url": "https://x.com/Indiametdept/status/2119684497184829483",
-      "time": "2026-11-09T06:52:20Z"
+      "source_url": "https://x.com/NWS/status/2119831123492512179",
+      "time": "2026-11-09T16:34:59Z"
     },
     {
-      "id": "x-2026-11-09-kerala-rain",
-      "title": "IMD: isolated heavy rainfall likely over Kerala on Nov 9",
-      "lat": 10.5,
-      "lon": 76.3,
+      "id": "x-2026-11-10-ne-us-snow",
+      "title": "NWS/WPC: threat of snow in the Northeast and Mid-Atlantic late this week as the season's coldest air arrives",
+      "lat": 41.5,
+      "lon": -75.5,
+      "level": "yellow",
+      "type": "cold",
+      "source_url": "https://x.com/NWS/status/2119970302356807933",
+      "time": "2026-11-10T01:48:01Z"
+    },
+    {
+      "id": "x-2026-11-10-punjab-farm-fires",
+      "title": "Punjab logged 1,152 farm fires on Nov 8, pushing Delhi air quality into the severe range (one station AQI 895)",
+      "lat": 30.9,
+      "lon": 75.0,
+      "level": "yellow",
+      "type": "fire",
+      "source_url": "https://x.com/i/trending/2119046107191988451",
+      "time": "2026-11-09T10:35:36Z"
+    },
+    {
+      "id": "x-2026-11-10-nigeria-heat",
+      "title": "El Niño-fuelled heat wave with widespread power outages in Lagos and Abuja, Nigeria",
+      "lat": 6.52,
+      "lon": 3.38,
+      "level": "yellow",
+      "type": "heat",
+      "source_url": "https://x.com/i/trending/2119822017155182705",
+      "time": "2026-11-09T16:07:42Z"
+    },
+    {
+      "id": "x-2026-11-10-bariloche-snow",
+      "title": "About a metre of snow cut off rural families near Bariloche, Argentina; rescuers reached them after a satellite call",
+      "lat": -41.13,
+      "lon": -71.3,
+      "level": "yellow",
+      "type": "cold",
+      "source_url": "https://x.com/i/trending/2119883143692026295",
+      "time": "2026-11-09T20:13:21Z"
+    },
+    {
+      "id": "x-2026-11-10-riyadh-floods",
+      "title": "Saudi authorities warn of thunderstorms and flash floods in Riyadh; UAE expects rain through Nov 12",
+      "lat": 24.71,
+      "lon": 46.68,
       "level": "yellow",
       "type": "flood",
-      "source_url": "https://x.com/Indiametdept/status/2119710051841782059",
-      "time": "2026-11-09T08:33:53Z"
+      "source_url": "https://x.com/i/trending/2120002013157376307",
+      "time": "2026-11-10T08:33:25Z"
     },
     {
-      "id": "x-2026-11-09-kashmir-snow",
-      "title": "IMD: western disturbance to bring isolated heavy rain/snow to the Kashmir Valley Nov 12-13",
+      "id": "x-2026-11-10-south-thailand-rain",
+      "title": "Thai authorities flag heavy rain in the southern provinces",
+      "lat": 7.9,
+      "lon": 99.0,
+      "level": "yellow",
+      "type": "flood",
+      "source_url": "https://x.com/i/trending/2120002013157376307",
+      "time": "2026-11-10T08:33:25Z"
+    },
+    {
+      "id": "x-2026-11-10-nairobi-dam-low",
+      "title": "Nairobi water utility cuts production 35% as Thika/Ndakaini dam levels drop after poor rains",
+      "lat": -0.93,
+      "lon": 36.97,
+      "level": "yellow",
+      "type": "other",
+      "source_url": "https://x.com/i/trending/2119721099940315158",
+      "time": "2026-11-09T15:10:33Z"
+    },
+    {
+      "id": "x-2026-11-10-kashmir-snow",
+      "title": "IMD: western disturbance to bring isolated heavy rain/snow to Kashmir and Himachal Nov 12-15",
       "lat": 34.08,
       "lon": 74.8,
       "level": "green",
       "type": "cold",
-      "source_url": "https://x.com/Indiametdept/status/2119720499060387998",
-      "time": "2026-11-09T09:15:24Z"
+      "source_url": "https://x.com/i/trending/2119722625530532234",
+      "time": "2026-11-09T09:27:32Z"
     },
     {
-      "id": "x-2026-11-09-kalimantan-fires",
-      "title": "Forest fires in South Kalimantan, Indonesia: a water-bombing helicopter crashed into the Barito River, killing one crew member (second crash in four days)",
-      "lat": -3.0,
-      "lon": 114.6,
+      "id": "x-2026-11-10-ohio-valley-storms",
+      "title": "NWS SPC: marginal severe-storm risk for parts of the lower Ohio and western Tennessee valleys (Day 2)",
+      "lat": 36.8,
+      "lon": -88.0,
+      "level": "green",
+      "type": "storm",
+      "source_url": "https://x.com/NWSSPC/status/2120046922899529744",
+      "time": "2026-11-10T06:52:29Z"
+    },
+    {
+      "id": "x-2026-11-10-luzon-amihan-rain",
+      "title": "PAGASA rainfall advisory: northeast monsoon rain over Laguna and Rizal",
+      "lat": 14.3,
+      "lon": 121.4,
+      "level": "green",
+      "type": "flood",
+      "source_url": "https://x.com/dost_pagasa/status/2120085761047564475",
+      "time": "2026-11-10T09:26:49Z"
+    },
+    {
+      "id": "x-2026-11-10-joseph-or-m43",
+      "title": "M4.3 earthquake 12 mi SE of Joseph, Oregon; ShakeAlert early warning activated",
+      "lat": 45.254,
+      "lon": -117.019,
       "level": "yellow",
-      "type": "fire",
-      "source_url": "https://x.com/i/trending/2119350828318474373",
-      "time": "2026-11-08T20:11:01Z"
+      "type": "quake",
+      "source_url": "https://x.com/USGS_Quakes/status/2120067869966749837",
+      "time": "2026-11-10T07:42:53Z"
     },
     {
-      "id": "x-2026-11-09-punjab-farm-fires",
-      "title": "Punjab logged 1,152 farm fires on Nov 8 (Tarn Taran, Ferozepur worst), pushing Delhi air quality to very poor/severe",
-      "lat": 31.45,
-      "lon": 74.93,
+      "id": "x-2026-11-10-7000tx9z-m5",
+      "title": "M5 earthquake, 58 km NE of Fef, Indonesia (depth 35 km, USGS)",
+      "lat": -0.4928,
+      "lon": 132.859,
       "level": "yellow",
+      "type": "quake",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tx9z",
+      "time": "2026-11-10T08:34:07Z"
+    },
+    {
+      "id": "x-2026-11-10-7000tx9n-m48",
+      "title": "M4.8 earthquake, northern Mid-Atlantic Ridge (depth 10 km, USGS)",
+      "lat": 34.8774,
+      "lon": -35.075,
+      "level": "green",
+      "type": "quake",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tx9n",
+      "time": "2026-11-10T06:43:11Z"
+    },
+    {
+      "id": "x-2026-11-10-7000tx9i-m47",
+      "title": "M4.7 earthquake, 90 km SSE of Tateyama, Japan (depth 10 km, USGS)",
+      "lat": 34.1962,
+      "lon": 140.1377,
+      "level": "green",
+      "type": "quake",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tx9i",
+      "time": "2026-11-10T06:36:48Z"
+    },
+    {
+      "id": "x-2026-11-10-7000tx96-m49",
+      "title": "M4.9 earthquake, 78 km ESE of Hitachi, Japan (depth 35 km, USGS)",
+      "lat": 36.3338,
+      "lon": 141.4659,
+      "level": "green",
+      "type": "quake",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tx96",
+      "time": "2026-11-10T05:20:08Z"
+    },
+    {
+      "id": "x-2026-11-10-7000tx8z-m46",
+      "title": "M4.6 earthquake, 65 km SW of Lata, Solomon Islands (depth 10 km, USGS)",
+      "lat": -11.1105,
+      "lon": 165.3377,
+      "level": "green",
+      "type": "quake",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tx8z",
+      "time": "2026-11-10T04:30:17Z"
+    },
+    {
+      "id": "x-2026-11-10-7000tx8s-m52",
+      "title": "M5.2 earthquake, 19 km WSW of Lata, Solomon Islands (depth 10 km, USGS)",
+      "lat": -10.7818,
+      "lon": 165.6239,
+      "level": "yellow",
+      "type": "quake",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tx8s",
+      "time": "2026-11-10T03:37:46Z"
+    },
+    {
+      "id": "x-2026-11-10-7000tx8i-m49",
+      "title": "M4.9 earthquake, north of Franz Josef Land (depth 10 km, USGS)",
+      "lat": 86.7236,
+      "lon": 65.2936,
+      "level": "green",
+      "type": "quake",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tx8i",
+      "time": "2026-11-10T02:00:03Z"
+    },
+    {
+      "id": "x-2026-11-10-7000tx8d-m54",
+      "title": "M5.4 earthquake, Pulau Pulau Tanimbar, Indonesia (depth 10 km, USGS)",
+      "lat": -7.8742,
+      "lon": 130.2935,
+      "level": "yellow",
+      "type": "quake",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tx8d",
+      "time": "2026-11-10T01:53:24Z"
+    },
+    {
+      "id": "x-2026-11-10-7000tx7v-m49",
+      "title": "M4.9 earthquake, south of the Fiji Islands (depth 176 km, USGS)",
+      "lat": -24.5715,
+      "lon": -177.3757,
+      "level": "green",
+      "type": "quake",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tx7v",
+      "time": "2026-11-09T23:45:26Z"
+    },
+    {
+      "id": "x-2026-11-10-7000tx7h-m47",
+      "title": "M4.7 earthquake, 103 km W of Attu Station, Alaska (depth 10 km, USGS)",
+      "lat": 52.7984,
+      "lon": 171.6466,
+      "level": "green",
+      "type": "quake",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tx7h",
+      "time": "2026-11-09T22:03:07Z"
+    },
+    {
+      "id": "x-2026-11-10-7000tx6m-m48",
+      "title": "M4.8 earthquake, 149 km NW of Port-Olry, Vanuatu (depth 10 km, USGS)",
+      "lat": -14.2428,
+      "lon": 165.9539,
+      "level": "green",
+      "type": "quake",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tx6m",
+      "time": "2026-11-09T19:27:54Z"
+    },
+    {
+      "id": "x-2026-11-10-7000tx6l-m46",
+      "title": "M4.6 earthquake, south of the Fiji Islands (depth 520 km, USGS)",
+      "lat": -23.675,
+      "lon": -179.9613,
+      "level": "green",
+      "type": "quake",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tx6l",
+      "time": "2026-11-09T19:09:47Z"
+    },
+    {
+      "id": "x-2026-11-10-7000tx6j-m46",
+      "title": "M4.6 earthquake, 206 km E of Kirakira, Solomon Islands (depth 10 km, USGS)",
+      "lat": -10.5301,
+      "lon": 163.8048,
+      "level": "green",
+      "type": "quake",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tx6j",
+      "time": "2026-11-09T18:51:45Z"
+    },
+    {
+      "id": "x-2026-11-10-7000tx47-m49",
+      "title": "M4.9 earthquake, Mid-Indian Ridge (depth 10 km, USGS)",
+      "lat": -28.1856,
+      "lon": 74.3713,
+      "level": "green",
+      "type": "quake",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tx47",
+      "time": "2026-11-09T15:04:33Z"
+    },
+    {
+      "id": "x-2026-11-10-7000tx3n-m47",
+      "title": "M4.7 earthquake, 17 km NW of İmamoğlu, Turkey (depth 10 km, USGS)",
+      "lat": 37.39,
+      "lon": 35.5394,
+      "level": "green",
+      "type": "quake",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tx3n",
+      "time": "2026-11-09T12:28:18Z"
+    },
+    {
+      "id": "x-2026-11-10-7000tx3c-m47",
+      "title": "M4.7 earthquake, 271 km N of Tobelo, Indonesia (depth 98 km, USGS)",
+      "lat": 4.1741,
+      "lon": 127.7802,
+      "level": "green",
+      "type": "quake",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tx3c",
+      "time": "2026-11-09T11:25:07Z"
+    },
+    {
+      "id": "x-2026-11-10-7000tx38-m53",
+      "title": "M5.3 earthquake, 80 km ENE of Lagunas, Peru (depth 11 km, USGS)",
+      "lat": -4.9495,
+      "lon": -75.0002,
+      "level": "yellow",
+      "type": "quake",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tx38",
+      "time": "2026-11-09T10:23:53Z"
+    },
+    {
+      "id": "x-2026-11-10-fire-brazil-guyana",
+      "title": "GDACS: forest fires in Brazil/Guyana border",
+      "lat": 2.696,
+      "lon": -60.196,
+      "level": "green",
       "type": "fire",
-      "source_url": "https://x.com/i/trending/2119046107191988451",
-      "time": "2026-11-09T08:10:35Z"
+      "source_url": "http://www.gdacs.org/report.aspx?eventtype=WF&eventid=1033686",
+      "time": "2026-11-10T00:00:00Z"
     },
     {
-      "id": "x-2026-11-09-se-us-frost",
-      "title": "NWS frost advisories across north Georgia, Alabama, North Carolina and the Ohio Valley as the season's coldest air arrives",
-      "lat": 33.9,
-      "lon": -84.4,
-      "level": "green",
-      "type": "cold",
-      "source_url": "https://x.com/i/trending/2119509641319063809",
-      "time": "2026-11-08T19:24:21Z"
-    },
-    {
-      "id": "x-2026-11-09-venezuela-flood",
-      "title": "GDACS: flood event in north-central Venezuela",
-      "lat": 10.176,
-      "lon": -67.919,
-      "level": "green",
-      "type": "flood",
-      "source_url": "https://www.gdacs.org/report.aspx?eventid=1104275&episodeid=1&eventtype=FL",
-      "time": "2026-11-09T01:00:00Z"
-    },
-    {
-      "id": "x-2026-11-09-syria-flood",
-      "title": "GDACS: flood event in eastern Syria",
-      "lat": 34.451,
-      "lon": 40.917,
-      "level": "green",
-      "type": "flood",
-      "source_url": "https://www.gdacs.org/report.aspx?eventid=1104274&episodeid=1&eventtype=FL",
-      "time": "2026-11-09T01:00:00Z"
-    },
-    {
-      "id": "x-2026-11-09-france-flood",
-      "title": "GDACS: flood event in Normandy (Cotentin), France",
-      "lat": 49.559,
-      "lon": -1.839,
-      "level": "green",
-      "type": "flood",
-      "source_url": "https://www.gdacs.org/report.aspx?eventid=1104270&episodeid=3&eventtype=FL",
-      "time": "2026-11-09T01:00:00Z"
-    },
-    {
-      "id": "x-2026-11-09-vietnam-flood",
-      "title": "GDACS: flood event in northern Vietnam",
-      "lat": 22.502,
-      "lon": 104.307,
-      "level": "green",
-      "type": "flood",
-      "source_url": "https://www.gdacs.org/report.aspx?eventid=1104271&episodeid=1&eventtype=FL",
-      "time": "2026-11-08T01:00:00Z"
-    },
-    {
-      "id": "x-2026-11-09-kimberley-fire",
-      "title": "GDACS: forest fires in the Kimberley, Western Australia",
-      "lat": -19.348,
-      "lon": 124.252,
+      "id": "x-2026-11-10-fire-burkina",
+      "title": "GDACS: forest fires in northern Burkina Faso",
+      "lat": 14.142,
+      "lon": -0.881,
       "level": "green",
       "type": "fire",
-      "source_url": "https://www.gdacs.org/report.aspx?eventid=1033644&episodeid=2&eventtype=WF",
-      "time": "2026-11-09T00:00:00Z"
+      "source_url": "http://www.gdacs.org/report.aspx?eventtype=WF&eventid=1033681",
+      "time": "2026-11-10T00:00:00Z"
     },
     {
-      "id": "x-2026-11-09-nt-fire",
-      "title": "GDACS: forest fires in the Northern Territory, Australia",
-      "lat": -18.799,
-      "lon": 133.701,
-      "level": "green",
-      "type": "fire",
-      "source_url": "https://www.gdacs.org/report.aspx?eventid=1033655&episodeid=1&eventtype=WF",
-      "time": "2026-11-09T00:00:00Z"
-    },
-    {
-      "id": "x-2026-11-09-qld-fire",
-      "title": "GDACS: forest fires in north Queensland, Australia",
-      "lat": -17.941,
-      "lon": 145.51,
-      "level": "green",
-      "type": "fire",
-      "source_url": "https://www.gdacs.org/report.aspx?eventid=1033549&episodeid=7&eventtype=WF",
-      "time": "2026-11-09T00:00:00Z"
-    },
-    {
-      "id": "x-2026-11-09-mali-fire",
-      "title": "GDACS: forest fires in southwestern Mali",
-      "lat": 14.294,
-      "lon": -8.919,
-      "level": "green",
-      "type": "fire",
-      "source_url": "https://www.gdacs.org/report.aspx?eventid=1033657&episodeid=1&eventtype=WF",
-      "time": "2026-11-09T00:00:00Z"
-    },
-    {
-      "id": "x-2026-11-09-botswana-fire",
+      "id": "x-2026-11-10-fire-botswana",
       "title": "GDACS: forest fires in southern Botswana",
-      "lat": -24.715,
-      "lon": 22.114,
+      "lat": -24.473,
+      "lon": 22.801,
       "level": "green",
       "type": "fire",
-      "source_url": "https://www.gdacs.org/report.aspx?eventid=1033634&episodeid=2&eventtype=WF",
-      "time": "2026-11-09T00:00:00Z"
+      "source_url": "http://www.gdacs.org/report.aspx?eventtype=WF&eventid=1033677",
+      "time": "2026-11-10T00:00:00Z"
     },
     {
-      "id": "x-2026-11-09-sudan-fire",
-      "title": "GDACS: forest fires in South Darfur, Sudan",
-      "lat": 10.495,
-      "lon": 24.016,
+      "id": "x-2026-11-10-fire-car",
+      "title": "GDACS: forest fires in Central African Republic",
+      "lat": 9.505,
+      "lon": 23.099,
       "level": "green",
       "type": "fire",
-      "source_url": "https://www.gdacs.org/report.aspx?eventid=1033643&episodeid=2&eventtype=WF",
-      "time": "2026-11-09T00:00:00Z"
+      "source_url": "http://www.gdacs.org/report.aspx?eventtype=WF&eventid=1033676",
+      "time": "2026-11-10T00:00:00Z"
+    },
+    {
+      "id": "x-2026-11-10-fire-south-sudan",
+      "title": "GDACS: forest fires in South Sudan",
+      "lat": 8.91,
+      "lon": 25.131,
+      "level": "green",
+      "type": "fire",
+      "source_url": "http://www.gdacs.org/report.aspx?eventtype=WF&eventid=1033674",
+      "time": "2026-11-10T00:00:00Z"
+    },
+    {
+      "id": "x-2026-11-10-fire-mali",
+      "title": "GDACS: forest fires in western Mali",
+      "lat": 14.292,
+      "lon": -8.916,
+      "level": "green",
+      "type": "fire",
+      "source_url": "http://www.gdacs.org/report.aspx?eventtype=WF&eventid=1033657",
+      "time": "2026-11-10T00:00:00Z"
     }
   ]
 }
