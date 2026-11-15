@@ -1,306 +1,566 @@
 {
-  "updated": "2026-11-14T10:18:18Z",
+  "updated": "2026-11-15T10:02:52Z",
   "source": "daily X scan",
   "markers": [
     {
-      "id": "x-2026-11-14-squamish-valley-flood-deaths",
-      "title": "Squamish Valley, B.C.: two dead, one missing after boating incident on flood-swollen rivers (RCMP)",
-      "lat": 49.86,
-      "lon": -123.25,
+      "id": "x-2026-11-15-guayaquil-floods-deaths",
+      "title": "Guayas, Ecuador: floods kill two in Guayaquil, two more missing in a storm drain; about 80% of Milagro's urban area under water",
+      "lat": -2.19,
+      "lon": -79.89,
       "level": "red",
       "type": "flood",
-      "source_url": "https://x.com/i/status/2121306419903312178",
-      "time": "2026-11-13T18:17:17Z"
+      "source_url": "https://x.com/i/status/2121758902911914430",
+      "time": "2026-11-15T00:15:17Z"
     },
     {
-      "id": "x-2026-11-14-gaza-tent-floods",
-      "title": "Gaza: heavy rain floods tens of thousands of displaced families' tents; WHO warns respiratory illness surging",
-      "lat": 31.42,
-      "lon": 34.36,
-      "level": "red",
-      "type": "flood",
-      "source_url": "https://x.com/i/status/2121271320809804109",
-      "time": "2026-11-13T15:57:48Z"
-    },
-    {
-      "id": "x-2026-11-14-salta-embarcacion-storm",
-      "title": "Salta, Argentina: violent storm in Embarcación leaves at least 150 injured, homes damaged, trees and power poles down",
-      "lat": -23.21,
-      "lon": -64.1,
+      "id": "x-2026-11-15-nsw-forster-giant-hail",
+      "title": "NSW, Australia: SES 'Watch and Act' tells Forster and Seal Rocks to stay indoors as very dangerous storms bring giant hail and destructive winds",
+      "lat": -32.18,
+      "lon": 152.51,
       "level": "red",
       "type": "storm",
-      "source_url": "https://x.com/i/status/2121250909229551819",
-      "time": "2026-11-13T14:36:42Z"
+      "source_url": "https://x.com/i/status/2121804502516805746",
+      "time": "2026-11-15T03:16:29Z"
     },
     {
-      "id": "x-2026-11-14-mayon-lava-dome",
-      "title": "Mayon Volcano: PHIVOLCS spots a new lava dome in the summit crater",
-      "lat": 13.257,
-      "lon": 123.685,
-      "level": "red",
+      "id": "x-2026-11-15-catamarca-storm-death",
+      "title": "Catamarca, Argentina: woman dies after being swept away by floodwater during a violent storm (NA)",
+      "lat": -28.47,
+      "lon": -65.78,
+      "level": "orange",
+      "type": "flood",
+      "source_url": "https://x.com/i/status/2121716258919813275",
+      "time": "2026-11-14T21:25:50Z"
+    },
+    {
+      "id": "x-2026-11-15-tucuman-storm-death",
+      "title": "Tucumán, Argentina: 22-year-old killed by a power cable downed in a windstorm; damage in Alberdi, injuries at a Concepción festival",
+      "lat": -26.83,
+      "lon": -65.2,
+      "level": "orange",
+      "type": "storm",
+      "source_url": "https://x.com/i/status/2121724307101417890",
+      "time": "2026-11-14T21:57:49Z"
+    },
+    {
+      "id": "x-2026-11-15-cordoba-giant-hail",
+      "title": "Córdoba, Argentina: violent storm with hailstones over 10 cm, flooded homes, evacuations and damage",
+      "lat": -31.42,
+      "lon": -64.5,
+      "level": "orange",
+      "type": "storm",
+      "source_url": "https://x.com/i/status/2121584844853354825",
+      "time": "2026-11-14T12:43:38Z"
+    },
+    {
+      "id": "x-2026-11-15-erbil-flood-damage",
+      "title": "Erbil, Iraq: flash floods damaged about 1,740 homes, shops and sites and 171 vehicles, officials say",
+      "lat": 36.19,
+      "lon": 44.01,
+      "level": "orange",
+      "type": "flood",
+      "source_url": "https://x.com/i/status/2121896471024824753",
+      "time": "2026-11-15T09:21:56Z"
+    },
+    {
+      "id": "x-2026-11-15-coquimbo-red-alert-floods",
+      "title": "Coquimbo, Chile: SENAPRED red alert in 7 communes as snowmelt-swollen rivers overflow; homes flooded, families cut off",
+      "lat": -30.03,
+      "lon": -70.7,
+      "level": "orange",
+      "type": "flood",
+      "source_url": "https://x.com/i/status/2121690271620472888",
+      "time": "2026-11-14T19:42:34Z"
+    },
+    {
+      "id": "x-2026-11-15-herault-flash-floods",
+      "title": "Hérault, France: up to 190 mm near Montpellier overnight; 105 people moved to safety, a woman airlifted off her car roof at Candillargues",
+      "lat": 43.62,
+      "lon": 4.07,
+      "level": "orange",
+      "type": "flood",
+      "source_url": "https://x.com/i/status/2121899619806314816",
+      "time": "2026-11-15T09:34:00Z"
+    },
+    {
+      "id": "x-2026-11-15-vietnam-gia-lai-dak-lak-floods",
+      "title": "Central Vietnam: 300+ mm of rain floods 2,734 homes in Gia Lai and Dak Lak; 1,887 households evacuated (VietnamPlus)",
+      "lat": 13.98,
+      "lon": 108.0,
+      "level": "orange",
+      "type": "flood",
+      "source_url": "https://x.com/i/status/2121569235394834575",
+      "time": "2026-11-14T11:41:37Z"
+    },
+    {
+      "id": "x-2026-11-15-bay-of-bengal-akvan-depression",
+      "title": "Bay of Bengal: IMD tropical depression near 9.3N 86.9E, forecast to become Cyclone Akvan and head for the Tamil Nadu–Andhra coast around Nov 19–20",
+      "lat": 9.3,
+      "lon": 86.9,
+      "level": "orange",
+      "type": "storm",
+      "source_url": "https://x.com/i/status/2121869268337779017",
+      "time": "2026-11-15T07:33:00Z"
+    },
+    {
+      "id": "x-2026-11-15-kanlaon-ash-plume",
+      "title": "Kanlaon Volcano, Negros: 900 m ash plume this morning, Alert Level 2 (PHIVOLCS)",
+      "lat": 10.412,
+      "lon": 123.132,
+      "level": "orange",
       "type": "volcano",
-      "source_url": "https://x.com/i/status/2121286813314846985",
-      "time": "2026-11-13T16:59:22Z"
+      "source_url": "https://x.com/i/status/2121832002760351908",
+      "time": "2026-11-15T01:08:00Z"
     },
     {
-      "id": "x-2026-11-14-bulusan-seismic-unrest",
-      "title": "Bulusan Volcano advisory: 205 volcanic earthquakes since Nov 13 (PHIVOLCS notice of increased seismic activity)",
+      "id": "x-2026-11-15-bulusan-438-quakes",
+      "title": "Bulusan Volcano, Sorsogon: 438 volcanic quakes in 24 h, double the day before; eruption threat remains (PHIVOLCS)",
       "lat": 12.77,
       "lon": 124.05,
       "level": "orange",
       "type": "volcano",
-      "source_url": "https://x.com/i/status/2121486063986217464",
-      "time": "2026-11-14T06:11:07Z"
+      "source_url": "https://x.com/i/status/2121822872117092665",
+      "time": "2026-11-15T04:29:28Z"
     },
     {
-      "id": "x-2026-11-14-bay-of-bengal-akvan",
-      "title": "Bay of Bengal: well-marked low expected to become a depression within 24 h and Cyclone Akvan by Nov 16 evening (IMD)",
-      "lat": 10,
-      "lon": 88,
+      "id": "x-2026-11-15-pacifica-giant-surf",
+      "title": "Pacifica / Half Moon Bay, California: high surf warning for 25–35 ft waves (50–60 ft at Mavericks); waves flood streets and lots",
+      "lat": 37.63,
+      "lon": -122.49,
       "level": "orange",
       "type": "storm",
-      "source_url": "https://x.com/i/status/2121461463684710591",
-      "time": "2026-11-14T04:33:22Z"
+      "source_url": "https://x.com/i/status/2121710627945119764",
+      "time": "2026-11-14T21:03:27Z"
     },
     {
-      "id": "x-2026-11-14-tuscany-arno-watch",
-      "title": "Tuscany: Ombrone, Bisenzio and Serchio crests pass, close watch remains on the Arno after red-alert floods",
-      "lat": 43.77,
-      "lon": 11.25,
+      "id": "x-2026-11-15-santa-cruz-surf-evacuation",
+      "title": "Santa Cruz County, California: high surf prompts evacuation warnings along the coast",
+      "lat": 36.96,
+      "lon": -122.02,
       "level": "orange",
       "type": "flood",
-      "source_url": "https://x.com/i/status/2121155302275907987",
-      "time": "2026-11-13T08:16:47Z"
+      "source_url": "https://x.com/i/status/2121664499405009186",
+      "time": "2026-11-14T18:00:09Z"
     },
     {
-      "id": "x-2026-11-14-corsica-storm-charles",
-      "title": "Corsica: Storm Charles brings severe flooding on the Tavignano in Corte; orange flood alert for Haute-Corse, bridge damaged",
-      "lat": 42.31,
-      "lon": 9.15,
+      "id": "x-2026-11-15-kzn-level5-storms",
+      "title": "KwaZulu-Natal, South Africa: Level 5 severe thunderstorm warning; disaster teams on high alert for heavy rain, damaging winds and hail",
+      "lat": -29.6,
+      "lon": 30.38,
+      "level": "orange",
+      "type": "storm",
+      "source_url": "https://x.com/i/status/2121576613158477933",
+      "time": "2026-11-14T12:10:56Z"
+    },
+    {
+      "id": "x-2026-11-15-gaza-tent-floods",
+      "title": "Gaza: heavy rain keeps flooding tents of displaced families",
+      "lat": 31.42,
+      "lon": 34.36,
       "level": "orange",
       "type": "flood",
-      "source_url": "https://x.com/i/status/2121294002502995985",
-      "time": "2026-11-13T17:27:56Z"
+      "source_url": "https://x.com/i/status/2121875853915099235",
+      "time": "2026-11-15T08:00:00Z"
     },
     {
-      "id": "x-2026-11-14-piedralaves-dam-evac",
-      "title": "Spain: ES-Alert evacuates Piedralaves (Ávila) over Horcajo dam overflow risk amid Storm Bruna red alerts",
-      "lat": 40.32,
-      "lon": -4.7,
+      "id": "x-2026-11-15-bagni-di-lucca-landslides",
+      "title": "Bagni di Lucca, Tuscany: firefighters clear landslides that cut off homes after the storm",
+      "lat": 44.01,
+      "lon": 10.58,
       "level": "orange",
-      "type": "flood",
-      "source_url": "https://x.com/i/status/2121164171915997609",
-      "time": "2026-11-13T08:52:02Z"
+      "type": "landslide",
+      "source_url": "https://x.com/i/status/2121672469862121588",
+      "time": "2026-11-14T18:31:50Z"
     },
     {
-      "id": "x-2026-11-14-nsw-walgett-storms",
-      "title": "NSW: severe thunderstorm warning — large hail, heavy rain and damaging winds around Walgett and Lightning Ridge (BOM)",
-      "lat": -29.8,
-      "lon": 148.1,
-      "level": "orange",
-      "type": "storm",
-      "source_url": "https://x.com/i/status/2121485269455049039",
-      "time": "2026-11-14T06:07:58Z"
-    },
-    {
-      "id": "x-2026-11-14-norcal-atmospheric-river",
-      "title": "Northern California & Pacific NW: atmospheric river storm through the weekend; up to 4 ft of Sierra snow by Monday",
-      "lat": 39.7,
-      "lon": -121.8,
+      "id": "x-2026-11-15-hunter-severe-storm",
+      "title": "Hunter, NSW: severe storm cell near Cessnock with large hail and damaging winds heading for Maitland and Raymond Terrace (BOM)",
+      "lat": -32.83,
+      "lon": 151.36,
       "level": "orange",
       "type": "storm",
-      "source_url": "https://x.com/i/status/2121242615655825787",
-      "time": "2026-11-13T14:03:45Z"
+      "source_url": "https://x.com/i/status/2121806790505398296",
+      "time": "2026-11-15T03:25:34Z"
     },
     {
-      "id": "x-2026-11-14-sf-offshore-high-surf",
-      "title": "Pacific swell: buoy 46059 west of San Francisco peaks at 34.1 ft waves at 19 s; high surf warnings on the coast (NWS Bay Area)",
-      "lat": 37.98,
-      "lon": -130,
+      "id": "x-2026-11-15-northern-rivers-storms",
+      "title": "Northern Rivers, NSW: severe storms spread with damaging winds and large hail (BOM)",
+      "lat": -28.81,
+      "lon": 153.28,
       "level": "orange",
       "type": "storm",
-      "source_url": "https://x.com/i/status/2121401328647720972",
-      "time": "2026-11-14T00:34:25Z"
+      "source_url": "https://x.com/i/status/2121837875943580077",
+      "time": "2026-11-15T05:29:06Z"
     },
     {
-      "id": "x-2026-11-14-socal-thunderstorms",
-      "title": "Southern California: line of thunderstorms Long Beach to San Diego with heavy rain, frequent lightning, gusts to 50 mph",
-      "lat": 33.3,
-      "lon": -117.6,
+      "id": "x-2026-11-15-taperas-wildfire-bolivia",
+      "title": "Taperas, San José de Chiquitos, Bolivia: forest fire passes 8,000 ha; 140+ firefighters on the ground and in the air",
+      "lat": -17.85,
+      "lon": -60.74,
+      "level": "orange",
+      "type": "fire",
+      "source_url": "https://x.com/i/status/2121745080566337756",
+      "time": "2026-11-14T23:20:21Z"
+    },
+    {
+      "id": "x-2026-11-15-tc-04p-samoa",
+      "title": "South Pacific: Tropical Depression 04P/02F (40 mph) about 1,230 km ENE of Pago Pago, moving west; Samoa Met watching it",
+      "lat": -8.4,
+      "lon": -158.9,
       "level": "yellow",
       "type": "storm",
-      "source_url": "https://x.com/i/status/2121200855747866825",
-      "time": "2026-11-13T11:17:48Z"
+      "source_url": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001350",
+      "time": "2026-11-15T06:00:00Z"
     },
     {
-      "id": "x-2026-11-14-us-storm-outages",
-      "title": "Storms knock out power in New York, northern California and Oregon; utilities warn of possible multi-day outages",
-      "lat": 44.6,
-      "lon": -123.5,
+      "id": "x-2026-11-15-chonchi-forest-fire",
+      "title": "Chonchi, Chiloé, Chile: SENAPRED red alert for a forest fire near Chiloé National Park",
+      "lat": -42.62,
+      "lon": -73.77,
       "level": "yellow",
-      "type": "storm",
-      "source_url": "https://x.com/i/status/2121302055847342366",
-      "time": "2026-11-13T17:59:56Z"
+      "type": "fire",
+      "source_url": "https://x.com/i/status/2121770602394726471",
+      "time": "2026-11-15T01:01:00Z"
     },
     {
-      "id": "x-2026-11-14-central-ny-snow",
-      "title": "Central New York: heavy wet snow up to 13.2 in (Leonardsville); colder air across the East this weekend (NWS WPC)",
-      "lat": 42.85,
-      "lon": -75.25,
+      "id": "x-2026-11-15-dukono-eruption",
+      "title": "Dukono Volcano, Halmahera: eruption with an ash column about 900 m above the summit",
+      "lat": 1.693,
+      "lon": 127.894,
+      "level": "yellow",
+      "type": "volcano",
+      "source_url": "https://x.com/i/status/2121553817607328181",
+      "time": "2026-11-14T09:08:00Z"
+    },
+    {
+      "id": "x-2026-11-15-sierra-winter-storm",
+      "title": "Lake Tahoe / Mono County, California: NWS winter storm warning; southern Sierra warning through Tuesday",
+      "lat": 38.94,
+      "lon": -119.98,
       "level": "yellow",
       "type": "cold",
-      "source_url": "https://x.com/i/status/2121313585519608278",
-      "time": "2026-11-13T18:45:45Z"
+      "source_url": "https://x.com/i/status/2121576980025938348",
+      "time": "2026-11-14T12:12:23Z"
     },
     {
-      "id": "x-2026-11-14-bc-high-streamflow",
-      "title": "B.C.: River Forecast Centre downgrades to High Streamflow Advisory for South Coast and Vancouver Island; stay clear of rivers",
-      "lat": 49.6,
-      "lon": -125.3,
+      "id": "x-2026-11-15-southern-sierra-heavy-snow",
+      "title": "Southern Sierra (Tulare County), California: winter storm warning for up to 20 in of snow",
+      "lat": 36.57,
+      "lon": -118.77,
+      "level": "yellow",
+      "type": "cold",
+      "source_url": "https://x.com/i/status/2121546085738877115",
+      "time": "2026-11-14T10:09:00Z"
+    },
+    {
+      "id": "x-2026-11-15-texas-coast-severe-sunday",
+      "title": "South Texas coast: NWS marginal risk of severe storms Sunday, with damaging winds, heavy rain, large hail and an isolated tornado possible",
+      "lat": 27.8,
+      "lon": -97.4,
+      "level": "yellow",
+      "type": "storm",
+      "source_url": "https://x.com/i/status/2121655785381929421",
+      "time": "2026-11-14T17:25:00Z"
+    },
+    {
+      "id": "x-2026-11-15-lubbock-severe-tstorm",
+      "title": "Hockley/Lamb counties, Texas: severe thunderstorm warning with 1-inch hail, tornado possible (NWS Lubbock)",
+      "lat": 33.6,
+      "lon": -102.35,
+      "level": "yellow",
+      "type": "storm",
+      "source_url": "https://x.com/i/status/2121737401575907838",
+      "time": "2026-11-14T22:49:00Z"
+    },
+    {
+      "id": "x-2026-11-15-houston-gale-coastal-flood",
+      "title": "Upper Texas coast: NWS Houston gale warning, wind advisory, rip currents and minor coastal flooding through Monday",
+      "lat": 29.3,
+      "lon": -94.8,
+      "level": "yellow",
+      "type": "storm",
+      "source_url": "https://x.com/i/status/2121836895730577877",
+      "time": "2026-11-15T05:25:12Z"
+    },
+    {
+      "id": "x-2026-11-15-us-south-east-freeze",
+      "title": "US South and East: first widespread freeze of the season, with lows in the 20s from Oklahoma to the Carolinas and freeze warnings",
+      "lat": 34.0,
+      "lon": -81.03,
+      "level": "yellow",
+      "type": "cold",
+      "source_url": "https://x.com/i/trending/2121735157300494695",
+      "time": "2026-11-15T05:48:22Z"
+    },
+    {
+      "id": "x-2026-11-15-bc-hwy99-flooding",
+      "title": "Hwy 99 Pemberton–Lillooet, B.C.: reopened after a flooding closure; high-streamflow flood warnings remain (DriveBC)",
+      "lat": 50.32,
+      "lon": -122.71,
       "level": "yellow",
       "type": "flood",
-      "source_url": "https://x.com/i/status/2121295671961813180",
-      "time": "2026-11-13T17:34:34Z"
+      "source_url": "https://x.com/i/status/2121818506236985587",
+      "time": "2026-11-15T04:12:08Z"
     },
     {
-      "id": "x-2026-11-14-cordoba-storm",
-      "title": "Córdoba, Argentina: gusts up to 100 km/h, intense lightning and heavy rain; flooding and hail in Río Tercero",
-      "lat": -31.42,
-      "lon": -64.18,
+      "id": "x-2026-11-15-vancouver-island-wind-rain",
+      "title": "Vancouver Island, B.C.: wind warnings plus a rainfall warning (about 50 mm) for Courtenay to Campbell River as the remnants of Typhoon Cempaka pass",
+      "lat": 49.85,
+      "lon": -125.1,
       "level": "yellow",
       "type": "storm",
-      "source_url": "https://x.com/i/status/2121421065523994813",
-      "time": "2026-11-14T01:52:50Z"
+      "source_url": "https://x.com/i/status/2121835182311506171",
+      "time": "2026-11-15T05:18:23Z"
     },
     {
-      "id": "x-2026-11-14-media-agua-hail",
-      "title": "San Juan, Argentina: fierce hailstorm in Media Agua causes damage, power cuts and trouble on Ruta 40",
-      "lat": -31.98,
-      "lon": -68.42,
+      "id": "x-2026-11-15-gauteng-heatwave-water",
+      "title": "Gauteng, South Africa: heatwave while Johannesburg reservoirs run critically low and taps go dry",
+      "lat": -26.2,
+      "lon": 28.05,
+      "level": "yellow",
+      "type": "heat",
+      "source_url": "https://x.com/i/status/2121559996437852370",
+      "time": "2026-11-14T11:04:54Z"
+    },
+    {
+      "id": "x-2026-11-15-emilia-romagna-alert",
+      "title": "Emilia-Romagna, Italy: orange weather alert in the Bologna area as Storm Charles moves off and more rain arrives",
+      "lat": 44.49,
+      "lon": 11.34,
+      "level": "yellow",
+      "type": "flood",
+      "source_url": "https://x.com/i/status/2121557695987585076",
+      "time": "2026-11-14T10:55:00Z"
+    },
+    {
+      "id": "x-2026-11-15-qld-darling-downs-storms",
+      "title": "Darling Downs, Queensland: severe thunderstorm warning for damaging winds and large hail around Roma, Stanthorpe and Inglewood (BOM)",
+      "lat": -28.65,
+      "lon": 151.93,
       "level": "yellow",
       "type": "storm",
-      "source_url": "https://x.com/i/status/2121437728172650761",
-      "time": "2026-11-14T02:59:03Z"
+      "source_url": "https://x.com/i/status/2121850029442732333",
+      "time": "2026-11-15T06:17:23Z"
     },
     {
-      "id": "x-2026-11-14-peru-changuillo-m58",
-      "title": "M5.8 earthquake 79 km WSW of Changuillo, Peru (10 km deep, USGS green alert)",
-      "lat": -14.993,
-      "lon": -75.881,
+      "id": "x-2026-11-15-perth-north-bushfire",
+      "title": "Perth's northern suburbs, WA: bushfire near homes and a school forced residents to get ready to evacuate; arson squad investigating",
+      "lat": -31.9,
+      "lon": 115.81,
       "level": "yellow",
+      "type": "fire",
+      "source_url": "https://x.com/i/status/2121857439247052885",
+      "time": "2026-11-15T06:46:50Z"
+    },
+    {
+      "id": "x-2026-11-15-delhi-air-quality",
+      "title": "Delhi, India: AQI around 350 ('very poor'), with some stations above 400 ('severe')",
+      "lat": 28.61,
+      "lon": 77.21,
+      "level": "yellow",
+      "type": "other",
+      "source_url": "https://x.com/i/trending/2121806456718491691",
+      "time": "2026-11-15T08:05:03Z"
+    },
+    {
+      "id": "x-2026-11-15-sao-paulo-storm-alert",
+      "title": "São Paulo, Brazil: Civil Defense alert for storms with 70 km/h winds and flooding this weekend",
+      "lat": -23.55,
+      "lon": -46.63,
+      "level": "yellow",
+      "type": "storm",
+      "source_url": "https://x.com/i/status/2121551679560540200",
+      "time": "2026-11-14T10:31:00Z"
+    },
+    {
+      "id": "x-2026-11-15-fiji-m55-deep",
+      "title": "M5.5 deep earthquake (470 km) in the Fiji region (USGS, GDACS green)",
+      "lat": -19.5554,
+      "lon": -177.8215,
+      "level": "green",
       "type": "quake",
-      "source_url": "https://x.com/i/status/2121287473808408998",
-      "time": "2026-11-13T16:43:02Z"
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tyca",
+      "time": "2026-11-15T05:15:02Z"
     },
     {
-      "id": "x-2026-11-14-chilecito-hail",
-      "title": "La Rioja, Argentina: strong storm with heavy rain and hail hits Chilecito",
-      "lat": -29.16,
-      "lon": -67.5,
+      "id": "x-2026-11-15-tagbina-m49",
+      "title": "M4.9 earthquake 7 km SE of Tagbina, Mindanao, Philippines (USGS)",
+      "lat": 8.3996,
+      "lon": 126.2112,
       "level": "green",
-      "type": "storm",
-      "source_url": "https://x.com/i/status/2121412908202741807",
-      "time": "2026-11-14T01:20:25Z"
+      "type": "quake",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000ty9l",
+      "time": "2026-11-14T16:04:22Z"
     },
     {
-      "id": "x-2026-11-14-el-trebol-flooding",
-      "title": "Santa Fe, Argentina: storm floods a secondary school in El Trébol",
-      "lat": -32.2,
-      "lon": -61.7,
+      "id": "x-2026-11-15-kermadec-m49",
+      "title": "M4.9 earthquake south of the Kermadec Islands (USGS)",
+      "lat": -33.0019,
+      "lon": -178.3404,
       "level": "green",
-      "type": "flood",
-      "source_url": "https://x.com/i/status/2121398567105593654",
-      "time": "2026-11-14T00:23:26Z"
+      "type": "quake",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000ty90",
+      "time": "2026-11-14T13:17:20Z"
     },
     {
-      "id": "x-2026-11-14-kilauea-episode57",
-      "title": "Kīlauea: eruption paused; HVO moves Episode 57 fountaining forecast window to Nov 17–22",
-      "lat": 19.41,
-      "lon": -155.28,
+      "id": "x-2026-11-15-albardon-m48",
+      "title": "M4.8 earthquake 19 km NW of Albardón, San Juan, Argentina (USGS)",
+      "lat": -31.3221,
+      "lon": -68.6822,
+      "level": "green",
+      "type": "quake",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tybx",
+      "time": "2026-11-15T03:59:59Z"
+    },
+    {
+      "id": "x-2026-11-15-tonga-m47",
+      "title": "M4.7 earthquake 92 km NW of Houma, Tonga (USGS)",
+      "lat": -20.589,
+      "lon": -175.9354,
+      "level": "green",
+      "type": "quake",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tyd3",
+      "time": "2026-11-15T07:36:37Z"
+    },
+    {
+      "id": "x-2026-11-15-east-central-pacific-m47",
+      "title": "M4.7 earthquake in the east-central Pacific Ocean (USGS)",
+      "lat": 3.7323,
+      "lon": -99.113,
+      "level": "green",
+      "type": "quake",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tyay",
+      "time": "2026-11-14T22:23:46Z"
+    },
+    {
+      "id": "x-2026-11-15-yacuiba-m47",
+      "title": "M4.7 deep earthquake 24 km S of Yacuiba, Bolivia (USGS)",
+      "lat": -22.2364,
+      "lon": -63.653,
+      "level": "green",
+      "type": "quake",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000ty9z",
+      "time": "2026-11-14T18:04:01Z"
+    },
+    {
+      "id": "x-2026-11-15-pondaguitan-m46",
+      "title": "M4.6 earthquake 96 km SSE of Pondaguitan, Philippines (USGS)",
+      "lat": 5.5982,
+      "lon": 126.6097,
+      "level": "green",
+      "type": "quake",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000ty9v",
+      "time": "2026-11-14T16:56:39Z"
+    },
+    {
+      "id": "x-2026-11-15-san-antonio-cobres-m46",
+      "title": "M4.6 earthquake 62 km WNW of San Antonio de los Cobres, Argentina (USGS)",
+      "lat": -24.049,
+      "lon": -66.9029,
+      "level": "green",
+      "type": "quake",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000ty9n",
+      "time": "2026-11-14T16:36:19Z"
+    },
+    {
+      "id": "x-2026-11-15-ruteng-m45",
+      "title": "M4.5 earthquake 25 km N of Ruteng, Flores, Indonesia (USGS)",
+      "lat": -8.3823,
+      "lon": 120.443,
+      "level": "green",
+      "type": "quake",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tyan",
+      "time": "2026-11-14T21:24:20Z"
+    },
+    {
+      "id": "x-2026-11-15-kamchatka-m45",
+      "title": "M4.5 earthquake 137 km SE of Petropavlovsk-Kamchatsky, Russia (USGS)",
+      "lat": 52.3603,
+      "lon": 160.2984,
+      "level": "green",
+      "type": "quake",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000ty8u",
+      "time": "2026-11-14T12:28:00Z"
+    },
+    {
+      "id": "x-2026-11-15-dannevirke-m43-felt",
+      "title": "M4.3 earthquake 29 km NE of Dannevirke, New Zealand, felt locally (USGS)",
+      "lat": -40.0345,
+      "lon": 176.3623,
+      "level": "green",
+      "type": "quake",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000ty9x",
+      "time": "2026-11-14T17:51:29Z"
+    },
+    {
+      "id": "x-2026-11-15-corredor-m43-felt",
+      "title": "M4.3 shallow earthquake 8 km WSW of Corredor, Costa Rica, felt (USGS)",
+      "lat": 8.6125,
+      "lon": -83.0217,
+      "level": "green",
+      "type": "quake",
+      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tybq",
+      "time": "2026-11-15T03:01:42Z"
+    },
+    {
+      "id": "x-2026-11-15-kumamoto-m39",
+      "title": "M3.9 earthquake near Kumamoto, Japan, JMA intensity 3; M3.8 at Amakusa-Ashikita follows (no tsunami)",
+      "lat": 32.75,
+      "lon": 130.75,
+      "level": "green",
+      "type": "quake",
+      "source_url": "https://x.com/i/status/2121621332521779691",
+      "time": "2026-11-14T15:05:00Z"
+    },
+    {
+      "id": "x-2026-11-15-utah-huntsville-m34",
+      "title": "M3.4 shallow earthquake SE of Huntsville, Utah, felt across Ogden and Layton",
+      "lat": 41.2,
+      "lon": -111.7,
+      "level": "green",
+      "type": "quake",
+      "source_url": "https://x.com/i/status/2121813642341744777",
+      "time": "2026-11-15T01:40:00Z"
+    },
+    {
+      "id": "x-2026-11-15-reventador-ash",
+      "title": "Reventador Volcano, Ecuador: ongoing ash advisories (Washington VAAC)",
+      "lat": -0.077,
+      "lon": -77.656,
       "level": "green",
       "type": "volcano",
-      "source_url": "https://x.com/i/status/2121402744699494517",
-      "time": "2026-11-14T00:40:02Z"
+      "source_url": "https://x.com/i/status/2121710067779043446",
+      "time": "2026-11-14T21:01:00Z"
     },
     {
-      "id": "x-2026-11-14-kashmir-first-snow",
-      "title": "Kashmir: season's first heavy snow at Gulmarg, Sonamarg and Gurez; some higher-reach roads shut",
-      "lat": 34.05,
-      "lon": 74.38,
+      "id": "x-2026-11-15-campania-yellow-alert",
+      "title": "Campania, Italy: yellow weather alert for storms Sunday from 06:00 (Civil Protection)",
+      "lat": 40.85,
+      "lon": 14.27,
+      "level": "green",
+      "type": "storm",
+      "source_url": "https://x.com/i/status/2121557259809403029",
+      "time": "2026-11-14T10:54:00Z"
+    },
+    {
+      "id": "x-2026-11-15-southcentral-alaska-winter",
+      "title": "Southcentral Alaska: winter weather advisories through Monday, with snow and freezing rain (NWS Anchorage)",
+      "lat": 61.22,
+      "lon": -149.9,
       "level": "green",
       "type": "cold",
-      "source_url": "https://x.com/i/status/2121077022785253648",
-      "time": "2026-11-13T03:05:44Z"
+      "source_url": "https://x.com/i/status/2121750209587773703",
+      "time": "2026-11-14T23:40:44Z"
     },
     {
-      "id": "x-2026-11-14-mid-atlantic-ridge-m55",
-      "title": "M5.5 earthquake, northern Mid-Atlantic Ridge (USGS)",
-      "lat": 30.122,
-      "lon": -42.635,
+      "id": "x-2026-11-15-galapagos-flooding",
+      "title": "Galápagos, Ecuador: intense rain and flooding reported",
+      "lat": -0.74,
+      "lon": -90.31,
       "level": "green",
-      "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000ty84",
-      "time": "2026-11-14T09:26:13Z"
-    },
-    {
-      "id": "x-2026-11-14-yap-m52",
-      "title": "M5.2 earthquake, State of Yap, Micronesia (USGS)",
-      "lat": 9.703,
-      "lon": 147.363,
-      "level": "green",
-      "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000ty7d",
-      "time": "2026-11-14T06:52:26Z"
-    },
-    {
-      "id": "x-2026-11-14-sumatra-m52",
-      "title": "M5.2 earthquake off the west coast of northern Sumatra (USGS)",
-      "lat": 3.304,
-      "lon": 92.826,
-      "level": "green",
-      "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000ty6n",
-      "time": "2026-11-14T02:59:29Z"
-    },
-    {
-      "id": "x-2026-11-14-kavieng-m51",
-      "title": "M5.1 earthquake 153 km NW of Kavieng, Papua New Guinea (USGS)",
-      "lat": -1.504,
-      "lon": 149.92,
-      "level": "green",
-      "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000ty56",
-      "time": "2026-11-13T23:30:38Z"
-    },
-    {
-      "id": "x-2026-11-14-south-sandwich-m51",
-      "title": "M5.1 earthquake, South Sandwich Islands region (USGS)",
-      "lat": -58.962,
-      "lon": -25.725,
-      "level": "green",
-      "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000ty3q",
-      "time": "2026-11-13T19:04:07Z"
-    },
-    {
-      "id": "x-2026-11-14-kuqa-m52",
-      "title": "M5.2 earthquake 79 km NE of Kuqa, Xinjiang, China (USGS)",
-      "lat": 42.173,
-      "lon": 83.666,
-      "level": "green",
-      "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000ty14",
-      "time": "2026-11-13T16:17:51Z"
-    },
-    {
-      "id": "x-2026-11-14-west-chile-rise-m52",
-      "title": "M5.2 earthquake, West Chile Rise (USGS)",
-      "lat": -36.443,
-      "lon": -97.978,
-      "level": "green",
-      "type": "quake",
-      "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000ty0s",
-      "time": "2026-11-13T14:12:47Z"
+      "type": "flood",
+      "source_url": "https://x.com/i/status/2121772682077442337",
+      "time": "2026-11-15T01:10:00Z"
     }
   ]
 }
