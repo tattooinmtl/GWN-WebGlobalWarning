@@ -19,7 +19,7 @@ import {
   stitchMercatorWorld,
   type TileBox,
 } from "@/lib/globe/tiles";
-import { LEVEL_STYLE, TYPE_GLYPH, type GlobeMarker, type WarnLevel } from "@/lib/globe/events";
+import { LEVEL_STYLE, TYPE_COLOR, TYPE_GLYPH, type GlobeMarker, type WarnLevel } from "@/lib/globe/events";
 
 export type OverlayId = "clouds" | "precip" | "quakeHeat" | "sst";
 export type LayerState = "off" | "loading" | "ok" | "error";
@@ -187,7 +187,7 @@ function iconCanvas(type: string, level: WarnLevel): HTMLCanvasElement {
   c.width = 128;
   c.height = 128;
   const ctx = c.getContext("2d")!;
-  const color = LEVEL_STYLE[level].color;
+  const color = TYPE_COLOR[type] ?? LEVEL_STYLE[level].color;
   const glow = ctx.createRadialGradient(64, 64, 10, 64, 64, 62);
   glow.addColorStop(0, `${color}cc`);
   glow.addColorStop(1, `${color}00`);
@@ -242,6 +242,8 @@ export class GlobeEngine {
   private moon: THREE.Mesh;
   private overlays = new Map<OverlayId, THREE.Mesh>();
   private overlayLoads = new Map<OverlayId, Promise<void>>();
+  private heatKey = "";
+  private heatNote = "";
   private faults: { active: THREE.LineSegments; dormant: THREE.LineSegments } | null = null;
   private faultsLoading: Promise<void> | null = null;
   private markerRoot = new THREE.Group();
@@ -566,11 +568,26 @@ export class GlobeEngine {
     return mesh;
   }
 
-  async setOverlay(id: OverlayId, on: boolean, extra?: { precipTemplate?: string; sstTemplate?: string; quakes?: QuakePoint[] }) {
+  async setOverlay(
+    id: OverlayId,
+    on: boolean,
+    extra?: { precipTemplate?: string; sstTemplate?: string; quakes?: QuakePoint[]; cyber?: CyberPoint[] },
+  ) {
     const existing = this.overlays.get(id);
     if (existing) {
       existing.visible = on;
-      this.cb.onLayerState(id, on ? "ok" : "off");
+      // Heat map: redraw when the cyber list from the daily scan changes.
+      const key = id === "quakeHeat" && extra ? heatKey(extra.quakes ?? [], extra.cyber ?? []) : "";
+      if (on && key && key !== this.heatKey) {
+        const uniforms = (existing.material as THREE.ShaderMaterial).uniforms;
+        (uniforms.tex.value as THREE.Texture).dispose();
+        uniforms.tex.value = canvasTexture(heatCanvas(extra?.quakes ?? [], extra?.cyber ?? []));
+        this.heatKey = key;
+        this.heatNote = heatNote(extra?.quakes ?? [], extra?.cyber ?? []);
+        this.cb.onLayerState(id, "ok", this.heatNote);
+        return;
+      }
+      this.cb.onLayerState(id, on ? "ok" : "off", on && id === "quakeHeat" ? this.heatNote : undefined);
       return;
     }
     if (!on) {
@@ -604,9 +621,12 @@ export class GlobeEngine {
           this.cb.onLayerState(id, "ok");
         } else if (id === "quakeHeat") {
           const pts = extra?.quakes ?? [];
-          if (!pts.length) throw new Error("No USGS quakes loaded");
-          this.makeOverlay("quakeHeat", 1.003, canvasTexture(heatCanvas(pts)), 0, 0, 0.85);
-          this.cb.onLayerState(id, "ok", `${pts.length} quakes M2.5+ · 30 days`);
+          const cyber = extra?.cyber ?? [];
+          if (!pts.length && !cyber.length) throw new Error("No USGS quakes loaded");
+          this.makeOverlay("quakeHeat", 1.003, canvasTexture(heatCanvas(pts, cyber)), 0, 0, 0.85);
+          this.heatKey = heatKey(pts, cyber);
+          this.heatNote = heatNote(pts, cyber);
+          this.cb.onLayerState(id, "ok", this.heatNote);
         }
       } catch (err) {
         this.cb.onLayerState(id, "error", err instanceof Error ? err.message : String(err));
@@ -700,7 +720,7 @@ export class GlobeEngine {
       sprite.userData.markerId = marker.id;
       sprite.renderOrder = 12 + style.rank;
       const ringMat = new THREE.MeshBasicMaterial({
-        color: style.color,
+        color: TYPE_COLOR[marker.type] ?? style.color,
         transparent: true,
         depthWrite: false,
         side: THREE.DoubleSide,
@@ -888,9 +908,79 @@ export class GlobeEngine {
 }
 
 export type QuakePoint = { lat: number; lon: number; mag: number };
+/** Cyber attack from the daily scan; level sets the blob strength. */
+export type CyberPoint = { lat: number; lon: number; level: WarnLevel };
+
+function heatKey(quakes: QuakePoint[], cyber: CyberPoint[]): string {
+  return `${quakes.length}|${cyber.map((p) => `${p.lat.toFixed(2)},${p.lon.toFixed(2)},${p.level}`).join(";")}`;
+}
+
+function heatNote(quakes: QuakePoint[], cyber: CyberPoint[]): string {
+  return `${quakes.length} quakes M2.5+ · 30 days · ${cyber.length} cyber attack${cyber.length === 1 ? "" : "s"}`;
+}
+
+/**
+ * Heatmap: the usual magnitude-weighted quake blobs (yellow→red→white palette), then cyber attacks
+ * from the daily scan painted on top in their own magenta so they stay apart from quake heat.
+ */
+function heatCanvas(points: QuakePoint[], cyber: CyberPoint[] = []): HTMLCanvasElement {
+  const acc = quakeHeatCanvas(points);
+  if (!cyber.length) return acc;
+  const layer = cyberHeatCanvas(cyber, acc.width, acc.height);
+  const ctx = acc.getContext("2d")!;
+  ctx.globalCompositeOperation = "source-over";
+  ctx.drawImage(layer, 0, 0);
+  return acc;
+}
+
+const CYBER_HEAT_WEIGHT: Record<WarnLevel, number> = { green: 0.35, yellow: 0.55, orange: 0.8, red: 1 };
+
+function cyberHeatCanvas(points: CyberPoint[], W: number, H: number): HTMLCanvasElement {
+  const c = document.createElement("canvas");
+  c.width = W;
+  c.height = H;
+  const ctx = c.getContext("2d")!;
+  ctx.globalCompositeOperation = "lighter";
+  for (const p of points) {
+    const x = ((p.lon + 180) / 360) * W;
+    const y = ((90 - p.lat) / 180) * H;
+    const w = CYBER_HEAT_WEIGHT[p.level] ?? 0.55;
+    const r = 14 + w * 22;
+    const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+    g.addColorStop(0, `rgba(255,255,255,${0.35 + w * 0.4})`);
+    g.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.fillStyle = g;
+    ctx.fillRect(x - r, y - r, r * 2, r * 2);
+  }
+  const img = ctx.getImageData(0, 0, W, H);
+  const d = img.data;
+  // Dark violet → magenta (#d000ff) → pale pink-white where attacks overlap.
+  const stops: [number, [number, number, number]][] = [
+    [0, [70, 0, 110]],
+    [0.45, [208, 0, 255]],
+    [1, [255, 220, 255]],
+  ];
+  for (let i = 0; i < d.length; i += 4) {
+    const v = d[i + 3] / 255;
+    if (v <= 0.01) {
+      d[i + 3] = 0;
+      continue;
+    }
+    const j = v > stops[1][0] ? 1 : 0;
+    const [a, ca] = stops[j];
+    const [b, cb] = stops[j + 1];
+    const f = Math.min(1, Math.max(0, (v - a) / (b - a)));
+    d[i] = ca[0] + (cb[0] - ca[0]) * f;
+    d[i + 1] = ca[1] + (cb[1] - ca[1]) * f;
+    d[i + 2] = ca[2] + (cb[2] - ca[2]) * f;
+    d[i + 3] = Math.min(240, 40 + v * 400);
+  }
+  ctx.putImageData(img, 0, 0);
+  return c;
+}
 
 /** Equirectangular heatmap: additive magnitude-weighted blobs, then a yellow→red→white palette. */
-function heatCanvas(points: QuakePoint[]): HTMLCanvasElement {
+function quakeHeatCanvas(points: QuakePoint[]): HTMLCanvasElement {
   const W = 2048;
   const H = 1024;
   const acc = document.createElement("canvas");

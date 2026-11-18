@@ -34,9 +34,39 @@ Either a bare array of markers, or an object with a `markers` array (recommended
 | `lat` | number | yes | −90…90, WGS84 degrees. |
 | `lon` | number | yes | −180…180, WGS84 degrees. |
 | `level` | `"green" \| "yellow" \| "orange" \| "red"` | yes | Controls color, size and pulse speed. Unknown → `yellow`. |
-| `type` | string | no | `quake`, `flood`, `fire`, `storm`, `volcano`, `drought`, `landslide`, or anything else (shown as `x`/other). |
+| `type` | string | no | `quake`, `flood`, `fire`, `storm`, `volcano`, `drought`, `landslide`, `cyber`, or anything else (shown as `x`/other). |
 | `source_url` | string | no | Must start with `http(s)://` to be linked. |
 | `time` | ISO 8601 string | no | UTC. Used by the "last hour / 6 h / 24 h" feed filter. Missing → load time. |
+
+## `type: "cyber"` — cyber attacks
+
+Cyber attacks (ransomware, DDoS, breaches, attacks on infrastructure) use the same row shape with
+`"type": "cyber"`. `lat`/`lon` is the location of the targeted organization (its HQ or the affected
+site) or, when only the country is known, that country's capital/centroid. `level` reflects impact
+(`red` = critical infrastructure or national-scale outage, `orange` = major organization disrupted,
+`yellow` = confirmed attack/breach, `green` = claimed or minor). Example:
+
+```json
+{
+  "id": "x-2026-11-18-cyber-example-hospital",
+  "title": "Ransomware attack disrupts Example Hospital systems",
+  "lat": 43.65, "lon": -79.38,
+  "level": "orange",
+  "type": "cyber",
+  "source_url": "https://example.com/news/article",
+  "time": "2026-11-18T04:10:00Z"
+}
+```
+
+Where they show up:
+
+- **Main page 2D map (`/`)**: magenta (`#d000ff`) markers only, toggled by **Layers → Cyber attacks**,
+  with a "Cyber attack" entry in the legend. Hover/click shows title, level, time and source link.
+  The page re-reads this file every 5 minutes (`src/lib/atlas/cyber.ts`).
+- **3D globe (`/globe`)**: drawn into the heat map layer ("Heatmap: quakes (30 days) + cyber attacks")
+  in magenta on top of the quake heat, and as magenta markers with the X scan markers.
+
+An empty file or no `cyber` rows simply shows nothing.
 
 Rows that fail validation are skipped silently (see `parseXMarkers` in `src/lib/globe/events.ts`).
 Because it is a static file in `public/`, a new version needs a commit + deploy (or move it to a

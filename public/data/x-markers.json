@@ -461,6 +461,26 @@
       "type": "quake",
       "source_url": "https://x.com/phivolcs_dost/status/2122884581347229889",
       "time": "2026-11-18T01:13:00Z"
+    },
+    {
+      "id": "x-2026-11-18-cyber-osaki-electric",
+      "title": "Ransomware attack on Osaki Electric halts smart-meter production and shipments at Saitama and Iwate sites (servers encrypted Nov 17)",
+      "lat": 35.829,
+      "lon": 139.526,
+      "level": "orange",
+      "type": "cyber",
+      "source_url": "https://www.osaki.co.jp/ja/notice/20261118.html",
+      "time": "2026-11-17T01:35:00Z"
+    },
+    {
+      "id": "x-2026-11-11-cyber-vanderbilt",
+      "title": "Ransomware attack disrupts Vanderbilt University systems; BYOD gang claims theft of 1M+ SSNs",
+      "lat": 36.1447,
+      "lon": -86.8027,
+      "level": "orange",
+      "type": "cyber",
+      "source_url": "https://www.insidehighered.com/news/tech-innovation/administrative-tech/2026/11/11/ransomware-gang-says-it-hacked-vanderbilt",
+      "time": "2026-11-11T12:00:00Z"
     }
   ]
 }

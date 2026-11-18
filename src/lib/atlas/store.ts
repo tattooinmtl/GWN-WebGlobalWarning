@@ -15,6 +15,8 @@ export type LayerPrefs = {
   radius: boolean;
   faultsActive: boolean;
   faultsDormant: boolean;
+  /** Cyber attacks from the daily scan (type "cyber" in public/data/x-markers.json). */
+  cyber: boolean;
 };
 
 export type Prefs = {
@@ -83,6 +85,7 @@ const defaultLayers: LayerPrefs = {
   radius: true,
   faultsActive: true,
   faultsDormant: true,
+  cyber: true,
 };
 
 export function mergeLayers(layers?: Partial<LayerPrefs> | null): LayerPrefs {

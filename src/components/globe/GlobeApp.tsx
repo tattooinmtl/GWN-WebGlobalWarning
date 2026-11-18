@@ -203,11 +203,16 @@ function GlobeInner() {
     if (!e || (toggles.precip && !precipTemplate)) return;
     void e.setOverlay("precip", toggles.precip, { precipTemplate });
   }, [engineReady, toggles.precip, precipTemplate]);
+  // Cyber attacks from the daily scan join the heat map (in their own magenta).
+  const cyberHeat = useMemo(
+    () => (xMarkers.data ?? []).filter((m) => m.type === "cyber").map((m) => ({ lat: m.lat, lon: m.lon, level: m.level })),
+    [xMarkers.data],
+  );
   useEffect(() => {
     const e = engineRef.current;
-    if (!e || (toggles.quakeHeat && !quakes.data)) return;
-    void e.setOverlay("quakeHeat", toggles.quakeHeat, { quakes: quakes.data });
-  }, [engineReady, toggles.quakeHeat, quakes.data]);
+    if (!e || (toggles.quakeHeat && !quakes.data && !quakes.isError)) return;
+    void e.setOverlay("quakeHeat", toggles.quakeHeat, { quakes: quakes.data ?? [], cyber: cyberHeat });
+  }, [engineReady, toggles.quakeHeat, quakes.data, quakes.isError, cyberHeat]);
   useEffect(() => {
     const e = engineRef.current;
     if (!e) return;
@@ -427,7 +432,7 @@ function GlobeInner() {
               <Toggle label="Precipitation radar (RainViewer)" on={toggles.precip} onClick={() => set("precip")} st={states.precip} />
             </Section>
             <Section title="Earth">
-              <Toggle label="Earthquake heatmap (30 days)" on={toggles.quakeHeat} onClick={() => set("quakeHeat")} st={states.quakeHeat} />
+              <Toggle label="Heatmap: quakes (30 days) + cyber attacks" on={toggles.quakeHeat} onClick={() => set("quakeHeat")} st={states.quakeHeat} />
               <Toggle label="Active faults" swatch="#ff4d2e" on={toggles.faultsActive} onClick={() => set("faultsActive")} st={states.faults} />
               <Toggle label="Dormant faults" swatch="#9fb4c8" on={toggles.faultsDormant} onClick={() => set("faultsDormant")} />
               <Toggle label="City lights at night" on={toggles.night} onClick={() => set("night")} />

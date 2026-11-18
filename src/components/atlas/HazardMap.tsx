@@ -9,6 +9,7 @@ import { KIND_COLOR, KIND_LABEL } from "@/lib/disasters/types";
 import type { LayerPrefs, UserLocation } from "@/lib/atlas/store";
 import { mergeLayers, useAtlas } from "@/lib/atlas/store";
 import { ICE_STOPS } from "@/lib/atlas/weather-colors";
+import { CYBER_COLOR, type CyberMarker } from "@/lib/atlas/cyber";
 import { setBase, watchBase } from "@/lib/atlas/basemap";
 import { clearFrameLayers, frameLoaded, recoloredTiles, registerRadarProtocol, setFrameLayers, showFrame } from "@/lib/atlas/radar-frames";
 
@@ -35,6 +36,8 @@ type Props = {
   radiusKm: number;
   location: UserLocation | null;
   ice: { lat: number; lon: number; code: number; name: string }[];
+  /** Cyber attacks from the daily scan (markers only). */
+  cyber?: CyberMarker[];
 };
 
 function volcanoStatus(year: number | null, eruptingNow: boolean): "erupting" | "restless" | "dormant" {
@@ -243,6 +246,22 @@ export function HazardMap(props: Props) {
   useEffect(() => {
     const map = mapRef.current;
     if (!ready || !map) return;
+    const source = map.getSource("cyber") as GeoJSONSource | undefined;
+    if (!source) return;
+    const on = mergeLayers(props.layers).cyber;
+    const features = on
+      ? (props.cyber ?? []).map((item) => ({
+          type: "Feature" as const,
+          properties: { id: item.id, title: item.title, weight: CYBER_WEIGHT[item.level] ?? 4.8 },
+          geometry: { type: "Point" as const, coordinates: [item.lon, item.lat] },
+        }))
+      : [];
+    source.setData({ type: "FeatureCollection", features });
+  }, [ready, props.cyber, props.layers]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!ready || !map) return;
     const live = props.events.filter((event) => event.kind === "volcano");
     const features = (props.volcanoes?.features ?? []).map((feature) => {
       const [lon, lat] = feature.geometry.coordinates;
@@ -435,7 +454,8 @@ export function HazardMap(props: Props) {
   function onMove(map: MlMap, x: number, y: number) {
     const tip = tipRef.current;
     if (!tip || !map.getLayer("events-circle")) return;
-    const hitEvent = map.queryRenderedFeatures([x, y], { layers: ["events-circle"] })[0];
+    const hitCyber = map.getLayer("cyber-dot") ? map.queryRenderedFeatures([x, y], { layers: ["cyber-dot"] })[0] : undefined;
+    const hitEvent = hitCyber ?? map.queryRenderedFeatures([x, y], { layers: ["events-circle"] })[0];
     const hitVolcano = map.getLayer("volcano-dot")
       ? map.queryRenderedFeatures([x, y], { layers: ["volcano-dot"] })[0]
       : undefined;
@@ -450,7 +470,11 @@ export function HazardMap(props: Props) {
           )[0]
         : undefined;
     const hitCountry = map.queryRenderedFeatures([x, y], { layers: ["countries-fill"] })[0];
-    const eventId = hitEvent ? String(hitEvent.properties?.id ?? "") : "";
+    const eventId = hitCyber
+      ? `cyber:${String(hitCyber.properties?.id ?? "")}`
+      : hitEvent
+        ? String(hitEvent.properties?.id ?? "")
+        : "";
     const volcanoId = hitVolcano ? String(hitVolcano.properties?.id ?? "") : "";
     const faultName = hitFault ? String(hitFault.properties?.n || hitFault.properties?.s || "Fault") : "";
     const iso = hitCountry ? String(hitCountry.id ?? hitCountry.properties?.id ?? "") : "";
@@ -478,7 +502,7 @@ export function HazardMap(props: Props) {
     if (cardRef.current) cardRef.current.hidden = true;
   }
 
-  function showCard(x: number, y: number, heading: string, lines: { label: string; value: string }[]) {
+  function showCard(x: number, y: number, heading: string, lines: { label: string; value: string }[], link?: string) {
     const card = cardRef.current;
     const wrap = wrapRef.current;
     if (!card || !wrap) return;
@@ -509,6 +533,15 @@ export function HazardMap(props: Props) {
       row.append(name, document.createTextNode(` ${line.value}`));
       card.append(row);
     }
+    if (link) {
+      const anchor = document.createElement("a");
+      anchor.href = link;
+      anchor.target = "_blank";
+      anchor.rel = "noopener noreferrer";
+      anchor.className = "mt-1 inline-block text-xs text-amber underline";
+      anchor.textContent = "Open source";
+      card.append(anchor);
+    }
     const left = Math.max(8, Math.min(x + 14, wrap.clientWidth - 236));
     const top = Math.max(8, Math.min(y + 14, wrap.clientHeight - 196));
     card.style.transform = `translate(${left}px, ${top}px)`;
@@ -524,6 +557,23 @@ export function HazardMap(props: Props) {
     const hitCountry = map.queryRenderedFeatures([x, y], { layers: ["countries-fill"] })[0];
     const state = useAtlas.getState();
     const narrow = window.matchMedia("(max-width: 767px)").matches;
+    const hitCyber = map.getLayer("cyber-dot") ? map.queryRenderedFeatures([x, y], { layers: ["cyber-dot"] })[0] : undefined;
+    const cyber = hitCyber ? propsRef.current.cyber?.find((item) => item.id === String(hitCyber.properties?.id ?? "")) : undefined;
+    if (cyber) {
+      showCard(
+        x,
+        y,
+        cyber.title,
+        [
+          { label: "Type", value: "Cyber attack" },
+          { label: "Level", value: cyber.level },
+          { label: "When", value: cyber.time ? ago(cyber.time) : "" },
+          { label: "Source", value: "Daily scan" },
+        ],
+        cyber.source_url,
+      );
+      return;
+    }
     if (hitEvent) {
       const event = propsRef.current.events.find((item) => item.id === String(hitEvent.properties?.id ?? ""));
       state.setSelectedEventId(String(hitEvent.properties?.id ?? ""));
@@ -594,6 +644,19 @@ export function HazardMap(props: Props) {
     fault?: Record<string, unknown> | null,
   ) {
     tip.replaceChildren();
+    if (eventId.startsWith("cyber:")) {
+      const cyber = propsRef.current.cyber?.find((item) => item.id === eventId.slice(6));
+      if (cyber) {
+        const head = document.createElement("p");
+        head.className = "font-medium";
+        head.textContent = cyber.title;
+        const sub = document.createElement("p");
+        sub.className = "mt-1 text-xs text-muted";
+        sub.textContent = `Cyber attack · ${cyber.level}${cyber.time ? ` · ${ago(cyber.time)}` : ""}`;
+        tip.append(head, sub);
+        return;
+      }
+    }
     const event = propsRef.current.events.find((item) => item.id === eventId);
     const country = propsRef.current.countries.find((item) => item.id === iso);
     const title = document.createElement("p");
@@ -652,6 +715,9 @@ export function HazardMap(props: Props) {
     </div>
   );
 }
+
+/** Cyber marker size by level, on the same scale as the hazard dots. */
+const CYBER_WEIGHT: Record<string, number> = { green: 4.2, yellow: 4.8, orange: 5.5, red: 7 };
 
 const ICE_COLOR = [
   "match",
@@ -807,6 +873,30 @@ function addBase(map: MlMap) {
       "circle-color": ["get", "color"],
       "circle-stroke-color": ["case", ["boolean", ["feature-state", "selected"], false], "#f5c518", "#070b12"],
       "circle-stroke-width": ["case", ["boolean", ["feature-state", "selected"], false], 2.5, 1],
+      "circle-opacity": 0.95,
+    },
+  });
+  map.addSource("cyber", { type: "geojson", data: EMPTY });
+  map.addLayer({
+    id: "cyber-glow",
+    type: "circle",
+    source: "cyber",
+    paint: {
+      "circle-radius": ["interpolate", ["linear"], ["zoom"], 1, ["*", ["get", "weight"], 1.1], 6, ["*", ["get", "weight"], 2.4]],
+      "circle-color": CYBER_COLOR,
+      "circle-blur": 0.75,
+      "circle-opacity": 0.45,
+    },
+  });
+  map.addLayer({
+    id: "cyber-dot",
+    type: "circle",
+    source: "cyber",
+    paint: {
+      "circle-radius": ["interpolate", ["linear"], ["zoom"], 1, ["*", ["get", "weight"], 0.55], 6, ["*", ["get", "weight"], 1.35]],
+      "circle-color": CYBER_COLOR,
+      "circle-stroke-color": "#070b12",
+      "circle-stroke-width": 1,
       "circle-opacity": 0.95,
     },
   });

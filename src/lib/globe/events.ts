@@ -38,6 +38,7 @@ export const TYPE_GLYPH: Record<string, string> = {
   volcano: "▲",
   drought: "☼",
   landslide: "◣",
+  cyber: "#",
   x: "𝕏",
   other: "!",
 };
@@ -50,8 +51,17 @@ export const TYPE_EMOJI: Record<string, string> = {
   volcano: "🌋",
   drought: "☀️",
   landslide: "⛰️",
+  cyber: "💻",
   x: "𝕏",
   other: "⚠️",
+};
+
+/** Same magenta as the 2D map's cyber layer (src/lib/atlas/cyber.ts). */
+export const CYBER_COLOR = "#d000ff";
+
+/** Types drawn in their own color instead of the warning-level color (level still sets size, shape and pulse). */
+export const TYPE_COLOR: Record<string, string> = {
+  cyber: CYBER_COLOR,
 };
 
 export function quakeLevel(mag: number): WarnLevel {

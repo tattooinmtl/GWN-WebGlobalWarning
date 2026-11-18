@@ -24,6 +24,7 @@ import { KIND_COLOR, KIND_LABEL, METRICS } from "@/lib/disasters/types";
 import { legendGradient, type PrecipKind } from "@/lib/atlas/weather-colors";
 import type { LayerPrefs } from "@/lib/atlas/store";
 import { mergeLayers, useAtlas } from "@/lib/atlas/store";
+import { CYBER_COLOR, loadCyber } from "@/lib/atlas/cyber";
 import { APP_TITLE } from "@/lib/brand";
 import { CopilotDock } from "./CopilotDock";
 import { Desk } from "./Desk";
@@ -100,6 +101,14 @@ function AtlasInner() {
     enabled: hydrated,
     refetchInterval: 120_000,
     queryFn: () => loadAtlas({ data: { nasaKey: prefs.nasaKey } }),
+  });
+
+  // Cyber attacks from the daily scan file (type "cyber"), re-read every 5 minutes like the globe.
+  const cyberQuery = useQuery({
+    queryKey: ["cyber-markers"],
+    queryFn: loadCyber,
+    refetchInterval: 300_000,
+    staleTime: 240_000,
   });
 
   const prep = useMemo(() => (geoQuery.data ? prepareCountries(geoQuery.data) : []), [geoQuery.data]);
@@ -310,6 +319,7 @@ function AtlasInner() {
         owmKey={prefs.owmKey}
         radiusKm={prefs.radiusKm}
         location={location}
+        cyber={cyberQuery.data ?? []}
       />
       <Desk
         radar={atlasQuery.data?.radar ?? null}
@@ -467,6 +477,10 @@ function AtlasInner() {
               <Key kind="storm" />
               <Key kind="volcano" />
               <Key kind="other" />
+              <span className="inline-flex items-center gap-1">
+                <span className="size-2 rounded-full" style={{ background: CYBER_COLOR }} />
+                Cyber attack
+              </span>
             </span>
             <button type="button" className="chip h-8 px-2" data-on={radarPlay ? "true" : "false"} onClick={() => setRadarPlay((play) => !play)}>
               Radar {radarPlay ? "playing" : "paused"}
@@ -498,11 +512,19 @@ function AtlasInner() {
             <LayerRow label="Active faults" on={layers.faultsActive} onClick={() => toggleLayer("faultsActive")} />
             <LayerRow label="Dormant faults" on={layers.faultsDormant} onClick={() => toggleLayer("faultsDormant")} />
             <LayerRow label="Other hazards" on={layers.other} onClick={() => toggleLayer("other")} />
+            <LayerRow
+              label={`Cyber attacks${cyberQuery.data ? ` (${cyberQuery.data.length})` : ""}`}
+              on={layers.cyber}
+              onClick={() => toggleLayer("cyber")}
+            />
             <LayerRow label="Alert radius" on={layers.radius} onClick={() => toggleLayer("radius")} />
           </div>
           <p className="mt-2 text-xs text-muted">
             Volcanoes are the Smithsonian Holocene catalog. Gold is erupting, orange erupted in the last 50 years, gray is dormant.
             Amber faults are active. Gray dashed faults last moved before the Holocene. GEM Global Active Faults.
+          </p>
+          <p className="mt-2 text-xs text-muted">
+            Cyber attacks (magenta) come from the daily 5 am scan, placed at the targeted organization or country.
           </p>
           <p className="mt-2 text-xs text-muted">
             Clouds are NOAA/NASA GOES GeoColor, about 20–40 minutes behind the satellite. East covers Canada and the Atlantic. West covers the Pacific. Rain radar stays on top.
