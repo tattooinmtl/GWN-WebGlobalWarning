@@ -7,20 +7,27 @@ import { protocolTiles, registerCmemsProtocol } from "@/lib/copernicus/protocol"
 
 const PREFIX = "cm-";
 
+type UserPt = { lat: number; lon: number };
+type FlyTo = { lat: number; lon: number; zoom: number; nonce: number };
+
 type Props = {
   settings: Record<string, LayerSettings>;
   day: string;
   depth: number;
   point: { lat: number; lon: number } | null;
+  user: UserPt | null;
+  flyTo: FlyTo | null;
   onPick: (lat: number, lon: number) => void;
   /** Called whenever the visible ocean layers finish loading (used to pace playback). */
   onIdle: () => void;
 };
 
-export function CmemsMap({ settings, day, depth, point, onPick, onIdle }: Props) {
+export function CmemsMap({ settings, day, depth, point, user, flyTo, onPick, onIdle }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MlMap | null>(null);
   const markerRef = useRef<Marker | null>(null);
+  const userMarkerRef = useRef<Marker | null>(null);
+  const flewNonce = useRef(0);
   const libRef = useRef<typeof import("maplibre-gl") | null>(null);
   const pickRef = useRef(onPick);
   const idleRef = useRef(onIdle);
@@ -137,6 +144,32 @@ export function CmemsMap({ settings, day, depth, point, onPick, onIdle }: Props)
     }
     markerRef.current.setLngLat([point.lon, point.lat]).addTo(map);
   }, [ready, point]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    const lib = libRef.current;
+    if (!ready || !map || !lib) return;
+    if (!user) {
+      userMarkerRef.current?.remove();
+      userMarkerRef.current = null;
+      return;
+    }
+    if (!userMarkerRef.current) {
+      const dot = document.createElement("div");
+      dot.className = "user-pin";
+      dot.setAttribute("aria-label", "Your position");
+      userMarkerRef.current = new lib.Marker({ element: dot });
+    }
+    userMarkerRef.current.setLngLat([user.lon, user.lat]).addTo(map);
+  }, [ready, user]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!ready || !map || !flyTo) return;
+    if (flewNonce.current === flyTo.nonce) return;
+    flewNonce.current = flyTo.nonce;
+    map.flyTo({ center: [flyTo.lon, flyTo.lat], zoom: flyTo.zoom, duration: 1100 });
+  }, [ready, flyTo]);
 
   return <div ref={wrapRef} className="map-stage absolute inset-0" />;
 }

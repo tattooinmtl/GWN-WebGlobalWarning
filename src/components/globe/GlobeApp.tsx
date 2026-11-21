@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { ArrowLeft, ExternalLink, Globe2, Layers, Minus, Moon, Plus, Sun, Waves, X } from "lucide-react";
+import { ArrowLeft, ExternalLink, Globe2, Layers, LocateFixed, Minus, Moon, Plus, Sun, Waves, X } from "lucide-react";
 import { loadAtlas } from "@/lib/disasters/api";
 import { DEPTHS, LAYER_BY_ID, dayStamp, defaultSettings, tileTemplate } from "@/lib/copernicus/layers";
 import { formatLatLon, type SkyState } from "@/lib/globe/astro";
+import { useAtlas } from "@/lib/atlas/store";
+import { locateUser, solarAltitudeDeg } from "@/lib/atlas/locate";
 import {
   LEVELS,
   LEVEL_STYLE,
@@ -78,6 +80,12 @@ function GlobeInner() {
   // 0 until mounted so the server render and the first client render match (no hydration mismatch).
   const [now, setNow] = useState(0);
   const [autoWidened, setAutoWidened] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
+  const location = useAtlas((s) => s.location);
+  const setLocation = useAtlas((s) => s.setLocation);
+  const locStatus = useAtlas((s) => s.locStatus);
+  const setLocStatus = useAtlas((s) => s.setLocStatus);
+  const flewToSaved = useRef(false);
 
   // Live feeds (server function already used by the main page: USGS, Earthquakes Canada, EONET, GDACS, NWS, ECCC,
   // CWFIS, Smithsonian, RainViewer).
@@ -155,6 +163,20 @@ function GlobeInner() {
     const timer = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    void Promise.resolve(useAtlas.persist.rehydrate()).then(() => setHydrated(true));
+  }, []);
+
+  useEffect(() => {
+    engineRef.current?.setUserLocation(location);
+  }, [engineReady, location]);
+
+  useEffect(() => {
+    if (!engineReady || !hydrated || !location || flewToSaved.current) return;
+    flewToSaved.current = true;
+    engineRef.current?.flyTo(location.lat, location.lon, 2.4);
+  }, [engineReady, hydrated, location]);
 
   // Engine lifecycle (three.js is browser-only, so it is imported here).
   useEffect(() => {
@@ -272,12 +294,30 @@ function GlobeInner() {
   }, [shown]);
 
   const set = (key: keyof Toggles) => setToggles((t) => ({ ...t, [key]: !t[key] }));
+  async function locate() {
+    setLocStatus("locating");
+    const found = await locateUser();
+    if (found) {
+      setLocation(found);
+      setLocStatus("ready");
+      flewToSaved.current = true;
+      engineRef.current?.flyTo(found.lat, found.lon, 2.4);
+      return;
+    }
+    setLocStatus("denied");
+  }
   const focus = (m: GlobeMarker) => {
     setPicked(m);
     engineRef.current?.select(m.id, true);
   };
 
   const utc = now ? new Date(now).toISOString().slice(11, 19) : "--:--:--";
+  const daylight =
+    location && sky
+      ? solarAltitudeDeg(location.lat, location.lon, sky.sun.lat, sky.sun.lon) > 0
+        ? "daylight"
+        : "night"
+      : null;
 
   return (
     <div className="relative h-dvh w-full overflow-hidden bg-[#02040a] text-cream">
@@ -304,6 +344,7 @@ function GlobeInner() {
             <p className="text-[11px] text-muted">
               {utc} UTC · {atlas.isFetching ? "updating feeds…" : `${allMarkers.length} live markers`}
             </p>
+            {daylight ? <p className="text-[11px] text-cream">You&apos;re in {daylight}</p> : null}
           </div>
         </div>
       </header>
@@ -334,7 +375,16 @@ function GlobeInner() {
         </div>
       )}
 
+      {locStatus === "denied" ? (
+        <p className="pointer-events-none absolute top-16 left-3 z-20 max-w-xs rounded-md border border-line bg-panel/90 px-2 py-1 text-[11px] text-muted">
+          Location is blocked. You can still use the globe. Allow location in the browser, or try again.
+        </p>
+      ) : null}
+
       <div className="pointer-events-auto absolute right-3 bottom-3 z-20 flex flex-col gap-2 sm:right-[25rem]">
+        <button type="button" className="icon-btn" onClick={() => void locate()} aria-label="Go to my location">
+          <LocateFixed className={locStatus === "locating" ? "size-4 animate-pulse" : "size-4"} />
+        </button>
         <button type="button" className="icon-btn" onClick={() => engineRef.current?.zoomBy(0.75)} aria-label="Zoom in">
           <Plus className="size-4" />
         </button>
@@ -348,8 +398,8 @@ function GlobeInner() {
             const s = engineRef.current?.sunLatLon();
             if (s) engineRef.current?.flyTo(s.lat * 0.5, s.lon - 90, 3.2);
           }}
-          aria-label="Show the terminator"
-          title="Show the day/night line"
+          aria-label="Show the sunrise line"
+          title="Show the sunrise line"
         >
           <Globe2 className="size-4" />
         </button>

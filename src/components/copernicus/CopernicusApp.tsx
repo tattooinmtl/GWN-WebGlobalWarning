@@ -1,7 +1,9 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { ArrowLeft, Layers, Pause, Play, X } from "lucide-react";
+import { ArrowLeft, Layers, LocateFixed, Pause, Play, X } from "lucide-react";
+import { useAtlas } from "@/lib/atlas/store";
+import { locateUser } from "@/lib/atlas/locate";
 import { cmemsPoint } from "@/lib/copernicus/api";
 import { DAY_OFFSETS, dayStamp, DEPTHS, defaultSettings, LAYERS, type LayerSettings } from "@/lib/copernicus/layers";
 import { CmemsMap } from "./CmemsMap";
@@ -30,6 +32,13 @@ function CopernicusInner() {
   const [playing, setPlaying] = useState(false);
   const [point, setPoint] = useState<{ lat: number; lon: number } | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
+  const location = useAtlas((s) => s.location);
+  const setLocation = useAtlas((s) => s.setLocation);
+  const locStatus = useAtlas((s) => s.locStatus);
+  const setLocStatus = useAtlas((s) => s.setLocStatus);
+  const [flyTo, setFlyTo] = useState<{ lat: number; lon: number; zoom: number; nonce: number } | null>(null);
+  const flewToSaved = useRef(false);
 
   const day = dayStamp(offset);
   const active = useMemo(() => LAYERS.filter((layer) => settings[layer.id].on), [settings]);
@@ -60,9 +69,32 @@ function CopernicusInner() {
   const dateText = new Date(`${day}T12:00:00Z`).toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric", timeZone: "UTC" });
   const when = offset === 0 ? "Today" : offset < 0 ? `${-offset} day${offset === -1 ? "" : "s"} ago` : `Forecast +${offset} day${offset === 1 ? "" : "s"}`;
 
+  useEffect(() => {
+    void Promise.resolve(useAtlas.persist.rehydrate()).then(() => setHydrated(true));
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated || !location || flewToSaved.current) return;
+    flewToSaved.current = true;
+    setFlyTo({ lat: location.lat, lon: location.lon, zoom: location.approximate ? 4.6 : 5, nonce: Date.now() });
+  }, [hydrated, location]);
+
+  async function locate() {
+    setLocStatus("locating");
+    const found = await locateUser();
+    if (found) {
+      setLocation(found);
+      setLocStatus("ready");
+      flewToSaved.current = true;
+      setFlyTo({ lat: found.lat, lon: found.lon, zoom: found.approximate ? 4.6 : 5, nonce: Date.now() });
+      return;
+    }
+    setLocStatus("denied");
+  }
+
   return (
     <main className="cm-page relative h-dvh w-full overflow-hidden bg-bg text-cream">
-      <CmemsMap settings={settings} day={day} depth={depth} point={point} onPick={(lat, lon) => setPoint({ lat, lon })} onIdle={onIdle} />
+      <CmemsMap settings={settings} day={day} depth={depth} point={point} user={location} flyTo={flyTo} onPick={(lat, lon) => setPoint({ lat, lon })} onIdle={onIdle} />
 
       <header className="pointer-events-none absolute inset-x-0 top-0 z-30 flex flex-wrap items-start justify-between gap-2 p-3">
         <div className="pointer-events-auto flex items-center gap-2">
@@ -75,10 +107,20 @@ function CopernicusInner() {
             <p className="text-[11px] text-muted">EU ocean, weather &amp; air data · free &amp; live</p>
           </div>
         </div>
-        <button type="button" className="cm-back pointer-events-auto md:hidden" onClick={() => setMenuOpen(true)} aria-label="Open data layers">
-          <Layers className="size-4" /> Layers
-        </button>
+        <div className="pointer-events-auto flex items-center gap-2">
+          <button type="button" className="icon-btn" onClick={() => void locate()} aria-label="Go to my location">
+            <LocateFixed className={locStatus === "locating" ? "size-4 animate-pulse" : "size-4"} />
+          </button>
+          <button type="button" className="cm-back md:hidden" onClick={() => setMenuOpen(true)} aria-label="Open data layers">
+            <Layers className="size-4" /> Layers
+          </button>
+        </div>
       </header>
+      {locStatus === "denied" ? (
+        <p className="pointer-events-none absolute top-16 right-3 z-20 max-w-xs rounded-md border border-line bg-panel/90 px-2 py-1 text-[11px] text-muted">
+          Location is blocked. You can still use the map. Allow location in the browser, or try again.
+        </p>
+      ) : null}
 
       <aside
         className={`cm-drawer absolute bottom-40 left-3 top-24 z-30 md:bottom-28 w-[19rem] max-w-[calc(100%-1.5rem)] ${menuOpen ? "flex" : "hidden md:flex"}`}

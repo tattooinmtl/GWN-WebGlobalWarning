@@ -24,6 +24,7 @@ import { KIND_COLOR, KIND_LABEL, METRICS } from "@/lib/disasters/types";
 import { legendGradient, type PrecipKind } from "@/lib/atlas/weather-colors";
 import type { LayerPrefs } from "@/lib/atlas/store";
 import { mergeLayers, useAtlas } from "@/lib/atlas/store";
+import { locateUser } from "@/lib/atlas/locate";
 import { CYBER_COLOR, loadCyber } from "@/lib/atlas/cyber";
 import { APP_TITLE } from "@/lib/brand";
 import { CopilotDock } from "./CopilotDock";
@@ -243,52 +244,12 @@ function AtlasInner() {
 
   async function locate() {
     setLocStatus("locating");
-    const gps = await new Promise<GeolocationPosition | null>((resolve) => {
-      if (!navigator.geolocation) {
-        resolve(null);
-        return;
-      }
-      navigator.geolocation.getCurrentPosition(
-        (pos) => resolve(pos),
-        () => resolve(null),
-        { enableHighAccuracy: true, timeout: 10000, maximumAge: 60_000 },
-      );
-    });
-    if (gps) {
-      setLocation({
-        lat: gps.coords.latitude,
-        lon: gps.coords.longitude,
-        label: "Your position",
-        at: Date.now(),
-        approximate: false,
-      });
-      requestFly(gps.coords.longitude, gps.coords.latitude, 5);
+    const found = await locateUser();
+    if (found) {
+      setLocation(found);
+      requestFly(found.lon, found.lat, found.approximate ? 4.6 : 5);
       setLocStatus("ready");
       return;
-    }
-    try {
-      const res = await fetch("https://ipwho.is/");
-      const body = (await res.json()) as {
-        success?: boolean;
-        latitude?: number;
-        longitude?: number;
-        city?: string;
-        country?: string;
-      };
-      if (body.success && typeof body.latitude === "number" && typeof body.longitude === "number") {
-        setLocation({
-          lat: body.latitude,
-          lon: body.longitude,
-          label: [body.city, body.country].filter(Boolean).join(", ") || "Approximate",
-          at: Date.now(),
-          approximate: true,
-        });
-        requestFly(body.longitude, body.latitude, 4.6);
-        setLocStatus("ready");
-        return;
-      }
-    } catch {
-      /* GPS and network location both failed */
     }
     setLocStatus("denied");
   }

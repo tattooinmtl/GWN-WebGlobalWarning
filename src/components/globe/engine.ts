@@ -159,6 +159,21 @@ const ATMO_FRAG = /* glsl */ `
   }
 `;
 
+function goldPinTexture(): THREE.Texture {
+  const canvas = document.createElement("canvas");
+  canvas.width = canvas.height = 64;
+  const ctx = canvas.getContext("2d")!;
+  ctx.beginPath();
+  ctx.arc(32, 32, 22, 0, Math.PI * 2);
+  ctx.fillStyle = "#070b12";
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(32, 32, 16, 0, Math.PI * 2);
+  ctx.fillStyle = "#f5c518";
+  ctx.fill();
+  return canvasTexture(canvas);
+}
+
 function canvasTexture(canvas: HTMLCanvasElement | HTMLImageElement): THREE.Texture {
   const tex = canvas instanceof HTMLCanvasElement ? new THREE.CanvasTexture(canvas) : new THREE.Texture(canvas);
   tex.colorSpace = THREE.SRGBColorSpace;
@@ -264,6 +279,7 @@ export class GlobeEngine {
   private disposed = false;
   private downAt: { x: number; y: number } | null = null;
   private selected: string | null = null;
+  private userRoot: THREE.Group | null = null;
   timeOverride: Date | null = null;
 
   constructor(
@@ -450,6 +466,25 @@ export class GlobeEngine {
 
   setMoonVisible(on: boolean) {
     this.moon.visible = on;
+  }
+
+  /** Gold "you are here" pin, kept apart from hazard markers so setMarkers cannot clear it. */
+  setUserLocation(loc: { lat: number; lon: number } | null) {
+    if (this.userRoot) {
+      this.scene.remove(this.userRoot);
+      this.userRoot = null;
+    }
+    if (!loc) return;
+    const group = new THREE.Group();
+    group.position.set(...latLonToXYZ(loc.lat, loc.lon, 1.02));
+    const sprite = new THREE.Sprite(
+      new THREE.SpriteMaterial({ map: goldPinTexture(), transparent: true, depthWrite: false }),
+    );
+    sprite.scale.setScalar(0.08);
+    sprite.renderOrder = 12;
+    group.add(sprite);
+    this.userRoot = group;
+    this.scene.add(group);
   }
 
   // ---------- zoom tiles ----------
@@ -882,6 +917,10 @@ export class GlobeEngine {
         (r.material as THREE.MeshBasicMaterial).opacity = (1 - ph) * (0.55 + style.rank * 0.12);
       }
     }
+    if (this.userRoot) {
+      const sprite = this.userRoot.children[0] as THREE.Sprite | undefined;
+      if (sprite) sprite.scale.setScalar(0.06 * k + 0.03);
+    }
     this.renderer.render(this.scene, this.camera);
   };
 
@@ -896,6 +935,7 @@ export class GlobeEngine {
 
   dispose() {
     this.disposed = true;
+    this.setUserLocation(null);
     cancelAnimationFrame(this.frame);
     if (this.zoomTimer) clearTimeout(this.zoomTimer);
     this.resizeObs.disconnect();
